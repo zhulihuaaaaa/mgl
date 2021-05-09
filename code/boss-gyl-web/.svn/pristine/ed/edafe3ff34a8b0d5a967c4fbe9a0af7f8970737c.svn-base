@@ -1,0 +1,454 @@
+package com.maigangle.gyl.web.controller.finance;
+
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
+import com.maigangle.erp.common.annotation.Privilege;
+import com.maigangle.erp.common.log.EnumMonitorLog;
+import com.maigangle.erp.common.log.LogBatchUtil;
+import com.maigangle.gyl.facade.entity.BaseCompany;
+import com.maigangle.gyl.facade.entity.BaseProduct;
+import com.maigangle.gyl.facade.entity.ConContract;
+import com.maigangle.gyl.facade.entity.FeeDepositAccount;
+import com.maigangle.gyl.facade.entity.FeeDepositDetail;
+import com.maigangle.gyl.facade.entity.FeeFinanceBill;
+import com.maigangle.gyl.facade.entity.api.CrmClient;
+import com.maigangle.gyl.facade.entity.api.DictMallMnfct;
+import com.maigangle.gyl.facade.entity.api.PrivUser;
+import com.maigangle.gyl.facade.entity.dto.ConContractDto;
+import com.maigangle.gyl.facade.entity.dto.FeeFinanceBillDto;
+import com.maigangle.gyl.facade.entity.excel.ConContractDetailExcel;
+import com.maigangle.gyl.facade.entity.excel.ConContractExcel;
+import com.maigangle.gyl.facade.entity.excel.FeeFinanceBillExcel;
+import com.maigangle.gyl.facade.entity.vo.ConContractDetailVo;
+import com.maigangle.gyl.facade.entity.vo.ConContractVo;
+import com.maigangle.gyl.facade.entity.vo.FeeFinanceBillVo;
+import com.maigangle.gyl.facade.enums.ApprovalStateEnum;
+import com.maigangle.gyl.facade.enums.FinanceFlwoTypeEnum;
+import com.maigangle.gyl.facade.enums.FinanceStateEnum;
+import com.maigangle.gyl.facade.enums.FinanceTypeEnum;
+import com.maigangle.gyl.facade.service.ContractService;
+import com.maigangle.gyl.facade.service.FinanceService;
+import com.maigangle.gyl.facade.service.FlowService;
+import com.maigangle.gyl.facade.service.InstockBillService;
+import com.maigangle.gyl.facade.service.RedRedeemBillService;
+import com.maigangle.gyl.facade.utils.PageUtils;
+import com.maigangle.gyl.web.controller.GylBaseWeb;
+import com.maigangle.gyl.web.util.AjaxResult;
+import com.maigangle.gyl.web.util.MessageCode;
+
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+
+/**
+ * 财务Controller
+ * @author 汪玮琦
+ * @since 2017年12月5日 下午1:34:01
+ * @varsion 1.0
+ */
+@Controller
+@RequestMapping("/finance")
+public class FinanceController extends GylBaseWeb {
+	@Autowired
+	private FinanceService financeService;
+	@Autowired
+	private ContractService contractService;
+	@Autowired
+	private RedRedeemBillService redeemBillService;
+	@Autowired
+	private FlowService flowService;
+	@Autowired
+	private RedRedeemBillService redRedeemBillService;
+	@Autowired
+	private InstockBillService instockBillService;
+	
+	@RequestMapping("/main")
+	public ModelAndView main() {
+		ModelAndView modelAndView = new ModelAndView("/finance/financeIndex");
+		return modelAndView;
+	}
+	
+	@RequestMapping("/detail")
+	public ModelAndView detail() {
+		ModelAndView modelAndView = new ModelAndView("/finance/financeDetail");
+		return modelAndView;
+	}
+	
+	@RequestMapping("/save")
+	@ResponseBody
+	public AjaxResult saveFinaceBill(HttpServletRequest request, @RequestBody FeeFinanceBill bill) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "新增财务单", "操作人ID为：" + getLoginName(request) + "新增财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			String checkMsg = this.checkFinaceBill(bill, false);
+			if (StringUtils.isEmpty(checkMsg)) {
+				return AjaxResult.createSuccessResult(financeService.addFinanceBill(bill));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.SAVE_FAILED, checkMsg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "新增财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.SAVE_FAILED);
+	}
+	
+	@Privilege(key = "GYL_FINANCE_COMFIRM")
+	@RequestMapping("/update")
+	@ResponseBody
+	public AjaxResult updateFinaceBill(HttpServletRequest request, @RequestBody FeeFinanceBill bill) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "更新财务单", "操作人ID为：" + getLoginName(request) + "更新财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			String checkMsg = this.checkFinaceBill(bill, true);
+			if (StringUtils.isEmpty(checkMsg)) {
+				Map<String, Object> result = getCurrentPrivUser(request);
+				if (!(boolean)result.get("isSuccess")) {
+					return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "获取当前用户数据异常," + result.get("msg"));
+				}
+				PrivUser privUser = (PrivUser) result.get("data");
+				bill.setStatus(FinanceStateEnum.YI_WAN_CHENG.toString());
+				bill.setOperator(privUser.getUserName());
+				bill.setOperatorDate(new Date());
+				bill = financeService.updateFinaceBill(bill);
+				if (bill != null) {
+					if (!StringUtils.isEmpty(bill.getBusinessType())) {
+						// 更新 履约保证金 与 购货款
+						if (bill.getBusinessType().equals(FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString()) 
+								|| bill.getBusinessType().equals(FinanceTypeEnum.GOU_HUO_KUAN.toString())) {
+							flowService.updateFlow(bill.getContractId(), bill.getFinanceBillId());
+							if (bill.getBusinessType().equals(FinanceTypeEnum.GOU_HUO_KUAN.toString())) {
+								instockBillService.updateApplyRemitByfID(bill.getFinanceBillId());
+							}
+							if (bill.getBusinessType().equals(FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString())) {
+								saveOrUpdateDeposit(privUser, bill, FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString());
+							}
+							
+						}
+						// 更新追加保证金
+						if (bill.getBusinessType().equals(FinanceTypeEnum.ZHUI_JIA_BAO_ZHENG_JIN.toString())) {
+							contractService.updateConDepositDetailState(bill.getContractId(), bill.getFinanceBillId());
+							saveOrUpdateDeposit(privUser, bill, FinanceTypeEnum.ZHUI_JIA_BAO_ZHENG_JIN.toString());
+						}
+						// 更新追加货款
+						if (bill.getBusinessType().equals(FinanceTypeEnum.ZHUI_JIA_HUO_KUAN.toString())) {
+							contractService.updateConPaymentDetailState(bill.getContractId(),bill.getFinanceBillId(), bill.getRelationId());
+						}
+						// 更新赎货款
+						if (bill.getBusinessType().equals(FinanceTypeEnum.SHU_HUO_KUAN.toString())) {
+							redRedeemBillService.billWasAudited(bill.getRelationId(), ApprovalStateEnum.APPROVAL_COMPLETE.toString());
+						}
+					}
+					return AjaxResult.createSuccessResultWithCode(MessageCode.UPDATE_SUCCESS, bill,
+							bill.getFlwoType().equals(FinanceFlwoTypeEnum.CHU_ZHANG.toString()) ? "打款完成" : "已确认到账");
+				} else {
+					return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED);
+				}
+				
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED, checkMsg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "更新财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED);
+	}
+	
+	
+	private void saveOrUpdateDeposit(PrivUser privUser, FeeFinanceBill bill, String type) {
+		
+		// 当前用户名
+		String createUser = privUser.getUserName();
+		// 查询保证金账户
+		FeeDepositAccount account = financeService.getDepositAccountByContractId(bill.getContractId());
+		ConContract contract = contractService.getConContractById(bill.getContractId());
+		// 如果没有保证金账户则新增一条
+		if (account == null) {
+			account = new FeeDepositAccount();
+			account.setBusinessType(bill.getBusinessType());
+			account.setContractId(bill.getContractId());
+			account.setCreateDate(new Date());
+			account.setCreateUser(createUser);
+			account.setBalance(new BigDecimal(0));
+			account.setDepositFee(new BigDecimal(0));
+			account.setFinanceId(bill.getFinanceBillId());
+			account.setBuyerId(contract != null ? contract.getBuyerId() : "");
+			account = financeService.addDepositAccount(account);
+		} 
+		
+		// 创建保证金消费明细
+		FeeDepositDetail feeDepositDetail = new FeeDepositDetail();
+		feeDepositDetail.setDepositAccountId(account.getDepositAccountId());
+		feeDepositDetail.setContractId(bill.getContractId());
+		feeDepositDetail.setCreateDate(new Date());
+		feeDepositDetail.setCreateUser(createUser);
+		feeDepositDetail.setUsedFee(bill.getActualAmount());
+		feeDepositDetail.setUsedFee(new BigDecimal(0).subtract(bill.getActualAmount()));
+		feeDepositDetail.setBalance(account.getBalance());
+		feeDepositDetail = financeService.addDepositDetail(feeDepositDetail);
+		
+		if (type.equals(FinanceTypeEnum.ZHUI_JIA_BAO_ZHENG_JIN.toString())) {
+			account.setBalance(account.getBalance().add(bill.getActualAmount()));
+			account.setDepositFee(account.getDepositFee().add(bill.getActualAmount()));
+			financeService.updateDepositAccount(account);
+		}
+		if (type.equals(FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString())) {
+			account.setBalance(bill.getActualAmount());
+			account.setDepositFee(bill.getActualAmount());
+			financeService.updateDepositAccount(account);
+		}
+		
+	}
+	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxResult deleteFinaceBill(HttpServletRequest request, String billId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "删除财务单", "操作人ID为：" + getLoginName(request) + "删除财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			if (!StringUtils.isEmpty(billId)) {
+				return AjaxResult.createSuccessResult(financeService.deleteFinaceBill(billId));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.DELETE_FAILED, "财务单id不能为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "删除财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.DELETE_FAILED);	
+	}
+	
+	@RequestMapping("/findPage")
+	@ResponseBody
+	public AjaxResult findPageFinaceBills(HttpServletRequest request, @RequestBody PageUtils<FeeFinanceBillDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据条件获取财务单并分页", "操作人ID为：" + getLoginName(request) + "根据条件获取财务单并分页",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			PageInfo<FeeFinanceBillVo> info = financeService.getFinaceBills(page, false);
+			if (info != null && info.getList() != null && !info.getList().isEmpty()) {
+				for (FeeFinanceBillVo vo : info.getList()) {
+					if (!StringUtils.isEmpty(vo.getContractId())) {
+						vo.setContract(contractService.getConContractById(vo.getContractId()));
+					}
+					if (!StringUtils.isEmpty(vo.getBusinessType())) {
+						if(vo.getBusinessType().equals(FinanceTypeEnum.SHU_HUO_KUAN.toString())) {
+							//vo.setRedeem(redeemBillService.getRedRedeemBillByCode(vo.getRelationCode()));
+						}
+					}
+					if (!StringUtils.isEmpty(vo.getBusinessType())) {
+						vo.setBusinessTypeName(FinanceTypeEnum.getValueByKey(vo.getBusinessType()));
+					}
+				}
+			}
+			return AjaxResult.createSuccessResult(info);
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据条件获取财务单并分页",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+	
+	@RequestMapping("/findAll")
+	@ResponseBody
+	public AjaxResult findAllFinaceBills(HttpServletRequest request, @RequestBody PageUtils<FeeFinanceBillDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据条件获取财务单", "操作人ID为：" + getLoginName(request) + "根据条件获取财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			return AjaxResult.createSuccessResult(financeService.getFinaceBills(page.getDto(), page.getOrderByClause(), false));
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据条件获取财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+
+	@RequestMapping("/findOne")
+	@ResponseBody
+	public AjaxResult findOneFinaceBill(HttpServletRequest request, String id) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据条件获取财务单", "操作人ID为：" + getLoginName(request) + "根据条件获取财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			if (StringUtils.isEmpty(id)) {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "财务单id不能为空");
+			} else {
+				return AjaxResult.createSuccessResult(financeService.getFinaceBill(id));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据条件获取财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+	
+	/**
+	 * 检查必填
+	 * @param bill
+	 * @return
+	 */
+	private String checkFinaceBill(FeeFinanceBill bill, boolean isIgnoreId) {
+		if (bill == null) {
+			return "财务单实体不能为空";
+		}
+		String baseStr = "不能为空";
+		if (!isIgnoreId) {
+			if (StringUtils.isEmpty(bill.getFinanceBillId())) {
+				return "财务单id" + baseStr;
+			}
+		}
+		if (bill.getRealMoney() == null) {
+			return "待付总金额" + baseStr;
+		}
+		return "";
+	}
+	
+	/**
+	 * 导出财务Excel
+	 * @param request
+	 * @param response
+	 * @return 
+	 * @throws Exception
+	 */
+	@Privilege(key = "GYL_CONTRACT_Excel")
+	@RequestMapping("/exportExcel")
+	@ResponseBody
+    public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		// 告诉浏览器用什么软件可以打开此文件
+		response.setHeader("content-Type", "application/vnd.ms-excel");
+		// 下载文件的默认名称
+		response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("财务数据表","UTF-8") + ".xls");
+		//编码
+		response.setCharacterEncoding("UTF-8");
+		String param = request.getParameter("param");
+		String orderByClause = null;
+		FeeFinanceBillDto dto = null;
+		if (!StringUtils.isEmpty(param)) {
+			JSONObject paramObj = JSONObject.parseObject(param);
+			orderByClause = paramObj.getString("orderByClause");
+			dto = paramObj.getObject("dto", FeeFinanceBillDto.class);
+		} else {
+			dto = new FeeFinanceBillDto();
+		}
+		
+		List<FeeFinanceBillExcel> list1 = new ArrayList<FeeFinanceBillExcel>();
+		
+		//财务信息
+		List<FeeFinanceBillVo> list = financeService.getFinaceBills(dto, orderByClause, false);
+		if (list != null && !list.isEmpty()) {
+			for (FeeFinanceBillVo vo : list) {
+				FeeFinanceBillExcel feeFinanceBillExcel = new FeeFinanceBillExcel();
+				BeanUtils.copyProperties(vo, feeFinanceBillExcel);
+				if (!StringUtils.isEmpty(vo.getContractId())) {
+					// 设置合同自编号
+					ConContractVo vos  = contractService.getConContractById(vo.getContractId());
+					feeFinanceBillExcel.setContractCode(vos.getContractCode());
+					// 设置合同编号
+					feeFinanceBillExcel.setContractNo(vos.getContractNo());
+				}
+				// 设置财务单号
+				if (!StringUtils.isEmpty(vo.getFinanceCode())) {
+					feeFinanceBillExcel.setFinanceCode(vo.getFinanceCode());
+				}
+				// 设置关联单号
+				if (!StringUtils.isEmpty(vo.getRelationCode())) {
+					feeFinanceBillExcel.setRelationCode(vo.getRelationCode());
+				}
+				// 设置资金流向
+				if (!StringUtils.isEmpty(vo.getFlwoType())) {
+					feeFinanceBillExcel.setFlwoType(vo.getFlwoType());
+				}
+				// 设置业务类型
+				if (!StringUtils.isEmpty(vo.getBusinessType())) {
+					feeFinanceBillExcel.setBusinessType(vo.getBusinessType());
+				}
+				// 设置实际金额
+				if (!StringUtils.isEmpty(vo.getActualAmount())) {
+					feeFinanceBillExcel.setActualAmount(vo.getActualAmount());
+				}
+				// 设置待付总金额
+				if (!StringUtils.isEmpty(vo.getRealMoney())) {
+					feeFinanceBillExcel.setRealMoney(vo.getRealMoney());
+				}
+				// 设置操作员
+				if (!StringUtils.isEmpty(vo.getOperator())) {
+					feeFinanceBillExcel.setOperator(vo.getOperator());
+				}
+				// 设置操作时间
+				if (!StringUtils.isEmpty(vo.getOperatorDate())) {
+					feeFinanceBillExcel.setOperatorDate(vo.getOperatorDate());
+				}
+				// 设置财务单状态
+				if (!StringUtils.isEmpty(vo.getStatus())) {
+					feeFinanceBillExcel.setStatus(vo.getStatus());
+				}
+				// 设置创建日期
+				if (!StringUtils.isEmpty(vo.getCreateDate())) {
+					feeFinanceBillExcel.setCreateDate(vo.getCreateDate());
+				}
+				list1.add(feeFinanceBillExcel);
+			}
+			
+		}
+		
+		ExportParams params1 = new ExportParams() ;  
+        // 设置sheet得名称  
+        params1.setSheetName("财务信息"); 
+        // 创建sheet1使用得map  
+        Map dataMap1 = new HashMap<>();  
+        // title的参数为ExportParams类型，目前仅仅在ExportParams中设置了sheetName  
+        dataMap1.put("title",params1) ;  
+        // 模版导出对应得实体类型  
+        dataMap1.put("entity",FeeFinanceBillExcel.class) ;  
+        // sheet中要填充得数据  
+        dataMap1.put("data",list1) ;
+        
+        // 将sheet1和sheet2使用得map进行包装  
+        List<Map<String, Object>> sheetsList = new ArrayList<>() ;
+        sheetsList.add(dataMap1);
+        
+	    Workbook workbook = ExcelExportUtil.exportExcel(sheetsList, ExcelType.HSSF);
+	    workbook.write(response.getOutputStream());
+	}
+	
+}

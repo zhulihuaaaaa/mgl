@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.InsInspectionBillMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.InsInspectionBill" >
+    <id column="INSPECTION_BILL_ID" property="inspectionBillId" jdbcType="VARCHAR" />
+    <result column="INSTOCK_ID" property="instockId" jdbcType="VARCHAR" />
+    <result column="INSPECTION_BILL_CODE" property="inspectionBillCode" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="INSPECTION_INFO" property="inspectionInfo" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="INSPECTION_STATUS" property="inspectionStatus" jdbcType="CHAR" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INSPECTION_BILL_ID, INSTOCK_ID, INSPECTION_BILL_CODE, CONTRACT_ID, CREATE_USER, CREATE_DATE, 
+    INSPECTION_INFO, IS_DEL, INSPECTION_STATUS, STORAGE_ID, BUSINESS_TYPE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.InsInspectionBillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_INS_INSPECTION_BILL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_INS_INSPECTION_BILL
+    where INSPECTION_BILL_ID = #{inspectionBillId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_INS_INSPECTION_BILL
+    where INSPECTION_BILL_ID = #{inspectionBillId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.InsInspectionBill" >
+   <selectKey keyProperty="inspectionBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_INS_INSPECTION_BILL (INSPECTION_BILL_ID, INSTOCK_ID, INSPECTION_BILL_CODE, 
+      CONTRACT_ID, CREATE_USER, CREATE_DATE, 
+      INSPECTION_INFO, IS_DEL, INSPECTION_STATUS, 
+      STORAGE_ID, BUSINESS_TYPE)
+    values (#{inspectionBillId,jdbcType=VARCHAR}, #{instockId,jdbcType=VARCHAR}, #{inspectionBillCode,jdbcType=VARCHAR}, 
+      #{contractId,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{inspectionInfo,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, #{inspectionStatus,jdbcType=CHAR}, 
+      #{storageId,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.InsInspectionBill" >
+  <selectKey keyProperty="inspectionBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_INS_INSPECTION_BILL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="inspectionBillId != null" >
+        INSPECTION_BILL_ID,
+      </if>
+      <if test="instockId != null" >
+        INSTOCK_ID,
+      </if>
+      <if test="inspectionBillCode != null" >
+        INSPECTION_BILL_CODE,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="inspectionInfo != null" >
+        INSPECTION_INFO,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="inspectionStatus != null" >
+        INSPECTION_STATUS,
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID,
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="inspectionBillId != null" >
+        #{inspectionBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="instockId != null" >
+        #{instockId,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionBillCode != null" >
+        #{inspectionBillCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inspectionInfo != null" >
+        #{inspectionInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="inspectionStatus != null" >
+        #{inspectionStatus,jdbcType=CHAR},
+      </if>
+      <if test="storageId != null" >
+        #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_INS_INSPECTION_BILL
+    <set >
+      <if test="record.inspectionBillId != null" >
+        INSPECTION_BILL_ID = #{record.inspectionBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.instockId != null" >
+        INSTOCK_ID = #{record.instockId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inspectionBillCode != null" >
+        INSPECTION_BILL_CODE = #{record.inspectionBillCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.inspectionInfo != null" >
+        INSPECTION_INFO = #{record.inspectionInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.inspectionStatus != null" >
+        INSPECTION_STATUS = #{record.inspectionStatus,jdbcType=CHAR},
+      </if>
+      <if test="record.storageId != null" >
+        STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null" >
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_INS_INSPECTION_BILL
+    set INSPECTION_BILL_ID = #{record.inspectionBillId,jdbcType=VARCHAR},
+      INSTOCK_ID = #{record.instockId,jdbcType=VARCHAR},
+      INSPECTION_BILL_CODE = #{record.inspectionBillCode,jdbcType=VARCHAR},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      INSPECTION_INFO = #{record.inspectionInfo,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      INSPECTION_STATUS = #{record.inspectionStatus,jdbcType=CHAR},
+      STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.InsInspectionBill" >
+    update TB_INS_INSPECTION_BILL
+    <set >
+      <if test="instockId != null" >
+        INSTOCK_ID = #{instockId,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionBillCode != null" >
+        INSPECTION_BILL_CODE = #{inspectionBillCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="inspectionInfo != null" >
+        INSPECTION_INFO = #{inspectionInfo,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="inspectionStatus != null" >
+        INSPECTION_STATUS = #{inspectionStatus,jdbcType=CHAR},
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INSPECTION_BILL_ID = #{inspectionBillId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.InsInspectionBill" >
+    update TB_INS_INSPECTION_BILL
+    set INSTOCK_ID = #{instockId,jdbcType=VARCHAR},
+      INSPECTION_BILL_CODE = #{inspectionBillCode,jdbcType=VARCHAR},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      INSPECTION_INFO = #{inspectionInfo,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      INSPECTION_STATUS = #{inspectionStatus,jdbcType=CHAR},
+      STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR}
+    where INSPECTION_BILL_ID = #{inspectionBillId,jdbcType=VARCHAR}
+  </update>
+</mapper>

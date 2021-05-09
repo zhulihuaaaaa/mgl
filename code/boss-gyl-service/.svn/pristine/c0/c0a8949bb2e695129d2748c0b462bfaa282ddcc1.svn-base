@@ -1,0 +1,11 @@
+package com.maigangle.gyl.service.mapper.ext;
+
+import com.maigangle.gyl.facade.entity.InsInspectionDetail;
+import com.maigangle.gyl.facade.entity.InsInspectionDetailExample;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
+
+public interface InsInspectionDetailExtMapper {
+	int BathList( @Param("list") List<InsInspectionDetail> list);
+	int BathUpdate(@Param(value="list") List<InsInspectionDetail> list);
+}

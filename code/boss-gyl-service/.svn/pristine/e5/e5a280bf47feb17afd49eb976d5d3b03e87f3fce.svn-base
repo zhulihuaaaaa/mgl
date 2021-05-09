@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ConContractMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.ConContract" >
+    <id column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_TYPE" property="contractType" jdbcType="VARCHAR" />
+    <result column="RELATIVE_CONTRACT_ID" property="relativeContractId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_NO" property="contractNo" jdbcType="VARCHAR" />
+    <result column="REPURCHASE_AGREEMENT_NO" property="repurchaseAgreementNo" jdbcType="VARCHAR" />
+    <result column="SIGN_DATE" property="signDate" jdbcType="TIMESTAMP" />
+    <result column="SIGING_PLACE" property="sigingPlace" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="SUPPLIER_INVOICE_STATUS" property="supplierInvoiceStatus" jdbcType="VARCHAR" />
+    <result column="DELIVERY_ADDRESS" property="deliveryAddress" jdbcType="VARCHAR" />
+    <result column="DELIVERY_DATE" property="deliveryDate" jdbcType="TIMESTAMP" />
+    <result column="DELIVERY_TYPE" property="deliveryType" jdbcType="VARCHAR" />
+    <result column="TOTAL_WEIGHT" property="totalWeight" jdbcType="DECIMAL" />
+    <result column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_RATE" property="depositRate" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_FEE" property="depositFee" jdbcType="DECIMAL" />
+    <result column="COMMISSION_RATE" property="commissionRate" jdbcType="DECIMAL" />
+    <result column="INVOICE_BASE_FEE" property="invoiceBaseFee" jdbcType="DECIMAL" />
+    <result column="CONTRACT_PERIOD" property="contractPeriod" jdbcType="DECIMAL" />
+    <result column="CONTRACT_STATE" property="contractState" jdbcType="VARCHAR" />
+    <result column="ARCHIVED" property="archived" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="CONTRACT_CODE" property="contractCode" jdbcType="VARCHAR" />
+    <result column="MALL_MNFCT" property="mallMnfct" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+		      and IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+            AND IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    CONTRACT_ID, CONTRACT_TYPE, RELATIVE_CONTRACT_ID, CONTRACT_NO, REPURCHASE_AGREEMENT_NO, 
+    SIGN_DATE, SIGING_PLACE, SELLER_ID, BUYER_ID, SUPPLIER_INVOICE_STATUS, DELIVERY_ADDRESS, 
+    DELIVERY_DATE, DELIVERY_TYPE, TOTAL_WEIGHT, TOTAL_MONEY, DEPOSIT_RATE, DEPOSIT_FEE, 
+    COMMISSION_RATE, INVOICE_BASE_FEE, CONTRACT_PERIOD, CONTRACT_STATE, ARCHIVED, CREATE_USER, 
+    CREATE_DATE, NOTES, IS_DEL, CONTRACT_CODE, MALL_MNFCT
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.ConContractExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT
+    where CONTRACT_ID = #{contractId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_CON_CONTRACT
+    where CONTRACT_ID = #{contractId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.ConContract" >
+  	<selectKey keyProperty="contractId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_CON_CONTRACT (CONTRACT_ID, CONTRACT_TYPE, RELATIVE_CONTRACT_ID, 
+      CONTRACT_NO, REPURCHASE_AGREEMENT_NO, SIGN_DATE, 
+      SIGING_PLACE, SELLER_ID, BUYER_ID, 
+      SUPPLIER_INVOICE_STATUS, DELIVERY_ADDRESS, 
+      DELIVERY_DATE, DELIVERY_TYPE, TOTAL_WEIGHT, 
+      TOTAL_MONEY, DEPOSIT_RATE, DEPOSIT_FEE, 
+      COMMISSION_RATE, INVOICE_BASE_FEE, CONTRACT_PERIOD, 
+      CONTRACT_STATE, ARCHIVED, CREATE_USER, 
+      CREATE_DATE, NOTES, IS_DEL, 
+      CONTRACT_CODE, MALL_MNFCT)
+    values (#{contractId,jdbcType=VARCHAR}, #{contractType,jdbcType=VARCHAR}, #{relativeContractId,jdbcType=VARCHAR}, 
+      #{contractNo,jdbcType=VARCHAR}, #{repurchaseAgreementNo,jdbcType=VARCHAR}, #{signDate,jdbcType=TIMESTAMP}, 
+      #{sigingPlace,jdbcType=VARCHAR}, #{sellerId,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, 
+      #{supplierInvoiceStatus,jdbcType=VARCHAR}, #{deliveryAddress,jdbcType=VARCHAR}, 
+      #{deliveryDate,jdbcType=TIMESTAMP}, #{deliveryType,jdbcType=VARCHAR}, #{totalWeight,jdbcType=DECIMAL}, 
+      #{totalMoney,jdbcType=DECIMAL}, #{depositRate,jdbcType=DECIMAL}, #{depositFee,jdbcType=DECIMAL}, 
+      #{commissionRate,jdbcType=DECIMAL}, #{invoiceBaseFee,jdbcType=DECIMAL}, #{contractPeriod,jdbcType=DECIMAL}, 
+      #{contractState,jdbcType=VARCHAR}, #{archived,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, 
+      #{contractCode,jdbcType=VARCHAR}, #{mallMnfct,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.ConContract" >
+   	<selectKey keyProperty="contractId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_CON_CONTRACT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="contractType != null" >
+        CONTRACT_TYPE,
+      </if>
+      <if test="relativeContractId != null" >
+        RELATIVE_CONTRACT_ID,
+      </if>
+      <if test="contractNo != null" >
+        CONTRACT_NO,
+      </if>
+      <if test="repurchaseAgreementNo != null" >
+        REPURCHASE_AGREEMENT_NO,
+      </if>
+      <if test="signDate != null" >
+        SIGN_DATE,
+      </if>
+      <if test="sigingPlace != null" >
+        SIGING_PLACE,
+      </if>
+      <if test="sellerId != null" >
+        SELLER_ID,
+      </if>
+      <if test="buyerId != null" >
+        BUYER_ID,
+      </if>
+      <if test="supplierInvoiceStatus != null" >
+        SUPPLIER_INVOICE_STATUS,
+      </if>
+      <if test="deliveryAddress != null" >
+        DELIVERY_ADDRESS,
+      </if>
+      <if test="deliveryDate != null" >
+        DELIVERY_DATE,
+      </if>
+      <if test="deliveryType != null" >
+        DELIVERY_TYPE,
+      </if>
+      <if test="totalWeight != null" >
+        TOTAL_WEIGHT,
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY,
+      </if>
+      <if test="depositRate != null" >
+        DEPOSIT_RATE,
+      </if>
+      <if test="depositFee != null" >
+        DEPOSIT_FEE,
+      </if>
+      <if test="commissionRate != null" >
+        COMMISSION_RATE,
+      </if>
+      <if test="invoiceBaseFee != null" >
+        INVOICE_BASE_FEE,
+      </if>
+      <if test="contractPeriod != null" >
+        CONTRACT_PERIOD,
+      </if>
+      <if test="contractState != null" >
+        CONTRACT_STATE,
+      </if>
+      <if test="archived != null" >
+        ARCHIVED,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="contractCode != null" >
+        CONTRACT_CODE,
+      </if>
+      <if test="mallMnfct != null" >
+        MALL_MNFCT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractType != null" >
+        #{contractType,jdbcType=VARCHAR},
+      </if>
+      <if test="relativeContractId != null" >
+        #{relativeContractId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractNo != null" >
+        #{contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="repurchaseAgreementNo != null" >
+        #{repurchaseAgreementNo,jdbcType=VARCHAR},
+      </if>
+      <if test="signDate != null" >
+        #{signDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sigingPlace != null" >
+        #{sigingPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierInvoiceStatus != null" >
+        #{supplierInvoiceStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryAddress != null" >
+        #{deliveryAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null" >
+        #{deliveryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliveryType != null" >
+        #{deliveryType,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWeight != null" >
+        #{totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMoney != null" >
+        #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="depositRate != null" >
+        #{depositRate,jdbcType=DECIMAL},
+      </if>
+      <if test="depositFee != null" >
+        #{depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionRate != null" >
+        #{commissionRate,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceBaseFee != null" >
+        #{invoiceBaseFee,jdbcType=DECIMAL},
+      </if>
+      <if test="contractPeriod != null" >
+        #{contractPeriod,jdbcType=DECIMAL},
+      </if>
+      <if test="contractState != null" >
+        #{contractState,jdbcType=VARCHAR},
+      </if>
+      <if test="archived != null" >
+        #{archived,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="contractCode != null" >
+        #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mallMnfct != null" >
+        #{mallMnfct,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_CON_CONTRACT
+    <set >
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractType != null" >
+        CONTRACT_TYPE = #{record.contractType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.relativeContractId != null" >
+        RELATIVE_CONTRACT_ID = #{record.relativeContractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractNo != null" >
+        CONTRACT_NO = #{record.contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.repurchaseAgreementNo != null" >
+        REPURCHASE_AGREEMENT_NO = #{record.repurchaseAgreementNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.signDate != null" >
+        SIGN_DATE = #{record.signDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.sigingPlace != null" >
+        SIGING_PLACE = #{record.sigingPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerId != null" >
+        SELLER_ID = #{record.sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerId != null" >
+        BUYER_ID = #{record.buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.supplierInvoiceStatus != null" >
+        SUPPLIER_INVOICE_STATUS = #{record.supplierInvoiceStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deliveryAddress != null" >
+        DELIVERY_ADDRESS = #{record.deliveryAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="record.deliveryDate != null" >
+        DELIVERY_DATE = #{record.deliveryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.deliveryType != null" >
+        DELIVERY_TYPE = #{record.deliveryType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalWeight != null" >
+        TOTAL_WEIGHT = #{record.totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalMoney != null" >
+        TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositRate != null" >
+        DEPOSIT_RATE = #{record.depositRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositFee != null" >
+        DEPOSIT_FEE = #{record.depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.commissionRate != null" >
+        COMMISSION_RATE = #{record.commissionRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.invoiceBaseFee != null" >
+        INVOICE_BASE_FEE = #{record.invoiceBaseFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.contractPeriod != null" >
+        CONTRACT_PERIOD = #{record.contractPeriod,jdbcType=DECIMAL},
+      </if>
+      <if test="record.contractState != null" >
+        CONTRACT_STATE = #{record.contractState,jdbcType=VARCHAR},
+      </if>
+      <if test="record.archived != null" >
+        ARCHIVED = #{record.archived,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.notes != null" >
+        NOTES = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.contractCode != null" >
+        CONTRACT_CODE = #{record.contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mallMnfct != null" >
+        MALL_MNFCT = #{record.mallMnfct,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_CON_CONTRACT
+    set CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      CONTRACT_TYPE = #{record.contractType,jdbcType=VARCHAR},
+      RELATIVE_CONTRACT_ID = #{record.relativeContractId,jdbcType=VARCHAR},
+      CONTRACT_NO = #{record.contractNo,jdbcType=VARCHAR},
+      REPURCHASE_AGREEMENT_NO = #{record.repurchaseAgreementNo,jdbcType=VARCHAR},
+      SIGN_DATE = #{record.signDate,jdbcType=TIMESTAMP},
+      SIGING_PLACE = #{record.sigingPlace,jdbcType=VARCHAR},
+      SELLER_ID = #{record.sellerId,jdbcType=VARCHAR},
+      BUYER_ID = #{record.buyerId,jdbcType=VARCHAR},
+      SUPPLIER_INVOICE_STATUS = #{record.supplierInvoiceStatus,jdbcType=VARCHAR},
+      DELIVERY_ADDRESS = #{record.deliveryAddress,jdbcType=VARCHAR},
+      DELIVERY_DATE = #{record.deliveryDate,jdbcType=TIMESTAMP},
+      DELIVERY_TYPE = #{record.deliveryType,jdbcType=VARCHAR},
+      TOTAL_WEIGHT = #{record.totalWeight,jdbcType=DECIMAL},
+      TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      DEPOSIT_RATE = #{record.depositRate,jdbcType=DECIMAL},
+      DEPOSIT_FEE = #{record.depositFee,jdbcType=DECIMAL},
+      COMMISSION_RATE = #{record.commissionRate,jdbcType=DECIMAL},
+      INVOICE_BASE_FEE = #{record.invoiceBaseFee,jdbcType=DECIMAL},
+      CONTRACT_PERIOD = #{record.contractPeriod,jdbcType=DECIMAL},
+      CONTRACT_STATE = #{record.contractState,jdbcType=VARCHAR},
+      ARCHIVED = #{record.archived,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      NOTES = #{record.notes,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      CONTRACT_CODE = #{record.contractCode,jdbcType=VARCHAR},
+      MALL_MNFCT = #{record.mallMnfct,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.ConContract" >
+    update TB_CON_CONTRACT
+    <set >
+      <if test="contractType != null" >
+        CONTRACT_TYPE = #{contractType,jdbcType=VARCHAR},
+      </if>
+      <if test="relativeContractId != null" >
+        RELATIVE_CONTRACT_ID = #{relativeContractId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractNo != null" >
+        CONTRACT_NO = #{contractNo,jdbcType=VARCHAR},
+      </if>
+      <if test="repurchaseAgreementNo != null" >
+        REPURCHASE_AGREEMENT_NO = #{repurchaseAgreementNo,jdbcType=VARCHAR},
+      </if>
+      <if test="signDate != null" >
+        SIGN_DATE = #{signDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="sigingPlace != null" >
+        SIGING_PLACE = #{sigingPlace,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null" >
+        SELLER_ID = #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        BUYER_ID = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierInvoiceStatus != null" >
+        SUPPLIER_INVOICE_STATUS = #{supplierInvoiceStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryAddress != null" >
+        DELIVERY_ADDRESS = #{deliveryAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryDate != null" >
+        DELIVERY_DATE = #{deliveryDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliveryType != null" >
+        DELIVERY_TYPE = #{deliveryType,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWeight != null" >
+        TOTAL_WEIGHT = #{totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="depositRate != null" >
+        DEPOSIT_RATE = #{depositRate,jdbcType=DECIMAL},
+      </if>
+      <if test="depositFee != null" >
+        DEPOSIT_FEE = #{depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionRate != null" >
+        COMMISSION_RATE = #{commissionRate,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceBaseFee != null" >
+        INVOICE_BASE_FEE = #{invoiceBaseFee,jdbcType=DECIMAL},
+      </if>
+      <if test="contractPeriod != null" >
+        CONTRACT_PERIOD = #{contractPeriod,jdbcType=DECIMAL},
+      </if>
+      <if test="contractState != null" >
+        CONTRACT_STATE = #{contractState,jdbcType=VARCHAR},
+      </if>
+      <if test="archived != null" >
+        ARCHIVED = #{archived,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null" >
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="contractCode != null" >
+        CONTRACT_CODE = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="mallMnfct != null" >
+        MALL_MNFCT = #{mallMnfct,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where CONTRACT_ID = #{contractId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.ConContract" >
+    update TB_CON_CONTRACT
+    set CONTRACT_TYPE = #{contractType,jdbcType=VARCHAR},
+      RELATIVE_CONTRACT_ID = #{relativeContractId,jdbcType=VARCHAR},
+      CONTRACT_NO = #{contractNo,jdbcType=VARCHAR},
+      REPURCHASE_AGREEMENT_NO = #{repurchaseAgreementNo,jdbcType=VARCHAR},
+      SIGN_DATE = #{signDate,jdbcType=TIMESTAMP},
+      SIGING_PLACE = #{sigingPlace,jdbcType=VARCHAR},
+      SELLER_ID = #{sellerId,jdbcType=VARCHAR},
+      BUYER_ID = #{buyerId,jdbcType=VARCHAR},
+      SUPPLIER_INVOICE_STATUS = #{supplierInvoiceStatus,jdbcType=VARCHAR},
+      DELIVERY_ADDRESS = #{deliveryAddress,jdbcType=VARCHAR},
+      DELIVERY_DATE = #{deliveryDate,jdbcType=TIMESTAMP},
+      DELIVERY_TYPE = #{deliveryType,jdbcType=VARCHAR},
+      TOTAL_WEIGHT = #{totalWeight,jdbcType=DECIMAL},
+      TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      DEPOSIT_RATE = #{depositRate,jdbcType=DECIMAL},
+      DEPOSIT_FEE = #{depositFee,jdbcType=DECIMAL},
+      COMMISSION_RATE = #{commissionRate,jdbcType=DECIMAL},
+      INVOICE_BASE_FEE = #{invoiceBaseFee,jdbcType=DECIMAL},
+      CONTRACT_PERIOD = #{contractPeriod,jdbcType=DECIMAL},
+      CONTRACT_STATE = #{contractState,jdbcType=VARCHAR},
+      ARCHIVED = #{archived,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      NOTES = #{notes,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      CONTRACT_CODE = #{contractCode,jdbcType=VARCHAR},
+      MALL_MNFCT = #{mallMnfct,jdbcType=VARCHAR}
+    where CONTRACT_ID = #{contractId,jdbcType=VARCHAR}
+  </update>
+</mapper>

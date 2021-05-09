@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.AttachMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.Attach" >
+    <id column="ATTACH_ID" property="attachId" jdbcType="VARCHAR" />
+    <result column="FILE_NAME" property="fileName" jdbcType="VARCHAR" />
+    <result column="FILE_PATH" property="filePath" jdbcType="VARCHAR" />
+    <result column="CRTEAR_USER" property="crtearUser" jdbcType="VARCHAR" />
+    <result column="CREATE_TIME" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="FILE_CATEGORY" property="fileCategory" jdbcType="VARCHAR" />
+    <result column="RELATION_ID" property="relationId" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ATTACH_ID, FILE_NAME, FILE_PATH, CRTEAR_USER, CREATE_TIME, FILE_CATEGORY, RELATION_ID, 
+    IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.AttachExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_ATTACH
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_ATTACH
+    where ATTACH_ID = #{attachId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_ATTACH
+    where ATTACH_ID = #{attachId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.Attach" >
+    insert into TB_ATTACH (ATTACH_ID, FILE_NAME, FILE_PATH, 
+      CRTEAR_USER, CREATE_TIME, FILE_CATEGORY, 
+      RELATION_ID, IS_DEL)
+    values (#{attachId,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, #{filePath,jdbcType=VARCHAR}, 
+      #{crtearUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{fileCategory,jdbcType=VARCHAR}, 
+      #{relationId,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.Attach" >
+    insert into TB_ATTACH
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="attachId != null" >
+        ATTACH_ID,
+      </if>
+      <if test="fileName != null" >
+        FILE_NAME,
+      </if>
+      <if test="filePath != null" >
+        FILE_PATH,
+      </if>
+      <if test="crtearUser != null" >
+        CRTEAR_USER,
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME,
+      </if>
+      <if test="fileCategory != null" >
+        FILE_CATEGORY,
+      </if>
+      <if test="relationId != null" >
+        RELATION_ID,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="attachId != null" >
+        #{attachId,jdbcType=VARCHAR},
+      </if>
+      <if test="fileName != null" >
+        #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="crtearUser != null" >
+        #{crtearUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileCategory != null" >
+        #{fileCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="relationId != null" >
+        #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_ATTACH
+    <set >
+      <if test="record.attachId != null" >
+        ATTACH_ID = #{record.attachId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.fileName != null" >
+        FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.filePath != null" >
+        FILE_PATH = #{record.filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.crtearUser != null" >
+        CRTEAR_USER = #{record.crtearUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null" >
+        CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.fileCategory != null" >
+        FILE_CATEGORY = #{record.fileCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="record.relationId != null" >
+        RELATION_ID = #{record.relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_ATTACH
+    set ATTACH_ID = #{record.attachId,jdbcType=VARCHAR},
+      FILE_NAME = #{record.fileName,jdbcType=VARCHAR},
+      FILE_PATH = #{record.filePath,jdbcType=VARCHAR},
+      CRTEAR_USER = #{record.crtearUser,jdbcType=VARCHAR},
+      CREATE_TIME = #{record.createTime,jdbcType=TIMESTAMP},
+      FILE_CATEGORY = #{record.fileCategory,jdbcType=VARCHAR},
+      RELATION_ID = #{record.relationId,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.Attach" >
+    update TB_ATTACH
+    <set >
+      <if test="fileName != null" >
+        FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      </if>
+      <if test="filePath != null" >
+        FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      </if>
+      <if test="crtearUser != null" >
+        CRTEAR_USER = #{crtearUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fileCategory != null" >
+        FILE_CATEGORY = #{fileCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="relationId != null" >
+        RELATION_ID = #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    where ATTACH_ID = #{attachId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.Attach" >
+    update TB_ATTACH
+    set FILE_NAME = #{fileName,jdbcType=VARCHAR},
+      FILE_PATH = #{filePath,jdbcType=VARCHAR},
+      CRTEAR_USER = #{crtearUser,jdbcType=VARCHAR},
+      CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+      FILE_CATEGORY = #{fileCategory,jdbcType=VARCHAR},
+      RELATION_ID = #{relationId,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR}
+    where ATTACH_ID = #{attachId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.FeeInvoiceExtMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.FeeInvoiceDetail" >
+    <id column="INVOICE_DETAIL_ID" property="invoiceDetailId" jdbcType="VARCHAR" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="VARCHAR" />
+    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+    <result column="VOLUME" property="volume" jdbcType="VARCHAR" />
+    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+    <result column="QUANTITY" property="quantity" jdbcType="DECIMAL" />
+    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+    <result column="IMPL_STD" property="implStd" jdbcType="VARCHAR" />
+    <result column="CONTRACT_UNIT_PRICE" property="contractUnitPrice" jdbcType="DECIMAL" />
+    <result column="REAL_UNIT_PRICE" property="realUnitPrice" jdbcType="DECIMAL" />
+    <result column="INVOICE_PRICE" property="invoicePrice" jdbcType="DECIMAL" />
+    <result column="CONTRACT_MONEY" property="contractMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="INVOICE_MONEY" property="invoiceMoney" jdbcType="DECIMAL" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="COMMISSION_FEE" property="commissionFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="REDEEM_MONEY" property="redeemMoney" jdbcType="DECIMAL" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+    <result column="INVOICE_ID" property="invoiceId" jdbcType="VARCHAR" />
+    <result column="RELATED_ID" property="relatedId" jdbcType="VARCHAR" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+  </resultMap>
+   <select id="selectInvoice" resultMap="BaseResultMap">
+	  	SELECT
+		*
+		FROM
+			TB_FEE_INVOICE_DETAIL detail
+		LEFT JOIN TB_FEE_INVOICE invoice ON invoice.INVOICE_ID = detail.INVOICE_ID
+		WHERE
+			detail.CONTRACT_ID = #{contractId,jdbcType=VARCHAR}
+		AND invoice.INVOICE_TYPE = #{invoiceType,jdbcType=VARCHAR}
+		AND detail.IS_DEL = 'N'
+		AND invoice.IS_DEL = 'N'
+  </select>
+</mapper>

@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.InsInspectionDetailExtMapper" >
+	<sql id="Base_Column_List">
+		INSPECTION_DETAIL_ID, SELLER_ID, BUYER_ID, BUSINESS_TYPE, STORAGE_ID, INSTOCK_DATE,
+		PRODUCT_ID, MATERIAL_ID, SURFACE_ID, LABEL_THICK, LABEL_WIDTH,
+		GOODS_LENGTH, EDGE,
+		REFER_THICK, REAL_WIDTH, TRADEMARK, GOODS_VOLUME, MNFCT_ID, NET_WEIGHT, AMOUNT,
+		CALC_METHOD,
+		GRADE, CONTRACT_UNIT_PRICE, REAL_UNIT_PRICE, FLOAT_PRICE, BASIC_PRICE,
+		STORE_PRICE,
+		CONTRACT_MONEY, REAL_MONEY, NEXT_UNLOCK_QUANTITY, NEXT_OUTSTOCK_QUANTITY, IMPL_STD,
+		NOTES, IS_DEL, BORE, INSPECTION_SUB_ID
+	</sql>
+ 	<!-- 批量添加 -->
+	<insert id="BathList" parameterType="java.util.List"
+		keyProperty="inspectionDetailId">
+		insert into
+		TB_INS_INSPECTION_DETAIL
+		(
+		<include refid="Base_Column_List"></include>
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			((select sys_guid() from dual), 
+			#{item.sellerId,jdbcType=VARCHAR},
+			#{item.buyerId,jdbcType=VARCHAR},
+			#{item.businessType,jdbcType=VARCHAR},
+			#{item.storageId,jdbcType=VARCHAR},
+			#{item.instockDate,jdbcType=TIMESTAMP},
+			#{item.productId,jdbcType=VARCHAR},
+			#{item.materialId,jdbcType=VARCHAR},
+			#{item.surfaceId,jdbcType=VARCHAR},
+			#{item.labelThick,jdbcType=VARCHAR},
+			#{item.labelWidth,jdbcType=VARCHAR},
+			#{item.goodsLength,jdbcType=DECIMAL},
+			#{item.edge,jdbcType=VARCHAR}, 
+			#{item.referThick,jdbcType=DECIMAL},
+			#{item.realWidth,jdbcType=DECIMAL},
+			#{item.trademark,jdbcType=VARCHAR},
+			#{item.goodsVolume,jdbcType=VARCHAR},
+			#{item.mnfctId,jdbcType=VARCHAR},
+			#{item.netWeight,jdbcType=DECIMAL},
+			 #{item.amount,jdbcType=DECIMAL},
+			#{item.calcMethod,jdbcType=VARCHAR},
+			#{item.grade,jdbcType=VARCHAR}, 
+			#{item.contractUnitPrice,jdbcType=DECIMAL},
+			#{item.realUnitPrice,jdbcType=DECIMAL},
+			#{item.floatPrice,jdbcType=DECIMAL},
+			#{item.basicPrice,jdbcType=DECIMAL},
+			#{item.storePrice,jdbcType=DECIMAL},
+			#{item.contractMoney,jdbcType=DECIMAL},
+			#{item.realMoney,jdbcType=DECIMAL},
+			#{item.nextUnlockQuantity,jdbcType=DECIMAL},
+			#{item.nextOutstockQuantity,jdbcType=DECIMAL},
+			#{item.implStd,jdbcType=VARCHAR}, 
+			#{item.notes,jdbcType=VARCHAR},
+			#{item.isDel,jdbcType=CHAR},
+			#{item.bore,jdbcType=DECIMAL},
+			#{item.inspectionSubId,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+	
+	<update id="BathUpdate" parameterType="java.util.List">
+	 <foreach collection="list" item="i" index="index" open="" close="" >
+			UPDATE TB_INS_INSPECTION_DETAIL detail
+			<set>
+			 	<if test="i.realMoney !=null">
+                   detail.REAL_MONEY = #{i.realMoney,jdbcType=DECIMAL},
+              	</if>
+				<if test="i.realUnitPrice !=null">
+                  detail.REAL_UNIT_PRICE = #{i.realUnitPrice,jdbcType=DECIMAL}
+                </if>
+			</set>
+			WHERE
+			detail.INSPECTION_DETAIL_ID = #{i.inspectionDetailId,jdbcType=VARCHAR}
+		</foreach>	
+	</update>
+	
+	<resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.vo.InvoiceGoodsConditionVo" >
+    <id column="INSPECTION_DETAIL_ID" property="inspectionDetailId" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="INSTOCK_DATE" property="instockDate" jdbcType="TIMESTAMP" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="VARCHAR" />
+    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+    <result column="GOODS_VOLUME" property="goodsVolume" jdbcType="VARCHAR" />
+    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+    <result column="CONTRACT_UNIT_PRICE" property="contractUnitPrice" jdbcType="DECIMAL" />
+    <result column="REAL_UNIT_PRICE" property="realUnitPrice" jdbcType="DECIMAL" />
+    <result column="FLOAT_PRICE" property="floatPrice" jdbcType="DECIMAL" />
+    <result column="BASIC_PRICE" property="basicPrice" jdbcType="DECIMAL" />
+    <result column="STORE_PRICE" property="storePrice" jdbcType="DECIMAL" />
+    <result column="CONTRACT_MONEY" property="contractMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="NEXT_UNLOCK_QUANTITY" property="nextUnlockQuantity" jdbcType="DECIMAL" />
+    <result column="NEXT_OUTSTOCK_QUANTITY" property="nextOutstockQuantity" jdbcType="DECIMAL" />
+    <result column="IMPL_STD" property="implStd" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+    <result column="BORE" property="bore" jdbcType="DECIMAL" />
+    <result column="INSPECTION_SUB_ID" property="inspectionSubId" jdbcType="VARCHAR" />
+    <result column="SERVICE_FEE" property="serviceFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="ORDER_CODE" property="orderCode" jdbcType="VARCHAR" />
+  </resultMap>
+  
+	<select id="getInvoiceGoodsIn" resultMap="BaseResultMap" parameterType="java.lang.String">
+	SELECT ins_detail.* FROM TB_INS_INSPECTION_DETAIL ins_detail, TB_INS_INSPECTION_SUB ins_sub, 
+	TB_INS_INSPECTION_BILL ins_bill,TB_IN_INSTOCK_BILL instock,TB_FEE_INVOICE_DETAIL invoice
+     WHERE ins_detail.INSPECTION_SUB_ID = ins_sub.INSPECTION_SUB_ID
+      AND ins_sub.INSPECTION_ID = ins_bill.INSPECTION_BILL_ID
+      AND ins_bill.INSTOCK_ID = instock.INSTOCK_BILL_ID
+      AND ins_detail.STORAGE_ID NOT IN invoice.STORAGE_ID
+      AND ins_bill.INSTOCK_ID = #{instockId,jdbcType=VARCHAR}
+      AND instock.INSTOCK_STATUS = 'B'
+	</select>
+	
+</mapper>

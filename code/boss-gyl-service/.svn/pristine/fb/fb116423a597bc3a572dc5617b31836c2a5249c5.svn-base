@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.RedRedeemBillExtMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.vo.RedRedeemVo" >
+   <!--  <id column="REDEEM_BILL_ID" property="redeemBillId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="GOODS_SOURCE" property="goodsSource" jdbcType="VARCHAR" />
+    <result column="TOTAL_WEIGHT" property="totalWeight" jdbcType="DECIMAL" />
+    <result column="TOTAL_GOODS_PAYMENT" property="totalGoodsPayment" jdbcType="DECIMAL" />
+    <result column="COMMISSION_FEE" property="commissionFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="OTHER_FEE" property="otherFee" jdbcType="DECIMAL" />
+    <result column="CHARGING_DAYS" property="chargingDays" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_FEE" property="depositFee" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_DETAIL_ID" property="depositDetailId" jdbcType="VARCHAR" />
+    <result column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="CONSIGNEE" property="consignee" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_TEL" property="consigneeTel" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_ID_NO" property="consigneeIdNo" jdbcType="VARCHAR" />
+    <result column="CAR_NUMBER" property="carNumber" jdbcType="VARCHAR" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="REDEEM_STATUS" property="redeemStatus" jdbcType="CHAR" />
+    <result column="OUTSTOCK_ID" property="outstockId" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="REDEEM_BILL_CODE" property="redeemBillCode" jdbcType="VARCHAR" />
+    <result column="REDEEM_MONEY_STATE" property="redeemMoneyState" jdbcType="CHAR" /> -->
+  </resultMap>
+  <resultMap id="redRedeemGoodsVo" type="com.maigangle.gyl.facade.entity.vo.RedRedeemGoodsVo" >
+    <id column="INVENTORY_ID" property="inventoryId" jdbcType="VARCHAR" />
+<!--     主表获取 -->
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE" property="consignee" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_TEL" property="consigneeTel" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_ID_NO" property="consigneeIdNo" jdbcType="VARCHAR" />
+    <result column="CAR_NUMBER" property="carNumber" jdbcType="VARCHAR" />
+<!--     子表获取 -->
+	<result column="REDEEM_DETAIL_ID" property="redeemDetailId" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="STORAGE_DATE" property="storageDate" jdbcType="TIMESTAMP" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="VARCHAR" />
+    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+    <result column="GOODS_VOLUME" property="goodsVolume" jdbcType="VARCHAR" />
+    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+    <result column="IMPL_STD" property="implStd" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="BORE" property="bore" jdbcType="DECIMAL" />
+    <result column="REDEEM_BILL_ID" property="redeemBillId" jdbcType="VARCHAR" />
+     <result column="RED_WEIGHT" property="redWeight" jdbcType="DECIMAL" />
+   <!--  <association property="baseProduct" javaType="com.maigangle.gyl.facade.entity.BaseProduct">
+	    <id column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+	    <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+	    <result column="QUANTITY_UNIT" property="quantityUnit" jdbcType="VARCHAR" />
+	    <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+	    <result column="PRECISION" property="precision" jdbcType="DECIMAL" />
+	    <result column="UNIT_RATE" property="unitRate" jdbcType="DECIMAL" />
+	</association> -->
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+      AND IS_DEL = 'N'
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    REDEEM_BILL_ID, BUYER_ID, CREATE_USER, CREATE_DATE, STORAGE_ID, CONTRACT_ID, GOODS_SOURCE, 
+    TOTAL_WEIGHT, TOTAL_GOODS_PAYMENT, COMMISSION_FEE, INVOICE_FEE, OTHER_FEE, CHARGING_DAYS, 
+    DEPOSIT_FEE, DEPOSIT_DETAIL_ID, TOTAL_MONEY, REAL_MONEY, CONSIGNEE, CONSIGNEE_TEL, 
+    CONSIGNEE_ID_NO, AUDIT_STATUS, REDEEM_STATUS, OUTSTOCK_ID, IS_DEL, REDEEM_BILL_CODE, 
+    CAR_NUMBER, REDEEM_MONEY_STATE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.RedRedeemBillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_RED_REDEEM_BILL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+      AND IS_DEL = 'N'
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <sql id="redRedeemGoodsVo_Column_List" >
+	inv.INVENTORY_ID as INVENTORY_ID,
+    
+    r.CONTRACT_ID as CONTRACT_ID, 
+    r.CONSIGNEE as CONSIGNEE, 
+    r.CONSIGNEE_TEL as CONSIGNEE_TEL, 
+    r.CONSIGNEE_ID_NO as CONSIGNEE_ID_NO, 
+    r.CAR_NUMBER as CAR_NUMBER, 
+    
+    d.REDEEM_DETAIL_ID as REDEEM_DETAIL_ID, 
+    d.SELLER_ID as SELLER_ID, 
+    d.BUYER_ID as BUYER_ID, 
+    d.BUSINESS_TYPE as BUSINESS_TYPE, 
+    d.STORAGE_DATE as STORAGE_DATE, 
+    d.STORAGE_ID as STORAGE_ID, 
+    d.PRODUCT_ID as PRODUCT_ID, 
+    d.MATERIAL_ID as MATERIAL_ID, 
+    d.SURFACE_ID as SURFACE_ID, 
+    d.LABEL_THICK as LABEL_THICK, 
+    d.LABEL_WIDTH as LABEL_WIDTH, 
+    d.GOODS_LENGTH as GOODS_LENGTH, 
+    d.EDGE as EDGE, 
+    d.REFER_THICK as REFER_THICK, 
+    d.REAL_WIDTH as REAL_WIDTH, 
+    d.TRADEMARK as TRADEMARK, 
+    d.GOODS_VOLUME as GOODS_VOLUME, 
+    d.MNFCT_ID as MNFCT_ID, 
+    d.NET_WEIGHT as NET_WEIGHT, 
+    d.AMOUNT as AMOUNT, 
+    d.CALC_METHOD as CALC_METHOD, 
+    d.GRADE as GRADE, 
+    d.IMPL_STD as IMPL_STD, 
+    d.NOTES as NOTES, 
+    d.BORE as BORE, 
+    d.REDEEM_BILL_ID as REDEEM_BILL_ID,
+    d.RED_WEIGHT as RED_WEIGHT,
+    pro.PRODUCT_NAME as PRODUCT_NAME, 
+    pro.QUANTITY_UNIT as QUANTITY_UNIT, 
+    pro.WEIGHT_UNIT as WEIGHT_UNIT, 
+    pro.PRECISION as PRECISION, 
+    pro.UNIT_RATE as UNIT_RATE
+  </sql>
+<!--   查询待出库货物 -->
+  <select id="selectNextOutstockGoods" resultMap="redRedeemGoodsVo" parameterType="java.lang.String" >
+  	select 
+  	distinct 
+    <include refid="redRedeemGoodsVo_Column_List" />
+    from TB_RED_REDEEM_DETAIL d
+    left join TB_RED_REDEEM_BILL r on d.REDEEM_BILL_ID = r.REDEEM_BILL_ID and r.IS_DEL = 'N'
+    left join TB_INV_INVENTORY inv on inv.INVENTORY_ID = d.INVENTORY_ID and d.IS_DEL = 'N' 
+    left join TB_BASE_PRODUCT pro on pro.PRODUCT_ID = d.PRODUCT_ID 
+    where r.AUDIT_STATUS = 'D' 
+    and inv.NEXT_OUTSTOCK_QUANTITY &gt; 0 
+    and inv.IS_DEL = 'N' 
+    and r.BUYER_ID = #{buyerId} 
+    and r.STORAGE_ID = #{storageId}
+    and d.STATE = 'A'
+  </select>
+<!--   查询仓库货物不为0合同 -->
+  <select id="selectQuantityqGoods" resultMap="redRedeemGoodsVo" parameterType="java.lang.String" >
+  	select 
+  	distinct 
+    INV.CONTRACT_ID
+  	FROM TB_INV_INVENTORY inv 
+	left join TB_RED_REDEEM_BILL r on inv.CONTRACT_ID = r.CONTRACT_ID
+	WHERE INV.QUANTITY > 0
+	AND r.AUDIT_STATUS = 'D' 
+	AND INV.CONTRACT_ID = #{contractId}
+	and inv.IS_DEL = 'N'
+  </select>
+  
+  <resultMap id="BaseResultMap2" type="com.maigangle.gyl.facade.entity.vo.InvoiceGoodsConditionVo" >
+  		    <id column="ID" property="id" jdbcType="VARCHAR" />
+   		  	<result column="CONTRACT_CODE" property="contractCode" jdbcType="VARCHAR" />
+   		  	<result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+		    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+		    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+		    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+		    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+		    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+		    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+		    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="VARCHAR" />
+		    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+		    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+		    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+		    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+		    <result column="GOODS_VOLUME" property="volume" jdbcType="VARCHAR" />
+		    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+		    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+		    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+		    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+		    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+		    <result column="CONTRACT_UNIT_PRICE" property="contractUnitPrice" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <select id="getInvoiceGoodsOut" resultMap="BaseResultMap2" parameterType="com.maigangle.gyl.facade.entity.dto.InvoiceGoodsConditionDto">
+	SELECT
+    contract.CONTRACT_CODE,
+	  contract.CONTRACT_ID,
+		detail.REDEEM_DETAIL_ID ID,
+		detail.STORAGE_ID,
+		detail.PRODUCT_ID,
+		detail.MATERIAL_ID,
+		detail.SURFACE_ID,
+		detail.LABEL_THICK,
+		detail.LABEL_WIDTH,
+		detail.GOODS_LENGTH,
+		detail.EDGE,
+		detail.REFER_THICK,
+		detail.REAL_WIDTH,
+		detail.TRADEMARK,
+		detail.GOODS_VOLUME,
+		detail.MNFCT_ID,
+		detail.NET_WEIGHT,
+		detail.AMOUNT,
+		detail.CALC_METHOD,
+		detail.GRADE,
+		detail.CONTRACT_UNIT_PRICE
+FROM TB_RED_REDEEM_DETAIL detail
+  JOIN TB_RED_REDEEM_BILL bill on(detail.REDEEM_BILL_ID = bill.REDEEM_BILL_ID AND bill.REDEEM_STATUS = 'E')
+  JOIN TB_FEE_INVOICE_DETAIL invoice_detail on (detail.REDEEM_DETAIL_ID  NOT IN invoice_detail.RELATED_ID)
+  JOIN TB_FEE_INVOICE invoice ON ( invoice_detail.INVOICE_ID = invoice.INVOICE_ID AND invoice.INVOICE_TYPE = 1)
+  JOIN TB_CON_CONTRACT contract ON (bill.CONTRACT_ID = contract.CONTRACT_ID)
+	 where detail.REDEEM_BILL_ID = detail.REDEEM_BILL_ID
+		<if test="dto.buyerId != null and dto.buyerId !=''" >
+	      AND detail.buyerId = #{dto.buyerId,jdbcType=VARCHAR}
+	    </if>
+		<if test="dto.startDate != null and dto.startDate !=''" >
+	      AND bill.createDate &gt;= #{dto.startDate,jdbcType=TIMESTAMP}
+	    </if>
+	    <if test="dto.endDate != null and dto.endDate !=''" >
+	      AND bill.createDate &lt;= #{dto.endDate,jdbcType=TIMESTAMP}
+	    </if>
+	    <if test="dto.productId != null and dto.productId !=''" >
+	      AND detail.productId = #{dto.productId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.meterialId != null and dto.meterialId !=''" >
+	      AND detail.meterialId = #{dto.meterialId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.goodsVolume != null and dto.goodsVolume !=''" >
+	      AND detail.goodsVolume = #{dto.goodsVolume,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.mnfctId != null and dto.mnfctId !=''" >
+	      AND detail.mnfctId = #{dto.mnfctId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.surfaceId != null and dto.surfaceId !=''" >
+	      AND detail.surfaceId = #{dto.surfaceId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.storageId != null and dto.storageId !=''" >
+	      AND detail.storageId = #{dto.storageId,jdbcType=VARCHAR}
+	    </if>
+	</select>
+</mapper>

@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.RedRedeemBillMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.RedRedeemBill" >
+    <id column="REDEEM_BILL_ID" property="redeemBillId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="GOODS_SOURCE" property="goodsSource" jdbcType="VARCHAR" />
+    <result column="TOTAL_WEIGHT" property="totalWeight" jdbcType="DECIMAL" />
+    <result column="TOTAL_GOODS_PAYMENT" property="totalGoodsPayment" jdbcType="DECIMAL" />
+    <result column="COMMISSION_FEE" property="commissionFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="OTHER_FEE" property="otherFee" jdbcType="DECIMAL" />
+    <result column="CHARGING_DAYS" property="chargingDays" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_FEE" property="depositFee" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_DETAIL_ID" property="depositDetailId" jdbcType="VARCHAR" />
+    <result column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="CONSIGNEE" property="consignee" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_TEL" property="consigneeTel" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_ID_NO" property="consigneeIdNo" jdbcType="VARCHAR" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="REDEEM_STATUS" property="redeemStatus" jdbcType="CHAR" />
+    <result column="OUTSTOCK_ID" property="outstockId" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="REDEEM_BILL_CODE" property="redeemBillCode" jdbcType="VARCHAR" />
+    <result column="CAR_NUMBER" property="carNumber" jdbcType="VARCHAR" />
+    <result column="REDEEM_MONEY_STATE" property="redeemMoneyState" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+      AND IS_DEL = 'N'
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    REDEEM_BILL_ID, BUYER_ID, CREATE_USER, CREATE_DATE, STORAGE_ID, CONTRACT_ID, GOODS_SOURCE, 
+    TOTAL_WEIGHT, TOTAL_GOODS_PAYMENT, COMMISSION_FEE, INVOICE_FEE, OTHER_FEE, CHARGING_DAYS, 
+    DEPOSIT_FEE, DEPOSIT_DETAIL_ID, TOTAL_MONEY, REAL_MONEY, CONSIGNEE, CONSIGNEE_TEL, 
+    CONSIGNEE_ID_NO, AUDIT_STATUS, REDEEM_STATUS, OUTSTOCK_ID, IS_DEL, REDEEM_BILL_CODE, 
+    CAR_NUMBER, REDEEM_MONEY_STATE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.RedRedeemBillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_RED_REDEEM_BILL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_RED_REDEEM_BILL
+    where REDEEM_BILL_ID = #{redeemBillId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_RED_REDEEM_BILL
+    where REDEEM_BILL_ID = #{redeemBillId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.RedRedeemBill" >
+    <selectKey keyProperty="redeemBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_RED_REDEEM_BILL (REDEEM_BILL_ID, BUYER_ID, CREATE_USER, 
+      CREATE_DATE, STORAGE_ID, CONTRACT_ID, 
+      GOODS_SOURCE, TOTAL_WEIGHT, TOTAL_GOODS_PAYMENT, 
+      COMMISSION_FEE, INVOICE_FEE, OTHER_FEE, 
+      CHARGING_DAYS, DEPOSIT_FEE, DEPOSIT_DETAIL_ID, 
+      TOTAL_MONEY, REAL_MONEY, CONSIGNEE, 
+      CONSIGNEE_TEL, CONSIGNEE_ID_NO, AUDIT_STATUS, 
+      REDEEM_STATUS, OUTSTOCK_ID, IS_DEL, 
+      REDEEM_BILL_CODE, CAR_NUMBER, REDEEM_MONEY_STATE
+      )
+    values (#{redeemBillId,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{storageId,jdbcType=VARCHAR}, #{contractId,jdbcType=VARCHAR}, 
+      #{goodsSource,jdbcType=VARCHAR}, #{totalWeight,jdbcType=DECIMAL}, #{totalGoodsPayment,jdbcType=DECIMAL}, 
+      #{commissionFee,jdbcType=DECIMAL}, #{invoiceFee,jdbcType=DECIMAL}, #{otherFee,jdbcType=DECIMAL}, 
+      #{chargingDays,jdbcType=DECIMAL}, #{depositFee,jdbcType=DECIMAL}, #{depositDetailId,jdbcType=VARCHAR}, 
+      #{totalMoney,jdbcType=DECIMAL}, #{realMoney,jdbcType=DECIMAL}, #{consignee,jdbcType=VARCHAR}, 
+      #{consigneeTel,jdbcType=VARCHAR}, #{consigneeIdNo,jdbcType=VARCHAR}, #{auditStatus,jdbcType=VARCHAR}, 
+      #{redeemStatus,jdbcType=CHAR}, #{outstockId,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, 
+      #{redeemBillCode,jdbcType=VARCHAR}, #{carNumber,jdbcType=VARCHAR}, #{redeemMoneyState,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.RedRedeemBill" >
+    <selectKey keyProperty="redeemBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_RED_REDEEM_BILL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="redeemBillId != null" >
+        REDEEM_BILL_ID,
+      </if>
+      <if test="buyerId != null" >
+        BUYER_ID,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="goodsSource != null" >
+        GOODS_SOURCE,
+      </if>
+      <if test="totalWeight != null" >
+        TOTAL_WEIGHT,
+      </if>
+      <if test="totalGoodsPayment != null" >
+        TOTAL_GOODS_PAYMENT,
+      </if>
+      <if test="commissionFee != null" >
+        COMMISSION_FEE,
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE,
+      </if>
+      <if test="otherFee != null" >
+        OTHER_FEE,
+      </if>
+      <if test="chargingDays != null" >
+        CHARGING_DAYS,
+      </if>
+      <if test="depositFee != null" >
+        DEPOSIT_FEE,
+      </if>
+      <if test="depositDetailId != null" >
+        DEPOSIT_DETAIL_ID,
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY,
+      </if>
+      <if test="realMoney != null" >
+        REAL_MONEY,
+      </if>
+      <if test="consignee != null" >
+        CONSIGNEE,
+      </if>
+      <if test="consigneeTel != null" >
+        CONSIGNEE_TEL,
+      </if>
+      <if test="consigneeIdNo != null" >
+        CONSIGNEE_ID_NO,
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS,
+      </if>
+      <if test="redeemStatus != null" >
+        REDEEM_STATUS,
+      </if>
+      <if test="outstockId != null" >
+        OUTSTOCK_ID,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="redeemBillCode != null" >
+        REDEEM_BILL_CODE,
+      </if>
+      <if test="carNumber != null" >
+        CAR_NUMBER,
+      </if>
+      <if test="redeemMoneyState != null" >
+        REDEEM_MONEY_STATE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="redeemBillId != null" >
+        #{redeemBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storageId != null" >
+        #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsSource != null" >
+        #{goodsSource,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWeight != null" >
+        #{totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="totalGoodsPayment != null" >
+        #{totalGoodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionFee != null" >
+        #{commissionFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="otherFee != null" >
+        #{otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="chargingDays != null" >
+        #{chargingDays,jdbcType=DECIMAL},
+      </if>
+      <if test="depositFee != null" >
+        #{depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="depositDetailId != null" >
+        #{depositDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalMoney != null" >
+        #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="realMoney != null" >
+        #{realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="consignee != null" >
+        #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeTel != null" >
+        #{consigneeTel,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeIdNo != null" >
+        #{consigneeIdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="redeemStatus != null" >
+        #{redeemStatus,jdbcType=CHAR},
+      </if>
+      <if test="outstockId != null" >
+        #{outstockId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="redeemBillCode != null" >
+        #{redeemBillCode,jdbcType=VARCHAR},
+      </if>
+      <if test="carNumber != null" >
+        #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="redeemMoneyState != null" >
+        #{redeemMoneyState,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_RED_REDEEM_BILL
+    <set >
+      <if test="record.redeemBillId != null" >
+        REDEEM_BILL_ID = #{record.redeemBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerId != null" >
+        BUYER_ID = #{record.buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.storageId != null" >
+        STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.goodsSource != null" >
+        GOODS_SOURCE = #{record.goodsSource,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalWeight != null" >
+        TOTAL_WEIGHT = #{record.totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalGoodsPayment != null" >
+        TOTAL_GOODS_PAYMENT = #{record.totalGoodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="record.commissionFee != null" >
+        COMMISSION_FEE = #{record.commissionFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.invoiceFee != null" >
+        INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.otherFee != null" >
+        OTHER_FEE = #{record.otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.chargingDays != null" >
+        CHARGING_DAYS = #{record.chargingDays,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositFee != null" >
+        DEPOSIT_FEE = #{record.depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositDetailId != null" >
+        DEPOSIT_DETAIL_ID = #{record.depositDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalMoney != null" >
+        TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.realMoney != null" >
+        REAL_MONEY = #{record.realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.consignee != null" >
+        CONSIGNEE = #{record.consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.consigneeTel != null" >
+        CONSIGNEE_TEL = #{record.consigneeTel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.consigneeIdNo != null" >
+        CONSIGNEE_ID_NO = #{record.consigneeIdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.auditStatus != null" >
+        AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.redeemStatus != null" >
+        REDEEM_STATUS = #{record.redeemStatus,jdbcType=CHAR},
+      </if>
+      <if test="record.outstockId != null" >
+        OUTSTOCK_ID = #{record.outstockId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.redeemBillCode != null" >
+        REDEEM_BILL_CODE = #{record.redeemBillCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.carNumber != null" >
+        CAR_NUMBER = #{record.carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="record.redeemMoneyState != null" >
+        REDEEM_MONEY_STATE = #{record.redeemMoneyState,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_RED_REDEEM_BILL
+    set REDEEM_BILL_ID = #{record.redeemBillId,jdbcType=VARCHAR},
+      BUYER_ID = #{record.buyerId,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      GOODS_SOURCE = #{record.goodsSource,jdbcType=VARCHAR},
+      TOTAL_WEIGHT = #{record.totalWeight,jdbcType=DECIMAL},
+      TOTAL_GOODS_PAYMENT = #{record.totalGoodsPayment,jdbcType=DECIMAL},
+      COMMISSION_FEE = #{record.commissionFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      OTHER_FEE = #{record.otherFee,jdbcType=DECIMAL},
+      CHARGING_DAYS = #{record.chargingDays,jdbcType=DECIMAL},
+      DEPOSIT_FEE = #{record.depositFee,jdbcType=DECIMAL},
+      DEPOSIT_DETAIL_ID = #{record.depositDetailId,jdbcType=VARCHAR},
+      TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      REAL_MONEY = #{record.realMoney,jdbcType=DECIMAL},
+      CONSIGNEE = #{record.consignee,jdbcType=VARCHAR},
+      CONSIGNEE_TEL = #{record.consigneeTel,jdbcType=VARCHAR},
+      CONSIGNEE_ID_NO = #{record.consigneeIdNo,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      REDEEM_STATUS = #{record.redeemStatus,jdbcType=CHAR},
+      OUTSTOCK_ID = #{record.outstockId,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      REDEEM_BILL_CODE = #{record.redeemBillCode,jdbcType=VARCHAR},
+      CAR_NUMBER = #{record.carNumber,jdbcType=VARCHAR},
+      REDEEM_MONEY_STATE = #{record.redeemMoneyState,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.RedRedeemBill" >
+    update TB_RED_REDEEM_BILL
+    <set >
+      <if test="buyerId != null" >
+        BUYER_ID = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsSource != null" >
+        GOODS_SOURCE = #{goodsSource,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWeight != null" >
+        TOTAL_WEIGHT = #{totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="totalGoodsPayment != null" >
+        TOTAL_GOODS_PAYMENT = #{totalGoodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionFee != null" >
+        COMMISSION_FEE = #{commissionFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="otherFee != null" >
+        OTHER_FEE = #{otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="chargingDays != null" >
+        CHARGING_DAYS = #{chargingDays,jdbcType=DECIMAL},
+      </if>
+      <if test="depositFee != null" >
+        DEPOSIT_FEE = #{depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="depositDetailId != null" >
+        DEPOSIT_DETAIL_ID = #{depositDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="realMoney != null" >
+        REAL_MONEY = #{realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="consignee != null" >
+        CONSIGNEE = #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeTel != null" >
+        CONSIGNEE_TEL = #{consigneeTel,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeIdNo != null" >
+        CONSIGNEE_ID_NO = #{consigneeIdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="redeemStatus != null" >
+        REDEEM_STATUS = #{redeemStatus,jdbcType=CHAR},
+      </if>
+      <if test="outstockId != null" >
+        OUTSTOCK_ID = #{outstockId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="redeemBillCode != null" >
+        REDEEM_BILL_CODE = #{redeemBillCode,jdbcType=VARCHAR},
+      </if>
+      <if test="carNumber != null" >
+        CAR_NUMBER = #{carNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="redeemMoneyState != null" >
+        REDEEM_MONEY_STATE = #{redeemMoneyState,jdbcType=CHAR},
+      </if>
+    </set>
+    where REDEEM_BILL_ID = #{redeemBillId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.RedRedeemBill" >
+    update TB_RED_REDEEM_BILL
+    set BUYER_ID = #{buyerId,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      GOODS_SOURCE = #{goodsSource,jdbcType=VARCHAR},
+      TOTAL_WEIGHT = #{totalWeight,jdbcType=DECIMAL},
+      TOTAL_GOODS_PAYMENT = #{totalGoodsPayment,jdbcType=DECIMAL},
+      COMMISSION_FEE = #{commissionFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      OTHER_FEE = #{otherFee,jdbcType=DECIMAL},
+      CHARGING_DAYS = #{chargingDays,jdbcType=DECIMAL},
+      DEPOSIT_FEE = #{depositFee,jdbcType=DECIMAL},
+      DEPOSIT_DETAIL_ID = #{depositDetailId,jdbcType=VARCHAR},
+      TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      REAL_MONEY = #{realMoney,jdbcType=DECIMAL},
+      CONSIGNEE = #{consignee,jdbcType=VARCHAR},
+      CONSIGNEE_TEL = #{consigneeTel,jdbcType=VARCHAR},
+      CONSIGNEE_ID_NO = #{consigneeIdNo,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      REDEEM_STATUS = #{redeemStatus,jdbcType=CHAR},
+      OUTSTOCK_ID = #{outstockId,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      REDEEM_BILL_CODE = #{redeemBillCode,jdbcType=VARCHAR},
+      CAR_NUMBER = #{carNumber,jdbcType=VARCHAR},
+      REDEEM_MONEY_STATE = #{redeemMoneyState,jdbcType=CHAR}
+    where REDEEM_BILL_ID = #{redeemBillId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.BaseProductMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.BaseProduct" >
+    <id column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+    <result column="QUANTITY_UNIT" property="quantityUnit" jdbcType="VARCHAR" />
+    <result column="WEIGHT_UNIT" property="weightUnit" jdbcType="VARCHAR" />
+    <result column="PRECISION" property="precision" jdbcType="DECIMAL" />
+    <result column="UNIT_RATE" property="unitRate" jdbcType="DECIMAL" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    PRODUCT_ID, PRODUCT_NAME, QUANTITY_UNIT, WEIGHT_UNIT, PRECISION, UNIT_RATE, STATUS, 
+    CREATE_USER, CREATE_DATE, IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.BaseProductExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_BASE_PRODUCT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_BASE_PRODUCT
+    where PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_BASE_PRODUCT
+    where PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.BaseProduct" >
+  <selectKey keyProperty="productId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_BASE_PRODUCT (PRODUCT_ID, PRODUCT_NAME, QUANTITY_UNIT, 
+      WEIGHT_UNIT, PRECISION, UNIT_RATE, 
+      STATUS, CREATE_USER, CREATE_DATE, 
+      IS_DEL)
+    values (#{productId,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{quantityUnit,jdbcType=VARCHAR}, 
+      #{weightUnit,jdbcType=VARCHAR}, #{precision,jdbcType=DECIMAL}, #{unitRate,jdbcType=DECIMAL}, 
+      #{status,jdbcType=CHAR}, #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{isDel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.BaseProduct" >
+  <selectKey keyProperty="productId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_BASE_PRODUCT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        PRODUCT_ID,
+      </if>
+      <if test="productName != null" >
+        PRODUCT_NAME,
+      </if>
+      <if test="quantityUnit != null" >
+        QUANTITY_UNIT,
+      </if>
+      <if test="weightUnit != null" >
+        WEIGHT_UNIT,
+      </if>
+      <if test="precision != null" >
+        PRECISION,
+      </if>
+      <if test="unitRate != null" >
+        UNIT_RATE,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="quantityUnit != null" >
+        #{quantityUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="weightUnit != null" >
+        #{weightUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="precision != null" >
+        #{precision,jdbcType=DECIMAL},
+      </if>
+      <if test="unitRate != null" >
+        #{unitRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_BASE_PRODUCT
+    <set >
+      <if test="record.productId != null" >
+        PRODUCT_ID = #{record.productId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.productName != null" >
+        PRODUCT_NAME = #{record.productName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.quantityUnit != null" >
+        QUANTITY_UNIT = #{record.quantityUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.weightUnit != null" >
+        WEIGHT_UNIT = #{record.weightUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="record.precision != null" >
+        PRECISION = #{record.precision,jdbcType=DECIMAL},
+      </if>
+      <if test="record.unitRate != null" >
+        UNIT_RATE = #{record.unitRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=CHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_BASE_PRODUCT
+    set PRODUCT_ID = #{record.productId,jdbcType=VARCHAR},
+      PRODUCT_NAME = #{record.productName,jdbcType=VARCHAR},
+      QUANTITY_UNIT = #{record.quantityUnit,jdbcType=VARCHAR},
+      WEIGHT_UNIT = #{record.weightUnit,jdbcType=VARCHAR},
+      PRECISION = #{record.precision,jdbcType=DECIMAL},
+      UNIT_RATE = #{record.unitRate,jdbcType=DECIMAL},
+      STATUS = #{record.status,jdbcType=CHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.BaseProduct" >
+    update TB_BASE_PRODUCT
+    <set >
+      <if test="productName != null" >
+        PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="quantityUnit != null" >
+        QUANTITY_UNIT = #{quantityUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="weightUnit != null" >
+        WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+      </if>
+      <if test="precision != null" >
+        PRECISION = #{precision,jdbcType=DECIMAL},
+      </if>
+      <if test="unitRate != null" >
+        UNIT_RATE = #{unitRate,jdbcType=DECIMAL},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    where PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.BaseProduct" >
+    update TB_BASE_PRODUCT
+    set PRODUCT_NAME = #{productName,jdbcType=VARCHAR},
+      QUANTITY_UNIT = #{quantityUnit,jdbcType=VARCHAR},
+      WEIGHT_UNIT = #{weightUnit,jdbcType=VARCHAR},
+      PRECISION = #{precision,jdbcType=DECIMAL},
+      UNIT_RATE = #{unitRate,jdbcType=DECIMAL},
+      STATUS = #{status,jdbcType=CHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=CHAR}
+    where PRODUCT_ID = #{productId,jdbcType=VARCHAR}
+  </update>
+</mapper>

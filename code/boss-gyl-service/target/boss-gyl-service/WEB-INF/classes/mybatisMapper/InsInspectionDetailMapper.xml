@@ -1,0 +1,725 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.InsInspectionDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.InsInspectionDetail" >
+    <id column="INSPECTION_DETAIL_ID" property="inspectionDetailId" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="INSTOCK_DATE" property="instockDate" jdbcType="TIMESTAMP" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="DECIMAL" />
+    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+    <result column="GOODS_VOLUME" property="goodsVolume" jdbcType="VARCHAR" />
+    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+    <result column="CONTRACT_UNIT_PRICE" property="contractUnitPrice" jdbcType="DECIMAL" />
+    <result column="REAL_UNIT_PRICE" property="realUnitPrice" jdbcType="DECIMAL" />
+    <result column="FLOAT_PRICE" property="floatPrice" jdbcType="DECIMAL" />
+    <result column="BASIC_PRICE" property="basicPrice" jdbcType="DECIMAL" />
+    <result column="STORE_PRICE" property="storePrice" jdbcType="DECIMAL" />
+    <result column="CONTRACT_MONEY" property="contractMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="NEXT_UNLOCK_QUANTITY" property="nextUnlockQuantity" jdbcType="DECIMAL" />
+    <result column="NEXT_OUTSTOCK_QUANTITY" property="nextOutstockQuantity" jdbcType="DECIMAL" />
+    <result column="IMPL_STD" property="implStd" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="BORE" property="bore" jdbcType="DECIMAL" />
+    <result column="INSPECTION_SUB_ID" property="inspectionSubId" jdbcType="VARCHAR" />
+    <result column="SERVICE_FEE" property="serviceFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INSPECTION_DETAIL_ID, SELLER_ID, BUYER_ID, BUSINESS_TYPE, STORAGE_ID, INSTOCK_DATE, 
+    PRODUCT_ID, MATERIAL_ID, SURFACE_ID, LABEL_THICK, LABEL_WIDTH, GOODS_LENGTH, EDGE, 
+    REFER_THICK, REAL_WIDTH, TRADEMARK, GOODS_VOLUME, MNFCT_ID, NET_WEIGHT, AMOUNT, CALC_METHOD, 
+    GRADE, CONTRACT_UNIT_PRICE, REAL_UNIT_PRICE, FLOAT_PRICE, BASIC_PRICE, STORE_PRICE, 
+    CONTRACT_MONEY, REAL_MONEY, NEXT_UNLOCK_QUANTITY, NEXT_OUTSTOCK_QUANTITY, IMPL_STD, 
+    NOTES, IS_DEL, BORE, INSPECTION_SUB_ID, SERVICE_FEE, INVOICE_FEE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.InsInspectionDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_INS_INSPECTION_DETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_INS_INSPECTION_DETAIL
+    where INSPECTION_DETAIL_ID = #{inspectionDetailId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_INS_INSPECTION_DETAIL
+    where INSPECTION_DETAIL_ID = #{inspectionDetailId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.InsInspectionDetail" >
+    insert into TB_INS_INSPECTION_DETAIL (INSPECTION_DETAIL_ID, SELLER_ID, BUYER_ID, 
+      BUSINESS_TYPE, STORAGE_ID, INSTOCK_DATE, 
+      PRODUCT_ID, MATERIAL_ID, SURFACE_ID, 
+      LABEL_THICK, LABEL_WIDTH, GOODS_LENGTH, 
+      EDGE, REFER_THICK, REAL_WIDTH, 
+      TRADEMARK, GOODS_VOLUME, MNFCT_ID, 
+      NET_WEIGHT, AMOUNT, CALC_METHOD, 
+      GRADE, CONTRACT_UNIT_PRICE, REAL_UNIT_PRICE, 
+      FLOAT_PRICE, BASIC_PRICE, STORE_PRICE, 
+      CONTRACT_MONEY, REAL_MONEY, NEXT_UNLOCK_QUANTITY, 
+      NEXT_OUTSTOCK_QUANTITY, IMPL_STD, NOTES, 
+      IS_DEL, BORE, INSPECTION_SUB_ID, 
+      SERVICE_FEE, INVOICE_FEE)
+    values (#{inspectionDetailId,jdbcType=VARCHAR}, #{sellerId,jdbcType=VARCHAR}, #{buyerId,jdbcType=VARCHAR}, 
+      #{businessType,jdbcType=VARCHAR}, #{storageId,jdbcType=VARCHAR}, #{instockDate,jdbcType=TIMESTAMP}, 
+      #{productId,jdbcType=VARCHAR}, #{materialId,jdbcType=VARCHAR}, #{surfaceId,jdbcType=VARCHAR}, 
+      #{labelThick,jdbcType=VARCHAR}, #{labelWidth,jdbcType=VARCHAR}, #{goodsLength,jdbcType=DECIMAL}, 
+      #{edge,jdbcType=VARCHAR}, #{referThick,jdbcType=DECIMAL}, #{realWidth,jdbcType=DECIMAL}, 
+      #{trademark,jdbcType=VARCHAR}, #{goodsVolume,jdbcType=VARCHAR}, #{mnfctId,jdbcType=VARCHAR}, 
+      #{netWeight,jdbcType=DECIMAL}, #{amount,jdbcType=DECIMAL}, #{calcMethod,jdbcType=VARCHAR}, 
+      #{grade,jdbcType=VARCHAR}, #{contractUnitPrice,jdbcType=DECIMAL}, #{realUnitPrice,jdbcType=DECIMAL}, 
+      #{floatPrice,jdbcType=DECIMAL}, #{basicPrice,jdbcType=DECIMAL}, #{storePrice,jdbcType=DECIMAL}, 
+      #{contractMoney,jdbcType=DECIMAL}, #{realMoney,jdbcType=DECIMAL}, #{nextUnlockQuantity,jdbcType=DECIMAL}, 
+      #{nextOutstockQuantity,jdbcType=DECIMAL}, #{implStd,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{isDel,jdbcType=CHAR}, #{bore,jdbcType=DECIMAL}, #{inspectionSubId,jdbcType=VARCHAR}, 
+      #{serviceFee,jdbcType=DECIMAL}, #{invoiceFee,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.InsInspectionDetail" >
+  <selectKey keyProperty="inspectionDetailId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_INS_INSPECTION_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="inspectionDetailId != null" >
+        INSPECTION_DETAIL_ID,
+      </if>
+      <if test="sellerId != null" >
+        SELLER_ID,
+      </if>
+      <if test="buyerId != null" >
+        BUYER_ID,
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE,
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID,
+      </if>
+      <if test="instockDate != null" >
+        INSTOCK_DATE,
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID,
+      </if>
+      <if test="materialId != null" >
+        MATERIAL_ID,
+      </if>
+      <if test="surfaceId != null" >
+        SURFACE_ID,
+      </if>
+      <if test="labelThick != null" >
+        LABEL_THICK,
+      </if>
+      <if test="labelWidth != null" >
+        LABEL_WIDTH,
+      </if>
+      <if test="goodsLength != null" >
+        GOODS_LENGTH,
+      </if>
+      <if test="edge != null" >
+        EDGE,
+      </if>
+      <if test="referThick != null" >
+        REFER_THICK,
+      </if>
+      <if test="realWidth != null" >
+        REAL_WIDTH,
+      </if>
+      <if test="trademark != null" >
+        TRADEMARK,
+      </if>
+      <if test="goodsVolume != null" >
+        GOODS_VOLUME,
+      </if>
+      <if test="mnfctId != null" >
+        MNFCT_ID,
+      </if>
+      <if test="netWeight != null" >
+        NET_WEIGHT,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+      <if test="calcMethod != null" >
+        CALC_METHOD,
+      </if>
+      <if test="grade != null" >
+        GRADE,
+      </if>
+      <if test="contractUnitPrice != null" >
+        CONTRACT_UNIT_PRICE,
+      </if>
+      <if test="realUnitPrice != null" >
+        REAL_UNIT_PRICE,
+      </if>
+      <if test="floatPrice != null" >
+        FLOAT_PRICE,
+      </if>
+      <if test="basicPrice != null" >
+        BASIC_PRICE,
+      </if>
+      <if test="storePrice != null" >
+        STORE_PRICE,
+      </if>
+      <if test="contractMoney != null" >
+        CONTRACT_MONEY,
+      </if>
+      <if test="realMoney != null" >
+        REAL_MONEY,
+      </if>
+      <if test="nextUnlockQuantity != null" >
+        NEXT_UNLOCK_QUANTITY,
+      </if>
+      <if test="nextOutstockQuantity != null" >
+        NEXT_OUTSTOCK_QUANTITY,
+      </if>
+      <if test="implStd != null" >
+        IMPL_STD,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="bore != null" >
+        BORE,
+      </if>
+      <if test="inspectionSubId != null" >
+        INSPECTION_SUB_ID,
+      </if>
+      <if test="serviceFee != null" >
+        SERVICE_FEE,
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="inspectionDetailId != null" >
+        #{inspectionDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="sellerId != null" >
+        #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="storageId != null" >
+        #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="instockDate != null" >
+        #{instockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productId != null" >
+        #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="materialId != null" >
+        #{materialId,jdbcType=VARCHAR},
+      </if>
+      <if test="surfaceId != null" >
+        #{surfaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="labelThick != null" >
+        #{labelThick,jdbcType=VARCHAR},
+      </if>
+      <if test="labelWidth != null" >
+        #{labelWidth,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsLength != null" >
+        #{goodsLength,jdbcType=DECIMAL},
+      </if>
+      <if test="edge != null" >
+        #{edge,jdbcType=VARCHAR},
+      </if>
+      <if test="referThick != null" >
+        #{referThick,jdbcType=DECIMAL},
+      </if>
+      <if test="realWidth != null" >
+        #{realWidth,jdbcType=DECIMAL},
+      </if>
+      <if test="trademark != null" >
+        #{trademark,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsVolume != null" >
+        #{goodsVolume,jdbcType=VARCHAR},
+      </if>
+      <if test="mnfctId != null" >
+        #{mnfctId,jdbcType=VARCHAR},
+      </if>
+      <if test="netWeight != null" >
+        #{netWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="calcMethod != null" >
+        #{calcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null" >
+        #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="contractUnitPrice != null" >
+        #{contractUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="realUnitPrice != null" >
+        #{realUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="floatPrice != null" >
+        #{floatPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="basicPrice != null" >
+        #{basicPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="storePrice != null" >
+        #{storePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="contractMoney != null" >
+        #{contractMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="realMoney != null" >
+        #{realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="nextUnlockQuantity != null" >
+        #{nextUnlockQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="nextOutstockQuantity != null" >
+        #{nextOutstockQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="implStd != null" >
+        #{implStd,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="bore != null" >
+        #{bore,jdbcType=DECIMAL},
+      </if>
+      <if test="inspectionSubId != null" >
+        #{inspectionSubId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceFee != null" >
+        #{serviceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_INS_INSPECTION_DETAIL
+    <set >
+      <if test="record.inspectionDetailId != null" >
+        INSPECTION_DETAIL_ID = #{record.inspectionDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sellerId != null" >
+        SELLER_ID = #{record.sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.buyerId != null" >
+        BUYER_ID = #{record.buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null" >
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.storageId != null" >
+        STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.instockDate != null" >
+        INSTOCK_DATE = #{record.instockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.productId != null" >
+        PRODUCT_ID = #{record.productId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.materialId != null" >
+        MATERIAL_ID = #{record.materialId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.surfaceId != null" >
+        SURFACE_ID = #{record.surfaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.labelThick != null" >
+        LABEL_THICK = #{record.labelThick,jdbcType=VARCHAR},
+      </if>
+      <if test="record.labelWidth != null" >
+        LABEL_WIDTH = #{record.labelWidth,jdbcType=VARCHAR},
+      </if>
+      <if test="record.goodsLength != null" >
+        GOODS_LENGTH = #{record.goodsLength,jdbcType=DECIMAL},
+      </if>
+      <if test="record.edge != null" >
+        EDGE = #{record.edge,jdbcType=VARCHAR},
+      </if>
+      <if test="record.referThick != null" >
+        REFER_THICK = #{record.referThick,jdbcType=DECIMAL},
+      </if>
+      <if test="record.realWidth != null" >
+        REAL_WIDTH = #{record.realWidth,jdbcType=DECIMAL},
+      </if>
+      <if test="record.trademark != null" >
+        TRADEMARK = #{record.trademark,jdbcType=VARCHAR},
+      </if>
+      <if test="record.goodsVolume != null" >
+        GOODS_VOLUME = #{record.goodsVolume,jdbcType=VARCHAR},
+      </if>
+      <if test="record.mnfctId != null" >
+        MNFCT_ID = #{record.mnfctId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.netWeight != null" >
+        NET_WEIGHT = #{record.netWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.amount != null" >
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.calcMethod != null" >
+        CALC_METHOD = #{record.calcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.grade != null" >
+        GRADE = #{record.grade,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractUnitPrice != null" >
+        CONTRACT_UNIT_PRICE = #{record.contractUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.realUnitPrice != null" >
+        REAL_UNIT_PRICE = #{record.realUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.floatPrice != null" >
+        FLOAT_PRICE = #{record.floatPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.basicPrice != null" >
+        BASIC_PRICE = #{record.basicPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.storePrice != null" >
+        STORE_PRICE = #{record.storePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="record.contractMoney != null" >
+        CONTRACT_MONEY = #{record.contractMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.realMoney != null" >
+        REAL_MONEY = #{record.realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.nextUnlockQuantity != null" >
+        NEXT_UNLOCK_QUANTITY = #{record.nextUnlockQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="record.nextOutstockQuantity != null" >
+        NEXT_OUTSTOCK_QUANTITY = #{record.nextOutstockQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="record.implStd != null" >
+        IMPL_STD = #{record.implStd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        NOTES = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.bore != null" >
+        BORE = #{record.bore,jdbcType=DECIMAL},
+      </if>
+      <if test="record.inspectionSubId != null" >
+        INSPECTION_SUB_ID = #{record.inspectionSubId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.serviceFee != null" >
+        SERVICE_FEE = #{record.serviceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.invoiceFee != null" >
+        INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_INS_INSPECTION_DETAIL
+    set INSPECTION_DETAIL_ID = #{record.inspectionDetailId,jdbcType=VARCHAR},
+      SELLER_ID = #{record.sellerId,jdbcType=VARCHAR},
+      BUYER_ID = #{record.buyerId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      INSTOCK_DATE = #{record.instockDate,jdbcType=TIMESTAMP},
+      PRODUCT_ID = #{record.productId,jdbcType=VARCHAR},
+      MATERIAL_ID = #{record.materialId,jdbcType=VARCHAR},
+      SURFACE_ID = #{record.surfaceId,jdbcType=VARCHAR},
+      LABEL_THICK = #{record.labelThick,jdbcType=VARCHAR},
+      LABEL_WIDTH = #{record.labelWidth,jdbcType=VARCHAR},
+      GOODS_LENGTH = #{record.goodsLength,jdbcType=DECIMAL},
+      EDGE = #{record.edge,jdbcType=VARCHAR},
+      REFER_THICK = #{record.referThick,jdbcType=DECIMAL},
+      REAL_WIDTH = #{record.realWidth,jdbcType=DECIMAL},
+      TRADEMARK = #{record.trademark,jdbcType=VARCHAR},
+      GOODS_VOLUME = #{record.goodsVolume,jdbcType=VARCHAR},
+      MNFCT_ID = #{record.mnfctId,jdbcType=VARCHAR},
+      NET_WEIGHT = #{record.netWeight,jdbcType=DECIMAL},
+      AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      CALC_METHOD = #{record.calcMethod,jdbcType=VARCHAR},
+      GRADE = #{record.grade,jdbcType=VARCHAR},
+      CONTRACT_UNIT_PRICE = #{record.contractUnitPrice,jdbcType=DECIMAL},
+      REAL_UNIT_PRICE = #{record.realUnitPrice,jdbcType=DECIMAL},
+      FLOAT_PRICE = #{record.floatPrice,jdbcType=DECIMAL},
+      BASIC_PRICE = #{record.basicPrice,jdbcType=DECIMAL},
+      STORE_PRICE = #{record.storePrice,jdbcType=DECIMAL},
+      CONTRACT_MONEY = #{record.contractMoney,jdbcType=DECIMAL},
+      REAL_MONEY = #{record.realMoney,jdbcType=DECIMAL},
+      NEXT_UNLOCK_QUANTITY = #{record.nextUnlockQuantity,jdbcType=DECIMAL},
+      NEXT_OUTSTOCK_QUANTITY = #{record.nextOutstockQuantity,jdbcType=DECIMAL},
+      IMPL_STD = #{record.implStd,jdbcType=VARCHAR},
+      NOTES = #{record.notes,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      BORE = #{record.bore,jdbcType=DECIMAL},
+      INSPECTION_SUB_ID = #{record.inspectionSubId,jdbcType=VARCHAR},
+      SERVICE_FEE = #{record.serviceFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.InsInspectionDetail" >
+    update TB_INS_INSPECTION_DETAIL
+    <set >
+      <if test="sellerId != null" >
+        SELLER_ID = #{sellerId,jdbcType=VARCHAR},
+      </if>
+      <if test="buyerId != null" >
+        BUYER_ID = #{buyerId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="instockDate != null" >
+        INSTOCK_DATE = #{instockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productId != null" >
+        PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      </if>
+      <if test="materialId != null" >
+        MATERIAL_ID = #{materialId,jdbcType=VARCHAR},
+      </if>
+      <if test="surfaceId != null" >
+        SURFACE_ID = #{surfaceId,jdbcType=VARCHAR},
+      </if>
+      <if test="labelThick != null" >
+        LABEL_THICK = #{labelThick,jdbcType=VARCHAR},
+      </if>
+      <if test="labelWidth != null" >
+        LABEL_WIDTH = #{labelWidth,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsLength != null" >
+        GOODS_LENGTH = #{goodsLength,jdbcType=DECIMAL},
+      </if>
+      <if test="edge != null" >
+        EDGE = #{edge,jdbcType=VARCHAR},
+      </if>
+      <if test="referThick != null" >
+        REFER_THICK = #{referThick,jdbcType=DECIMAL},
+      </if>
+      <if test="realWidth != null" >
+        REAL_WIDTH = #{realWidth,jdbcType=DECIMAL},
+      </if>
+      <if test="trademark != null" >
+        TRADEMARK = #{trademark,jdbcType=VARCHAR},
+      </if>
+      <if test="goodsVolume != null" >
+        GOODS_VOLUME = #{goodsVolume,jdbcType=VARCHAR},
+      </if>
+      <if test="mnfctId != null" >
+        MNFCT_ID = #{mnfctId,jdbcType=VARCHAR},
+      </if>
+      <if test="netWeight != null" >
+        NET_WEIGHT = #{netWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="amount != null" >
+        AMOUNT = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="calcMethod != null" >
+        CALC_METHOD = #{calcMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="grade != null" >
+        GRADE = #{grade,jdbcType=VARCHAR},
+      </if>
+      <if test="contractUnitPrice != null" >
+        CONTRACT_UNIT_PRICE = #{contractUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="realUnitPrice != null" >
+        REAL_UNIT_PRICE = #{realUnitPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="floatPrice != null" >
+        FLOAT_PRICE = #{floatPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="basicPrice != null" >
+        BASIC_PRICE = #{basicPrice,jdbcType=DECIMAL},
+      </if>
+      <if test="storePrice != null" >
+        STORE_PRICE = #{storePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="contractMoney != null" >
+        CONTRACT_MONEY = #{contractMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="realMoney != null" >
+        REAL_MONEY = #{realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="nextUnlockQuantity != null" >
+        NEXT_UNLOCK_QUANTITY = #{nextUnlockQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="nextOutstockQuantity != null" >
+        NEXT_OUTSTOCK_QUANTITY = #{nextOutstockQuantity,jdbcType=DECIMAL},
+      </if>
+      <if test="implStd != null" >
+        IMPL_STD = #{implStd,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="bore != null" >
+        BORE = #{bore,jdbcType=DECIMAL},
+      </if>
+      <if test="inspectionSubId != null" >
+        INSPECTION_SUB_ID = #{inspectionSubId,jdbcType=VARCHAR},
+      </if>
+      <if test="serviceFee != null" >
+        SERVICE_FEE = #{serviceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where INSPECTION_DETAIL_ID = #{inspectionDetailId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.InsInspectionDetail" >
+    update TB_INS_INSPECTION_DETAIL
+    set SELLER_ID = #{sellerId,jdbcType=VARCHAR},
+      BUYER_ID = #{buyerId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      INSTOCK_DATE = #{instockDate,jdbcType=TIMESTAMP},
+      PRODUCT_ID = #{productId,jdbcType=VARCHAR},
+      MATERIAL_ID = #{materialId,jdbcType=VARCHAR},
+      SURFACE_ID = #{surfaceId,jdbcType=VARCHAR},
+      LABEL_THICK = #{labelThick,jdbcType=VARCHAR},
+      LABEL_WIDTH = #{labelWidth,jdbcType=VARCHAR},
+      GOODS_LENGTH = #{goodsLength,jdbcType=DECIMAL},
+      EDGE = #{edge,jdbcType=VARCHAR},
+      REFER_THICK = #{referThick,jdbcType=DECIMAL},
+      REAL_WIDTH = #{realWidth,jdbcType=DECIMAL},
+      TRADEMARK = #{trademark,jdbcType=VARCHAR},
+      GOODS_VOLUME = #{goodsVolume,jdbcType=VARCHAR},
+      MNFCT_ID = #{mnfctId,jdbcType=VARCHAR},
+      NET_WEIGHT = #{netWeight,jdbcType=DECIMAL},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      CALC_METHOD = #{calcMethod,jdbcType=VARCHAR},
+      GRADE = #{grade,jdbcType=VARCHAR},
+      CONTRACT_UNIT_PRICE = #{contractUnitPrice,jdbcType=DECIMAL},
+      REAL_UNIT_PRICE = #{realUnitPrice,jdbcType=DECIMAL},
+      FLOAT_PRICE = #{floatPrice,jdbcType=DECIMAL},
+      BASIC_PRICE = #{basicPrice,jdbcType=DECIMAL},
+      STORE_PRICE = #{storePrice,jdbcType=DECIMAL},
+      CONTRACT_MONEY = #{contractMoney,jdbcType=DECIMAL},
+      REAL_MONEY = #{realMoney,jdbcType=DECIMAL},
+      NEXT_UNLOCK_QUANTITY = #{nextUnlockQuantity,jdbcType=DECIMAL},
+      NEXT_OUTSTOCK_QUANTITY = #{nextOutstockQuantity,jdbcType=DECIMAL},
+      IMPL_STD = #{implStd,jdbcType=VARCHAR},
+      NOTES = #{notes,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      BORE = #{bore,jdbcType=DECIMAL},
+      INSPECTION_SUB_ID = #{inspectionSubId,jdbcType=VARCHAR},
+      SERVICE_FEE = #{serviceFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL}
+    where INSPECTION_DETAIL_ID = #{inspectionDetailId,jdbcType=VARCHAR}
+  </update>
+</mapper>

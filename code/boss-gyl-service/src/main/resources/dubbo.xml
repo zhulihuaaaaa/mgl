@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo 
+	http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+	<dubbo:application name="boss-gyl-service" />
+
+	<!-- 使用zookeeper注册中心暴露发现服务地址 -->
+	<dubbo:registry address="zookeeper://127.0.0.1:2181" />
+
+	<!-- 监控中心 -->
+	<!-- <dubbo:monitor protocol="registry"/> -->
+	<!--默认 port="20880"新增一个服务必须修改端口 -->
+	<dubbo:protocol name="dubbo" payload="16777216" port="-1" />
+
+	<!-- 声明需要暴露的服务接口 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.GylService"
+		ref="gylService" />
+	<bean id="gylService" class="com.maigangle.gyl.service.impl.GylServiceImpl" />
+	
+	<!-- 基础设置Service -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.BaseService"
+		ref="baseService" />
+	<bean id="baseService" class="com.maigangle.gyl.service.impl.BaseServiceImpl" />
+	
+	<!-- 入库 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.InstockBillService" ref="instockBillService" />
+	<bean id="instockBillService" class="com.maigangle.gyl.service.impl.InstockBillServiceImpl" />	
+	<!-- 合同 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.ContractService" ref="contractService" />
+	<bean id="contractService" class="com.maigangle.gyl.service.impl.ContractServiceImpl" />	
+	<!-- 赎货 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.RedRedeemBillService" ref="redRedeemBillService" />
+	<bean id="redRedeemBillService" class="com.maigangle.gyl.service.impl.RedRedeemBillServiceImpl" />	
+	<!--库存管理Service-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.InvInventoryService"
+		ref="invInventoryService"/>
+	<bean id="invInventoryService" class="com.maigangle.gyl.service.impl.InvInventoryServiceImpl" />
+	<!--交收管理Service-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.InsInspectionBillService"
+		ref="insInspectionBillService"/>
+	<bean id="insInspectionBillService" class="com.maigangle.gyl.service.impl.InsInspectionBillServiceImpl" />
+	<!--出货-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.OutstockBillService"
+		ref="outstockBillService"/>
+	<bean id="outstockBillService" class="com.maigangle.gyl.service.impl.OutstockBillServiceImpl" />
+	<!--出货货物细节-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.OutstockDetailService"
+		ref="outstockDetailService"/>
+	<bean id="outstockDetailService" class="com.maigangle.gyl.service.impl.OutstockDetailServiceImpl" />
+	<!-- 财务 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.FinanceService"
+		ref="financeService"/>
+	<bean id="financeService" class="com.maigangle.gyl.service.impl.FinanceServiceImpl" />
+	<!--系统基本配置-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.GylBaseService"
+		ref="gylBaseService"/>
+	<bean id="gylBaseService" class="com.maigangle.gyl.service.impl.GylBaseServiceImpl" />
+	<!--系统设置-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.SysService"
+		ref="sysService"/>
+	<bean id="sysService" class="com.maigangle.gyl.service.impl.SysServiceImpl" />
+	<!--审批功能-->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.SysApprovalService"
+		ref="sysApprovalService"/>
+	<bean id="sysApprovalService" class="com.maigangle.gyl.service.impl.SysApprovalServiceImpl" />
+	
+	<dubbo:service interface="com.maigangle.gyl.facade.service.ApproveService"
+		ref="approveService"/>
+	<bean id="approveService" class="com.maigangle.gyl.service.impl.ApproveServiceImpl" />
+	<!-- 流程 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.FlowService"
+		ref="flowService"/>
+	<bean id="flowService" class="com.maigangle.gyl.service.impl.FlowServiceImpl" />
+	<!-- 逾期 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.OverdueService"
+		ref="overdueService"/>
+	<bean id="overdueService" class="com.maigangle.gyl.service.impl.OverdueServiceImpl" />
+	<!-- 期末期初报表 -->
+	<dubbo:service interface="com.maigangle.gyl.facade.service.FeeFinalReportService"
+		ref="feeFinalReportService"/>
+	<bean id="feeFinalReportService" class="com.maigangle.gyl.service.impl.FeeFinalReportServiceImpl" />
+</beans>

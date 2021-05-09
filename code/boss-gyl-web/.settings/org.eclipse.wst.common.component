@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="boss-notify-web">
+        <wb-resource deploy-path="/" source-path="/target/m2e-wtp/web-resources"/>
+        <wb-resource deploy-path="/" source-path="/src/main/webapp" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/java"/>
+        <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/main/resources"/>
+        <dependent-module archiveName="erp-common-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/erp-common/erp-common">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="erp-common-web-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/erp-common-web/erp-common-web">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="boss-gyl-facade-1.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/boss-gyl-facade/boss-gyl-facade">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <property name="context-root" value="boss-notify-web"/>
+        <property name="java-output-path" value="/boss-notify-web/target/classes"/>
+    </wb-module>
+</project-modules>

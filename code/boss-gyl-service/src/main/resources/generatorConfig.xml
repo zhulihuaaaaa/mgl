@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" 
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <classPathEntry 
+      location="D:\zhulihua\Code\mgl\resource\repository\com\oracle\ojdbc6\11.1.0.7.0\ojdbc6-11.1.0.7.0.jar" />
+    <context id="MysqlTables" targetRuntime="MyBatis3">
+<!--          <commentGenerator> -->
+<!--             <property name="suppressAllComments" value="true" /> -->
+<!--         </commentGenerator> -->
+		<commentGenerator type="com.maigangle.gyl.service.generator.MyCommentGenerator"></commentGenerator>
+        <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
+        <jdbcConnection driverClass="oracle.jdbc.driver.OracleDriver"
+            connectionURL="jdbc:oracle:thin:@10.0.0.101:1521:orcl" 
+            userId="scott"
+            password="tiger">
+            <property name="remarksReporting" value="true"></property>
+        </jdbcConnection>
+        <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer true，把JDBC DECIMAL 和 
+            NUMERIC 类型解析为java.math.BigDecimal -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+        <!-- targetProject:自动生成代码的位置 -->  
+        <javaModelGenerator targetPackage="com.maigangle.gyl.facade.entity"
+            targetProject="D:\zhulihua\Code\mglSVN\boss-gyl-facade\src\main\java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->    
+            <property name="enableSubPackages" value="true" />
+            <!-- 从数据库返回的值被清理前后的空格  -->   
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+        <!--xml文件地址  -->
+        <sqlMapGenerator targetPackage="mybatisMapper"
+            targetProject="D:\zhulihua\Code\mglSVN\boss-gyl-service\src\main\resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+        <!--XXXmapper.java地址 -->
+        <javaClientGenerator type="XMLMAPPER"
+            targetPackage="com.maigangle.gyl.service.mapper" targetProject="D:\zhulihua\Code\mglSVN\boss-gyl-service\src\main\java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+        
+        <table  tableName="TB_RED_REDEEM_BILL" domainObjectName="RedRedeemBill"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+      <!--    <table  tableName="TB_OUT_OUTSTOCK_DETAIL" domainObjectName="OutOutstockDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table> -->
+        
+        <!-- tableName:用于自动生成代码的数据库表；domainObjectName:对应于数据库表的javaBean类名 --> 
+       <!--   <table  tableName="TB_RED_REDEEM_DETAIL" domainObjectName="RedRedeemDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>  -->
+        
+        <!--  
+        
+         <table  tableName="TB_OUT_OUTSTOCK_BILL" domainObjectName="OutOutstockBill"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table> -->
+        <!-- 
+       
+         <table  tableName="TB_INV_INVENTORY" domainObjectName="InvInventory"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_INS_INSPECTION_SUB" domainObjectName="InsInspectionSub"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_INS_INSPECTION_DETAIL" domainObjectName="InsInspectionDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_INS_INSPECTION_BILL" domainObjectName="InsInspectionBill"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_IN_INSTOCK_BILL" domainObjectName="InInstockBill"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_IN_CONTRACT_REMIT_DETAIL" domainObjectName="InContractRemitDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_IN_APPLY_REMIT_DETAIL" domainObjectName="InApplyRemitDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_FEE_INVOICE" domainObjectName="FeeInvoice"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_FEE_FINANCE_BILL" domainObjectName="FeeFinanceBill"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_FEE_DEPOSIT_DETAIL" domainObjectName="FeeDepositDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+         
+        <table  tableName="TB_FEE_DEPOSIT_ACCOUNT" domainObjectName="FeeDepositAccount"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+        <table  tableName="TB_FEE_CONTRACT_BALANCE" domainObjectName="FeeContractBalance"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+        <table  tableName="TB_FEE_BALANCE_DETAIL" domainObjectName="FeeBalanceDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_FEE_BALANCE" domainObjectName="FeeBalance"
+            enableCountByExample="true" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_CON_PAYMENT_DETAIL" domainObjectName="ConPaymentDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_CON_DEPOSIT_DETAIL" domainObjectName="ConDepositDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_CON_CONTRACT_DETAIL" domainObjectName="ConContractDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+        <table  tableName="TB_CON_CONTRACT" domainObjectName="ConContract"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_BASE_PRODUCT" domainObjectName="BaseProduct"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_BASE_PROCESS" domainObjectName="BaseProcess"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+         <table  tableName="TB_BASE_MARKER" domainObjectName="BaseMarker"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+     
+        <table  tableName="TB_BASE_MARGIN" domainObjectName="BaseMargin"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+        <table  tableName="TB_BASE_INFO" domainObjectName="BaseInfo"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table>
+        
+        <table  tableName="TB_BASE_COST" domainObjectName="BaseCost"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table> -->
+        <!-- <table  tableName="TB_GRID_CONFIG" domainObjectName="GridConfig"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table> -->
+        <!-- <table  tableName="TB_ATTACH" domainObjectName="Attach"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table> -->
+        <!-- <table  tableName="TB_FEE_DEPOSIT_DETAIL" domainObjectName="FeeDepositDetail"
+            enableCountByExample="false" enableUpdateByExample="true"
+            enableDeleteByExample="false" enableSelectByExample="true"
+            selectByExampleQueryId="false">
+        </table> -->
+    </context>
+</generatorConfiguration> 

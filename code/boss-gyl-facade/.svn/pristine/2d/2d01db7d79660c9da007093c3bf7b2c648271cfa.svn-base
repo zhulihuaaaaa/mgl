@@ -1,0 +1,35 @@
+package com.maigangle.gyl.facade.entity.dto;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.maigangle.gyl.facade.entity.BaseProduct;
+import com.maigangle.gyl.facade.entity.FeeInvoiceDetail;
+
+/**
+ * 发票详情筛选条件Dto
+ */
+public class InvoiceDetailDto extends FeeInvoiceDetail implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7634257290675791123L;
+	
+	private BaseProduct product;
+
+	public BaseProduct getProduct() {
+		return product;
+	}
+
+	public void setProduct(BaseProduct product) {
+		this.product = product;
+	}
+	
+	
+
+	
+}

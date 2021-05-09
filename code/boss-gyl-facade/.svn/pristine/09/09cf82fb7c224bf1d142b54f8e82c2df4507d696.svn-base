@@ -1,0 +1,22 @@
+package com.maigangle.gyl.facade.entity.vo;
+
+import java.io.Serializable;
+
+import com.maigangle.gyl.facade.entity.FeeInvoiceDetail;
+
+/**
+ * 发票筛选条件Vo
+ * @author zlh
+ * @since  2018年2月6日 - 上午9:07:03
+ * @version 1.0
+ */
+public class InvoiceGoodsConditionVo extends FeeInvoiceDetail implements Serializable {
+
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3160738606028809456L;
+	
+	
+}

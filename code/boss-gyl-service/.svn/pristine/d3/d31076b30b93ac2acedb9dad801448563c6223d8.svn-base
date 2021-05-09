@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.InsInspectionDetailExtMapper" >
+	<sql id="Base_Column_List">
+		INSPECTION_DETAIL_ID, SELLER_ID, BUYER_ID, BUSINESS_TYPE, STORAGE_ID, INSTOCK_DATE,
+		PRODUCT_ID, MATERIAL_ID, SURFACE_ID, LABEL_THICK, LABEL_WIDTH,
+		GOODS_LENGTH, EDGE,
+		REFER_THICK, REAL_WIDTH, TRADEMARK, GOODS_VOLUME, MNFCT_ID, NET_WEIGHT, AMOUNT,
+		CALC_METHOD,
+		GRADE, CONTRACT_UNIT_PRICE, REAL_UNIT_PRICE, FLOAT_PRICE, BASIC_PRICE,
+		STORE_PRICE,
+		CONTRACT_MONEY, REAL_MONEY, NEXT_UNLOCK_QUANTITY, NEXT_OUTSTOCK_QUANTITY, IMPL_STD,
+		NOTES, IS_DEL, BORE, INSPECTION_SUB_ID
+	</sql>
+ 	<!-- 批量添加 -->
+	<insert id="BathList" parameterType="java.util.List"
+		keyProperty="inspectionDetailId">
+		insert into
+		TB_INS_INSPECTION_DETAIL
+		(
+		<include refid="Base_Column_List"></include>
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			((select sys_guid() from dual), 
+			#{item.sellerId,jdbcType=VARCHAR},
+			#{item.buyerId,jdbcType=VARCHAR},
+			#{item.businessType,jdbcType=VARCHAR},
+			#{item.storageId,jdbcType=VARCHAR},
+			#{item.instockDate,jdbcType=TIMESTAMP},
+			#{item.productId,jdbcType=VARCHAR},
+			#{item.materialId,jdbcType=VARCHAR},
+			#{item.surfaceId,jdbcType=VARCHAR},
+			#{item.labelThick,jdbcType=VARCHAR},
+			#{item.labelWidth,jdbcType=VARCHAR},
+			#{item.goodsLength,jdbcType=DECIMAL},
+			#{item.edge,jdbcType=VARCHAR}, 
+			#{item.referThick,jdbcType=DECIMAL},
+			#{item.realWidth,jdbcType=DECIMAL},
+			#{item.trademark,jdbcType=VARCHAR},
+			#{item.goodsVolume,jdbcType=VARCHAR},
+			#{item.mnfctId,jdbcType=VARCHAR},
+			#{item.netWeight,jdbcType=DECIMAL},
+			 #{item.amount,jdbcType=DECIMAL},
+			#{item.calcMethod,jdbcType=VARCHAR},
+			#{item.grade,jdbcType=VARCHAR}, 
+			#{item.contractUnitPrice,jdbcType=DECIMAL},
+			#{item.realUnitPrice,jdbcType=DECIMAL},
+			#{item.floatPrice,jdbcType=DECIMAL},
+			#{item.basicPrice,jdbcType=DECIMAL},
+			#{item.storePrice,jdbcType=DECIMAL},
+			#{item.contractMoney,jdbcType=DECIMAL},
+			#{item.realMoney,jdbcType=DECIMAL},
+			#{item.nextUnlockQuantity,jdbcType=DECIMAL},
+			#{item.nextOutstockQuantity,jdbcType=DECIMAL},
+			#{item.implStd,jdbcType=VARCHAR}, 
+			#{item.notes,jdbcType=VARCHAR},
+			#{item.isDel,jdbcType=CHAR},
+			#{item.bore,jdbcType=DECIMAL},
+			#{item.inspectionSubId,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+	
+	<update id="BathUpdate" parameterType="java.util.List">
+	 <foreach collection="list" item="i" index="index" open="" close="" >
+			UPDATE TB_INS_INSPECTION_DETAIL detail
+			<set>
+			 	<if test="i.realMoney !=null">
+                   detail.REAL_MONEY = #{i.realMoney,jdbcType=DECIMAL},
+              	</if>
+				<if test="i.realUnitPrice !=null">
+                  detail.REAL_UNIT_PRICE = #{i.realUnitPrice,jdbcType=DECIMAL}
+                </if>
+			</set>
+			WHERE
+			detail.INSPECTION_DETAIL_ID = #{i.inspectionDetailId,jdbcType=VARCHAR}
+		</foreach>	
+	</update>
+	
+	<resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.vo.InvoiceGoodsConditionVo" >
+   		  	<id column="ID" property="id" jdbcType="VARCHAR" />
+   		  	<result column="CONTRACT_CODE" property="contractCode" jdbcType="VARCHAR" />
+   		  	<result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+		    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+		    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+		    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+		    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+		    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+		    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+		    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="VARCHAR" />
+		    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+		    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+		    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+		    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+		    <result column="GOODS_VOLUME" property="volume" jdbcType="VARCHAR" />
+		    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+		    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+		    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+		    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+		    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+		    <result column="CONTRACT_UNIT_PRICE" property="contractUnitPrice" jdbcType="DECIMAL" />
+  </resultMap>
+  
+	<select id="getInvoiceGoodsIn" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.dto.InvoiceGoodsConditionDto">
+	SELECT
+		contract.CONTRACT_CODE,
+	    ins_bill.CONTRACT_ID,
+		ins_detail.INSPECTION_DETAIL_ID ID,
+		ins_detail.STORAGE_ID,
+		ins_detail.PRODUCT_ID,
+		ins_detail.MATERIAL_ID,
+		ins_detail.SURFACE_ID,
+		ins_detail.LABEL_THICK,
+		ins_detail.LABEL_WIDTH,
+		ins_detail.GOODS_LENGTH,
+		ins_detail.EDGE,
+		ins_detail.REFER_THICK,
+		ins_detail.REAL_WIDTH,
+		ins_detail.TRADEMARK,
+		ins_detail.GOODS_VOLUME,
+		ins_detail.MNFCT_ID,
+		ins_detail.NET_WEIGHT,
+		ins_detail.AMOUNT,
+		ins_detail.CALC_METHOD,
+		ins_detail.GRADE,
+		ins_detail.CONTRACT_UNIT_PRICE
+	FROM
+		TB_INS_INSPECTION_DETAIL ins_detail
+		 JOIN TB_INS_INSPECTION_SUB ins_sub ON ( ins_detail.INSPECTION_SUB_ID = ins_sub.INSPECTION_SUB_ID )
+		 JOIN TB_INS_INSPECTION_BILL ins_bill ON ( ins_sub.INSPECTION_ID = ins_bill.INSPECTION_BILL_ID )
+		 JOIN TB_IN_INSTOCK_BILL instock ON ( ins_bill.INSTOCK_ID = instock.INSTOCK_BILL_ID AND instock.INSTOCK_STATUS = 'B' )
+		 JOIN TB_FEE_INVOICE_DETAIL invoice_detail ON ( ins_detail.INSPECTION_DETAIL_ID NOT IN invoice_detail.RELATED_ID )
+		 JOIN TB_FEE_INVOICE invoice ON ( invoice_detail.INVOICE_ID = invoice.INVOICE_ID AND invoice.INVOICE_TYPE = 0 )
+		 JOIN TB_CON_CONTRACT contract ON (ins_bill.CONTRACT_ID = contract.CONTRACT_ID)
+	WHERE ins_bill.CONTRACT_ID = ins_bill.CONTRACT_ID
+	    <if test="dto.productId != null and dto.productId !=''" >
+	      AND ins_detail.productId = #{dto.productId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.meterialId != null and dto.meterialId !=''" >
+	      AND ins_detail.meterialId = #{dto.meterialId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.goodsVolume != null and dto.goodsVolume !=''" >
+	      AND ins_detail.goodsVolume = #{dto.goodsVolume,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.mnfctId != null and dto.mnfctId !=''" >
+	      AND ins_detail.mnfctId = #{dto.mnfctId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.surfaceId != null and dto.surfaceId !=''" >
+	      AND ins_detail.surfaceId = #{dto.surfaceId,jdbcType=VARCHAR}
+	    </if>
+	    <if test="dto.storageId != null and dto.storageId !=''" >
+	      AND ins_detail.storageId = #{dto.storageId,jdbcType=VARCHAR}
+	    </if>
+	</select>
+	
+</mapper>

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.OverdueDeferMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.OverdueDefer" >
+    <id column="OVERDUE_DEFER_ID" property="overdueDeferId" jdbcType="VARCHAR" />
+    <result column="OVERDUE_DAYS" property="overdueDays" jdbcType="DECIMAL" />
+    <result column="DEFER_DAYS" property="deferDays" jdbcType="DECIMAL" />
+    <result column="COMMISSION_RATE" property="commissionRate" jdbcType="DECIMAL" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    OVERDUE_DEFER_ID, OVERDUE_DAYS, DEFER_DAYS, COMMISSION_RATE, AUDIT_STATUS, NOTES, 
+    CREATE_USER, CREATE_DATE, CONTRACT_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.OverdueDeferExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_OVERDUE_DEFER
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_OVERDUE_DEFER
+    where OVERDUE_DEFER_ID = #{overdueDeferId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_OVERDUE_DEFER
+    where OVERDUE_DEFER_ID = #{overdueDeferId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.OverdueDefer" >
+    <selectKey keyProperty="overdueDeferId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_OVERDUE_DEFER (OVERDUE_DEFER_ID, OVERDUE_DAYS, DEFER_DAYS, 
+      COMMISSION_RATE, AUDIT_STATUS, NOTES, 
+      CREATE_USER, CREATE_DATE, CONTRACT_ID
+      )
+    values (#{overdueDeferId,jdbcType=VARCHAR}, #{overdueDays,jdbcType=DECIMAL}, #{deferDays,jdbcType=DECIMAL}, 
+      #{commissionRate,jdbcType=DECIMAL}, #{auditStatus,jdbcType=VARCHAR}, #{notes,jdbcType=VARCHAR}, 
+      #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{contractId,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.OverdueDefer" >
+    <selectKey keyProperty="overdueDeferId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_OVERDUE_DEFER
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="overdueDeferId != null" >
+        OVERDUE_DEFER_ID,
+      </if>
+      <if test="overdueDays != null" >
+        OVERDUE_DAYS,
+      </if>
+      <if test="deferDays != null" >
+        DEFER_DAYS,
+      </if>
+      <if test="commissionRate != null" >
+        COMMISSION_RATE,
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="overdueDeferId != null" >
+        #{overdueDeferId,jdbcType=VARCHAR},
+      </if>
+      <if test="overdueDays != null" >
+        #{overdueDays,jdbcType=DECIMAL},
+      </if>
+      <if test="deferDays != null" >
+        #{deferDays,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionRate != null" >
+        #{commissionRate,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_OVERDUE_DEFER
+    <set >
+      <if test="record.overdueDeferId != null" >
+        OVERDUE_DEFER_ID = #{record.overdueDeferId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.overdueDays != null" >
+        OVERDUE_DAYS = #{record.overdueDays,jdbcType=DECIMAL},
+      </if>
+      <if test="record.deferDays != null" >
+        DEFER_DAYS = #{record.deferDays,jdbcType=DECIMAL},
+      </if>
+      <if test="record.commissionRate != null" >
+        COMMISSION_RATE = #{record.commissionRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.auditStatus != null" >
+        AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        NOTES = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_OVERDUE_DEFER
+    set OVERDUE_DEFER_ID = #{record.overdueDeferId,jdbcType=VARCHAR},
+      OVERDUE_DAYS = #{record.overdueDays,jdbcType=DECIMAL},
+      DEFER_DAYS = #{record.deferDays,jdbcType=DECIMAL},
+      COMMISSION_RATE = #{record.commissionRate,jdbcType=DECIMAL},
+      AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      NOTES = #{record.notes,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.OverdueDefer" >
+    update TB_OVERDUE_DEFER
+    <set >
+      <if test="overdueDays != null" >
+        OVERDUE_DAYS = #{overdueDays,jdbcType=DECIMAL},
+      </if>
+      <if test="deferDays != null" >
+        DEFER_DAYS = #{deferDays,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionRate != null" >
+        COMMISSION_RATE = #{commissionRate,jdbcType=DECIMAL},
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where OVERDUE_DEFER_ID = #{overdueDeferId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.OverdueDefer" >
+    update TB_OVERDUE_DEFER
+    set OVERDUE_DAYS = #{overdueDays,jdbcType=DECIMAL},
+      DEFER_DAYS = #{deferDays,jdbcType=DECIMAL},
+      COMMISSION_RATE = #{commissionRate,jdbcType=DECIMAL},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      NOTES = #{notes,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR}
+    where OVERDUE_DEFER_ID = #{overdueDeferId,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,148 @@
+package com.maigangle.gyl.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import com.alibaba.dubbo.config.annotation.Service;
+import com.github.pagehelper.PageInfo;
+import com.maigangle.gyl.facade.entity.dto.OverdueDto;
+import com.maigangle.gyl.facade.service.OverdueService;
+import com.maigangle.gyl.facade.utils.PageUtils;
+import com.maigangle.gyl.service.mapper.ext.ConContractExtMapper;
+
+
+/**  
+ * 逾期设置Service实现
+ * @author zlh
+ * @since 2017年11月28日 下午1:27:00 
+ * @version 1.0 
+ */
+@Service
+@Transactional
+public class OverdueServiceImpl extends GylServiceImpl implements OverdueService {
+	@Autowired
+	private ConContractExtMapper conContractExtMapper;
+	
+	/* 
+	 * 查询所有逾期单
+	 */
+	@Override
+	public List<OverdueDto> getOverdue(OverdueDto dto,String orderByClause,boolean isAccuracy) {
+		if (dto == null) {
+			return null;
+		}
+		PageUtils<OverdueDto> page = new PageUtils<OverdueDto>(1, 0, dto);
+		if (!StringUtils.isEmpty(orderByClause)) {
+			page.setOrderByClause(orderByClause);
+		}
+		PageInfo<OverdueDto> info = this.getOverdue(page, isAccuracy);
+		return info == null ? null : info.getList();
+	}
+
+	/* 
+	 * 查询所有逾期单带分页
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public PageInfo<OverdueDto> getOverdue(PageUtils<OverdueDto> page, boolean isAccuracy) {
+		if (page == null){
+			return new PageInfo<OverdueDto>(); 
+		}
+		setPageAndOrderBy(page);
+		OverdueDto dto = page.getDto();
+		List<OverdueDto> list = conContractExtMapper.selectOverdue(dto.getContractId(),dto.getContractPeriod(),dto.getOverdue(),dto.getSignStartDate(),dto.getSignEndDate());
+		PageInfo<OverdueDto> info = new PageInfo<OverdueDto>(list);
+		return info;
+	}
+	
+	/* 
+	 * 根据id查询逾期单
+	 */
+	@Override
+	public OverdueDto getInstockBillById(String instockBillId) {
+		OverdueDto dto = new OverdueDto();
+		//dto.setInstockBillId(instockBillId);
+		List<OverdueDto> list = this.getOverdue(dto,"",true);
+		if (list != null && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	/* 
+	 * 根据合同查询逾期单
+	 */
+	@Override
+	public OverdueDto getInstockBillByContractId(String contractId) {
+		OverdueDto dto = new OverdueDto();
+		dto.setContractId(contractId);
+		List<OverdueDto> list = this.getOverdue(dto,"",true);
+		if (list != null && !list.isEmpty()) {
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	/**
+	 * 根据业务类型查询逾期单
+	 * @param instockCode
+	 * @return
+	 */
+	public List<OverdueDto> getInstockBillByBusinessType(String businessType){
+		OverdueDto dto = new OverdueDto();
+		//dto.setBusinessType(businessType);;
+		List<OverdueDto> list = this.getOverdue(dto,"desc",true);
+		if (list != null && !list.isEmpty()) {
+			return list;
+		}
+		return null;
+	}
+
+
+
+//	/**
+//	 * 生成InStockBill的查询条件
+//	 * 没有可填项
+//	 * @param dto
+//	 * @return InStockBillExample
+//	 */
+//	private InInstockBillExample getInStockBillCriteria(overdueDto dto, boolean isAccuracy) {
+//		InInstockBillExample example = new InInstockBillExample();
+//		if (dto != null) {
+//			InInstockBillExample.Criteria criteria = example.createCriteria();
+//			if(dto.getInstockBillId() != null) {
+//				criteria.andInstockBillIdEqualTo(dto.getInstockBillId());
+//			}
+//			// 跟据合同id 来查询出逾期单
+//			if(!StringUtils.isEmpty(dto.getContractId())) {
+//				criteria.andContractIdEqualTo(dto.getContractId());
+//			}
+//			if (!StringUtils.isEmpty(dto.getInstockCode())) {
+//				if (isAccuracy) {
+//					criteria.andInstockCodeEqualTo(dto.getInstockCode());
+//				} else {
+//					criteria.andInstockCodeLike("%" + dto.getInstockCode() + "%");
+//				}
+//			}
+//			
+//			if (!StringUtils.isEmpty(dto.getCreateUser())) {
+//				criteria.andCreateUserLike("%" + dto.getCreateUser() + "%");
+//			}
+//			if (!StringUtils.isEmpty(dto.getInstockStatus())) {
+//				if (isAccuracy) {
+//					criteria.andInstockStatusEqualTo(dto.getInstockStatus());
+//				} else {
+//					criteria.andInstockStatusLike("%" + dto.getInstockStatus() + "%");
+//				}
+//			}
+//			if (!StringUtils.isEmpty(dto.getBusinessType())) {
+//				criteria.andBusinessTypeEqualTo(dto.getBusinessType());
+//			}
+//		}
+//		return example;
+//	}
+
+}

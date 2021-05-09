@@ -1,0 +1,30 @@
+package com.maigangle.gyl.facade.entity.vo;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.maigangle.gyl.facade.entity.ConContract;
+import com.maigangle.gyl.facade.entity.FeeContractBalance;
+/**
+ * 用于接收合同对账信息的参数
+ * @author 倪凯
+ *
+ */
+public class ContractBalanceVo extends FeeContractBalance{
+	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6094930793921709913L;
+
+	
+	
+	
+	
+	
+}

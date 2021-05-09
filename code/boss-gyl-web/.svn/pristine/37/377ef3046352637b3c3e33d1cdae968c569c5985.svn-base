@@ -1,0 +1,558 @@
+package com.maigangle.gyl.web.controller.outstock;
+
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
+import com.maigangle.erp.common.annotation.Privilege;
+import com.maigangle.erp.common.log.EnumMonitorLog;
+import com.maigangle.erp.common.log.LogBatchUtil;
+import com.maigangle.gyl.facade.entity.BaseCompany;
+import com.maigangle.gyl.facade.entity.BaseProduct;
+import com.maigangle.gyl.facade.entity.OutOutstockBill;
+import com.maigangle.gyl.facade.entity.api.CrmClient;
+import com.maigangle.gyl.facade.entity.api.DictMallDepot;
+import com.maigangle.gyl.facade.entity.api.DictMallMnfct;
+import com.maigangle.gyl.facade.entity.api.PrivUser;
+import com.maigangle.gyl.facade.entity.dto.ConContractDto;
+import com.maigangle.gyl.facade.entity.dto.OutStockBillDto;
+import com.maigangle.gyl.facade.entity.excel.ConContractDetailExcel;
+import com.maigangle.gyl.facade.entity.excel.ConContractExcel;
+import com.maigangle.gyl.facade.entity.excel.OutOutstockBillExcel;
+import com.maigangle.gyl.facade.entity.excel.OutOutstockDetailExcel;
+import com.maigangle.gyl.facade.entity.vo.ConContractDetailVo;
+import com.maigangle.gyl.facade.entity.vo.ConContractVo;
+import com.maigangle.gyl.facade.entity.vo.OutOutstockDetailVo;
+import com.maigangle.gyl.facade.entity.vo.RedRedeemGoodsVo;
+import com.maigangle.gyl.facade.enums.OutstockStateEnum;
+import com.maigangle.gyl.facade.service.BaseService;
+import com.maigangle.gyl.facade.service.InvInventoryService;
+import com.maigangle.gyl.facade.service.OutstockBillService;
+import com.maigangle.gyl.facade.service.OutstockDetailService;
+import com.maigangle.gyl.facade.service.RedRedeemBillService;
+import com.maigangle.gyl.facade.utils.PageUtils;
+import com.maigangle.gyl.web.controller.GylBaseWeb;
+import com.maigangle.gyl.web.util.AjaxResult;
+import com.maigangle.gyl.web.util.MessageCode;
+
+import cn.afterturn.easypoi.excel.ExcelExportUtil;
+import cn.afterturn.easypoi.excel.entity.ExportParams;
+import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
+
+
+
+/**  
+ * 出库主单controller
+ * @author zlh
+ * @since 2017年12月4日 上午9:09:13 
+ * @version 1.0 
+ */
+@Controller
+@RequestMapping("/outstockBill")
+public class OutstockBillController extends GylBaseWeb {
+	@Autowired
+	OutstockBillService outstockBillService;
+	@Autowired
+	InvInventoryService invInventoryService;
+	@Autowired
+	OutstockDetailService outstockDetailService;
+	@Autowired
+	BaseService baseService;
+	@Autowired
+	RedRedeemBillService redRedeemBillService;
+	
+	@RequestMapping("/main")
+	public ModelAndView main() {
+		ModelAndView modelAndView = new ModelAndView("/outstock/outstockBillIndex");
+		return modelAndView;
+	}
+	@RequestMapping("/detail")
+	public ModelAndView detail() {
+		ModelAndView modelAndView = new ModelAndView("/outstock/outstockBillDetail");
+		// 可在此向页面赋值
+		return modelAndView;
+	}
+	/**
+	 * 新增出库单
+	 * @param request
+	 * @return
+	 */
+	@Privilege(key = "GYL_OUTSTOCKBILL_ADD")
+	@RequestMapping("/save")
+	@ResponseBody
+	public AjaxResult save(HttpServletRequest request,@RequestBody RedRedeemGoodsVo vo) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "新增出库单", "操作人ID为：" + getLoginName(request) + "新增出库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			OutOutstockBill entity = vo.getEntity();
+			entity.setBusinessType("A");
+			
+			
+			Map<String, Object> result = getCurrentPrivUser(request);
+			if (!(boolean)result.get("isSuccess")) {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "获取当前用户数据异常," + result.get("msg"));
+			}
+			PrivUser privUser = (PrivUser) result.get("data");
+			entity.setCreateUser(privUser.getUserName());
+			
+			OutOutstockBill bill = outstockBillService.addOutstockBill(entity);
+			//新增至提货明细
+			return AjaxResult.createSuccessResultWithCode(MessageCode.SAVE_SUCCESS,outstockDetailService.addOutstockDetail(vo.getDetail(),bill.getOutstockBillId()));
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "新增出库单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.SAVE_FAILED);
+	}
+	/**
+	 * 更新出库单
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/update")
+	@ResponseBody
+	public AjaxResult updateOutstockBill(HttpServletRequest request, @RequestBody OutOutstockBill outOutstockBill) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "更新出库单", "操作人ID为：" + getLoginName(request) + "更新出库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			String checkMsg = this.checkObject(outOutstockBill);
+			if (StringUtils.isEmpty(checkMsg)) {
+				return AjaxResult.createSuccessResultWithCode(MessageCode.UPDATE_SUCCESS,outstockBillService.updateOutstockBill(outOutstockBill));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED, checkMsg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "更新出库单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED);
+	}
+	
+	/**
+	 * 删除出库单
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxResult delete(HttpServletRequest request,String outstockBillId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "删除出库单", "操作人ID为：" + getLoginName(request) + "删除出库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if (!StringUtils.isEmpty(outstockBillId)) {
+				if (outstockBillService.deleteOutstockBill(outstockBillId) > 0)
+					return AjaxResult.createSuccessResultWithCode(MessageCode.UPDATE_SUCCESS);
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.DELETE_FAILED, "删除出库-出库单主键id为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "删除出库单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.DELETE_FAILED);
+	}
+	
+	/**
+	 * 查询所有出库单
+	 * @param request
+	 * @return
+	 */
+	@RequestMapping("/findAll")
+	@ResponseBody
+	public AjaxResult findAll(HttpServletRequest request,PageUtils<OutStockBillDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "查询所有出库单", "操作人ID为：" + getLoginName(request) + "查询所有出库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if (!StringUtils.isEmpty(page.getDto().getOutOutstockBill().getOutstockBillId())) {
+				return AjaxResult.createSuccessResult(outstockBillService.getAllOutstockBill(page.getDto(),page.getOrderByClause(), false));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "查询所有出库单-出库单dto为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "查询所有出库单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+	
+	/**
+	 * 查询所有出库单带分页
+	 * @param request
+	 * @param dto
+	 * @return
+	 */
+	@RequestMapping("/findPage")
+	@ResponseBody
+	public AjaxResult findPage(HttpServletRequest request,@RequestBody PageUtils<OutStockBillDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "查询所有出库单带分页", "操作人ID为：" + getLoginName(request) + "查询所有出库单带分页",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			PageInfo<OutStockBillDto> pages = outstockBillService.getAllOutstockBill(page, false);
+			List<OutStockBillDto> list = pages.getList();
+			for(int i = 0;i < list.size();i++) {
+				//添加客户名称
+				Map<String, Object> resultBuyer = getCrmClient(request, list.get(i).getOutOutstockBill().getCustomerId());
+				if (!(boolean)resultBuyer.get("isSuccess")) {
+					return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据客户ID获取客户对象," + resultBuyer.get("msg"));
+				}
+				CrmClient crmClientBuyer = (CrmClient) resultBuyer.get("data");
+				list.get(i).setClientName(crmClientBuyer.getClientName());
+				//仓库名
+				Map<String, Object> storage = getDictMallDepot(request, list.get(i).getOutOutstockBill().getStorageId());
+				if (!(boolean)storage.get("isSuccess")) {
+					return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据仓库名ID获取客户对象," + storage.get("msg"));
+				}
+				DictMallDepot dictMallDepot = (DictMallDepot) storage.get("data");
+				list.get(i).setStorageName(dictMallDepot.getDptName());
+				//提货状态
+				String stateName = OutstockStateEnum.getValueByKey(list.get(i).getOutOutstockBill().getOutstockState());
+				list.get(i).setOutstockStateName(stateName);
+			}
+			return AjaxResult.createSuccessResult(pages);
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "查询所有出库单带分页",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);	
+	}
+	
+	/**
+	 * 根据id查询出库单
+	 * @param request
+	 * @param id
+	 * @return 
+	 */
+	@RequestMapping("/findById")
+	@ResponseBody
+	public AjaxResult getOutstockBillByCreateUser(HttpServletRequest request, String outstockBillId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据id查询出库单", "操作人ID为：" + getLoginName(request) + "根据id查询出库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if (!StringUtils.isEmpty(outstockBillId)) {
+				return AjaxResult.createSuccessResult(outstockBillService.getOutstockBillById(outstockBillId));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据id查询出库单-出库单Id为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据id查询出库单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);	
+	}
+	
+	/**
+	 * 根据合同id查询出库单
+	 * @param request
+	 * @param id
+	 * @return 
+	 */
+	@RequestMapping("/findByContractId")
+	@ResponseBody
+	public AjaxResult findByContractId(HttpServletRequest request, @RequestParam String contractId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据合同id查询出库单", "操作人ID为：" + getLoginName(request) + "根据id查询出库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if (!StringUtils.isEmpty(contractId)) {
+				return AjaxResult.createSuccessResult(outstockBillService.getOutstockBillByContractId(contractId));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据合同id查询出库单-出库单Id为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据合同id查询出库单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);	
+	}
+	
+	/**
+	 * 根据 客户id，仓库 id 查询库存List
+	 * @param request
+	 * @param 
+	 * @return List
+	 */
+	@RequestMapping("/getStorageLists")
+	@ResponseBody
+	public AjaxResult getStorageLists(HttpServletRequest request,String buyerId, String storageId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据 客户id，仓库 id 查询库存List", "操作人ID为：" + getLoginName(request) + "根据 客户id，仓库 id 查询库存List",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if (!StringUtils.isEmpty(buyerId) && !StringUtils.isEmpty(storageId)) {
+				return AjaxResult.createSuccessResult(invInventoryService.getStockByBuyerIdAndStorageId(buyerId, storageId));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据 客户id，仓库 id 查询库存List",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);	
+	}
+	
+	/**
+	 * 根据 客户id，仓库 id 查询库存List
+	 * @param request
+	 * @param 
+	 * @return List
+	 */
+	@RequestMapping("/getStorageList")
+	@ResponseBody
+	public AjaxResult getStorageList(HttpServletRequest request, String buyerId, String storageId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据 客户id，仓库 id 查询库存List", "操作人ID为：" + getLoginName(request) + "根据 客户id，仓库 id 查询库存List",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if (!StringUtils.isEmpty(buyerId) && !StringUtils.isEmpty(storageId)) {
+				//查库存
+				List<RedRedeemGoodsVo> list = redRedeemBillService.getRedRedeemBillByClientIdAndStorageId(buyerId, storageId);
+				//添加
+				for(int i=0;i<list.size();i++) {
+					BaseProduct base = baseService.getBaseProductById(list.get(i).getProductId());
+					list.get(i).setBaseProduct(base);
+					//买家
+					Map<String, Object> resultBuyer = getCrmClient(request, list.get(i).getBuyerId());
+					if (!(boolean)resultBuyer.get("isSuccess")) {
+						return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据买家ID获取客户对象," + resultBuyer.get("msg"));
+					}
+					CrmClient crmClientBuyer = (CrmClient) resultBuyer.get("data");
+					list.get(i).setBuyerId(crmClientBuyer.getClientName());
+					//仓库名
+					Map<String, Object> storage = getDictMallDepot(request, list.get(i).getStorageId());
+					if (!(boolean)storage.get("isSuccess")) {
+						return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据仓库名ID获取客户对象," + storage.get("msg"));
+					}
+					DictMallDepot dictMallDepot = (DictMallDepot) storage.get("data");
+					list.get(i).setStorageName(dictMallDepot.getDptName());
+					//厂家
+					if (!StringUtils.isEmpty(list.get(i).getMnfctId())) {
+						Map<String, Object> Mnfct = getDictMallMnfct(request, list.get(i).getMnfctId());
+						if (!(boolean)storage.get("isSuccess")) {
+							return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据厂家ID获取客户对象," + storage.get("msg"));
+						}
+						DictMallMnfct dictMallMnfct = (DictMallMnfct) Mnfct.get("data");
+						list.get(i).setMnfctId(dictMallMnfct.getMnfctName());
+					}
+				}
+				return AjaxResult.createSuccessResult(list);
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据 客户id，仓库 id 查询库存List",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);	
+	}
+	
+	/**
+	 * 必填项检查
+	 * @param OutstockBill
+	 * @return
+	 */
+	private String checkObject(OutOutstockBill outOutstockBill) {
+		if (outOutstockBill != null) {
+			String Str = "不能为空";
+			return "";
+		}
+		return "出库对象不能为空";
+	}
+	
+	/**
+	 * 导出提货Excel
+	 * @param request
+	 * @param response
+	 * @return 
+	 * @throws Exception
+	 */
+	@Privilege(key = "GYL_OUTSTOCKBILL_EXCEL")
+	@RequestMapping("/exportExcel")
+	@ResponseBody
+    public void download(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		
+		// 告诉浏览器用什么软件可以打开此文件
+		response.setHeader("content-Type", "application/vnd.ms-excel");
+		// 下载文件的默认名称
+		response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode("提货数据表","UTF-8") + ".xls");
+		//编码
+		response.setCharacterEncoding("UTF-8");
+		String param = request.getParameter("param");
+		String orderByClause = null;
+		OutStockBillDto dto = null;
+		if (!StringUtils.isEmpty(param)) {
+			JSONObject paramObj = JSONObject.parseObject(param);
+			orderByClause = paramObj.getString("orderByClause");
+			dto = paramObj.getObject("dto", OutStockBillDto.class);
+		} else {
+			dto = new OutStockBillDto();
+		}
+		
+		List<OutOutstockBillExcel> list1 = new ArrayList<OutOutstockBillExcel>();
+		List<OutOutstockDetailExcel> list2 = new ArrayList<OutOutstockDetailExcel>();
+		
+		//提货信息
+		List<OutOutstockBill> list = outstockBillService.getAllOutstockBill(dto, orderByClause, false);
+		if (list != null && !list.isEmpty()) {
+			for (OutOutstockBill out : list) {
+				OutOutstockBillExcel outOutstockBillExcel = new OutOutstockBillExcel();
+				BeanUtils.copyProperties(out, outOutstockBillExcel);
+				// 设置客户信息
+				if(!StringUtils.isEmpty(out.getCustomerId())) {
+					Map<String, Object> resultBuyer = getCrmClient(request, out.getCustomerId());
+					CrmClient crmClientBuyer = (CrmClient) resultBuyer.get("data");
+					outOutstockBillExcel.setCustomerName(crmClientBuyer.getClientName());
+				}
+				// 设置仓库
+				if(!StringUtils.isEmpty(out.getStorageId())) {
+					Map<String, Object> storage = getDictMallDepot(request, out.getStorageId());
+					DictMallDepot dictMallDepot = (DictMallDepot) storage.get("data");
+					outOutstockBillExcel.setStorageName(dictMallDepot.getDptName());
+				}
+				list1.add(outOutstockBillExcel);
+				
+				//货物信息
+				List<OutOutstockDetailVo> detailList = outstockDetailService.getOutstockDetailById(out.getOutstockBillId());
+				if(detailList != null && !detailList.isEmpty()) {
+					for (OutOutstockDetailVo outOutstockDetailVo : detailList) {
+						OutOutstockDetailExcel outOutstockDetailExcel = new OutOutstockDetailExcel();
+						BeanUtils.copyProperties(outOutstockDetailVo,outOutstockDetailExcel);
+						// 设置品名
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getProductId())) {
+							BaseProduct product = baseService.getBaseProductById(outOutstockDetailVo.getOutOutstockDetail().getProductId());
+							outOutstockDetailExcel.setProductName(product.getProductName());
+							// 设置重量
+							if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getNetWeight())) {
+								outOutstockDetailExcel.setNetWeight(outOutstockDetailVo.getOutOutstockDetail().getNetWeight().divide(product.getUnitRate(), product.getPrecision().intValue(), BigDecimal.ROUND_HALF_DOWN).toString());
+								outOutstockDetailExcel.setNetWeight(outOutstockDetailExcel.getNetWeight() + product.getWeightUnit());
+							}
+							// 设置数量
+							if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getAmount())) {
+								outOutstockDetailExcel.setAmount(outOutstockDetailVo.getOutOutstockDetail().getAmount() + product.getQuantityUnit());
+							}
+						}
+						// 设置材质
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getMaterialId())) {
+							outOutstockDetailExcel.setMaterialId(outOutstockDetailVo.getOutOutstockDetail().getMaterialId());
+						}
+						// 设置表面
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getSurfaceId())) {
+							outOutstockDetailExcel.setSurfaceId(outOutstockDetailVo.getOutOutstockDetail().getSurfaceId());
+						}
+						// 设置标签厚度
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getLabelThick())) {
+							outOutstockDetailExcel.setLabelThick(outOutstockDetailVo.getOutOutstockDetail().getLabelThick());
+						}
+						// 设置边部
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getEdge())) {
+							outOutstockDetailExcel.setEdge(outOutstockDetailVo.getOutOutstockDetail().getEdge());
+						}
+						// 设置参厚
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getReferThick())) {
+							outOutstockDetailExcel.setReferThick(outOutstockDetailVo.getOutOutstockDetail().getReferThick());
+						}
+						// 设置实宽
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getRealWidth())) {
+							outOutstockDetailExcel.setRealWidth(outOutstockDetailVo.getOutOutstockDetail().getRealWidth());
+						}
+						// 设置牌号
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getTrademark())) {
+							outOutstockDetailExcel.setTrademark(outOutstockDetailVo.getOutOutstockDetail().getTrademark());
+						}
+						// 设置卷号
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getGoodsVolume())) {
+							outOutstockDetailExcel.setGoodsVolume(outOutstockDetailVo.getOutOutstockDetail().getGoodsVolume());
+						}
+						// 设置等级
+						if(!StringUtils.isEmpty(outOutstockDetailVo.getOutOutstockDetail().getGrade())) {
+							outOutstockDetailExcel.setGrade(outOutstockDetailVo.getOutOutstockDetail().getGrade());
+						}
+						list2.add(outOutstockDetailExcel);
+					}
+				}
+			}
+			
+		}
+		
+		ExportParams params1 = new ExportParams() ;  
+        // 设置sheet得名称  
+        params1.setSheetName("提货信息"); 
+        
+        ExportParams params2 = new ExportParams() ;  
+        params2.setSheetName("货物信息") ;  
+        // 创建sheet1使用得map  
+        Map dataMap1 = new HashMap<>();  
+        // title的参数为ExportParams类型，目前仅仅在ExportParams中设置了sheetName  
+        dataMap1.put("title",params1) ;  
+        // 模版导出对应得实体类型  
+        dataMap1.put("entity",OutOutstockBillExcel.class) ;  
+        // sheet中要填充得数据  
+        dataMap1.put("data",list1) ;  
+        
+        // 创建sheet2使用得map  
+        Map dataMap2 = new HashMap<>();  
+        dataMap2.put("title",params2);  
+        dataMap2.put("entity",OutOutstockDetailExcel.class);  
+        dataMap2.put("data",list2);  
+        
+        // 将sheet1和sheet2使用得map进行包装  
+        List<Map<String, Object>> sheetsList = new ArrayList<>() ;
+        sheetsList.add(dataMap1);  
+        sheetsList.add(dataMap2);
+        
+	    Workbook workbook = ExcelExportUtil.exportExcel(sheetsList, ExcelType.HSSF);
+	    workbook.write(response.getOutputStream());
+	}
+}

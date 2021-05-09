@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://code.alibabatech.com/schema/dubbo 
+	http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+	<!-- 消费方应用名，用于计算依赖关系，不是匹配条件，不要与提供方一样 -->
+	<dubbo:application name="boss-gyl-web" />
+
+	<!-- 使用multicast广播注册中心暴露发现服务地址 -->
+	<dubbo:registry address="zookeeper://127.0.0.1:2181" />
+
+	<!-- 监控中心 -->
+	<!-- <dubbo:monitor protocol="registry"/> -->
+
+	<!--生成远程服务代理，可以和本地bean一样使用 -->
+	<dubbo:reference timeout="100000" id="gylService"
+		interface="com.maigangle.gyl.facade.service.GylService" />
+	<!-- 库存管理Service -->
+	<dubbo:reference timeout="100000" id="invInventoryService" interface="com.maigangle.gyl.facade.service.InvInventoryService"/>
+	<!-- 交收管理Service -->
+	<dubbo:reference timeout="100000" id="insInspectionBill" interface="com.maigangle.gyl.facade.service.InsInspectionBillService"/>
+	<dubbo:reference timeout="100000" id="baseService"
+		interface="com.maigangle.gyl.facade.service.BaseService" />
+	<!-- 入库-->
+	<dubbo:reference timeout="100000" id="instockBillService"
+		interface="com.maigangle.gyl.facade.service.InstockBillService" />
+	<!-- 合同 -->
+	<dubbo:reference timeout="100000" id="ContractService"
+		interface="com.maigangle.gyl.facade.service.ContractService" />
+	<!-- 赎货 -->
+	<dubbo:reference timeout="100000" id="redRedeemBillService"
+		interface="com.maigangle.gyl.facade.service.RedRedeemBillService" />
+	<!-- 出货 -->
+	<dubbo:reference timeout="100000" id="outstockBillService"
+		interface="com.maigangle.gyl.facade.service.OutstockBillService" />
+	<!-- 出货 货物细节-->
+	<dubbo:reference timeout="100000" id="outstockDetailService"
+		interface="com.maigangle.gyl.facade.service.OutstockDetailService" />
+	<!-- 财务-->
+	<dubbo:reference timeout="100000" id="financeService"
+		interface="com.maigangle.gyl.facade.service.FinanceService" />
+	<!-- 系统基本配置-->
+	<dubbo:reference timeout="100000" id="gylBaseService"
+		interface="com.maigangle.gyl.facade.service.GylBaseService" />
+	<!-- 系统设置-->
+	<dubbo:reference timeout="100000" id="sysService"
+		interface="com.maigangle.gyl.facade.service.SysService" />
+	<!-- 审批-->
+	<dubbo:reference timeout="100000" id="sysApprovalService"
+		interface="com.maigangle.gyl.facade.service.SysApprovalService" />
+	<!-- 审批功能 -->
+	<dubbo:reference timeout="100000" id="approveService"
+		interface="com.maigangle.gyl.facade.service.ApproveService" />
+		<!-- 流程 -->
+	<dubbo:reference timeout="100000" id="flowService"
+		interface="com.maigangle.gyl.facade.service.FlowService" />
+	<!-- 逾期 -->
+	<dubbo:reference timeout="100000" id="overdueService"
+		interface="com.maigangle.gyl.facade.service.OverdueService" />
+	
+</beans>

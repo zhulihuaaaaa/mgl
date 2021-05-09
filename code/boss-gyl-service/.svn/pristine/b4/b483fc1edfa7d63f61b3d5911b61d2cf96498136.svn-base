@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.ConContractDetaiExtlMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.vo.ConContractDetailVo" >
+    <id column="CONTRACT_DETAIL_ID" property="contractDetailId" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="STORAGE_DATE" property="storageDate" jdbcType="TIMESTAMP" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="VARCHAR" />
+    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+    <result column="GOODS_VOLUME" property="goodsVolume" jdbcType="VARCHAR" />
+    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+    <result column="GOODS_RANK" property="goodsRank" jdbcType="VARCHAR" />
+    <result column="UNIT_CONTRACT_PRICE" property="unitContractPrice" jdbcType="DECIMAL" />
+    <result column="REAL_UNIT_PRICE" property="realUnitPrice" jdbcType="DECIMAL" />
+    <result column="FLOAT_PRICE" property="floatPrice" jdbcType="DECIMAL" />
+    <result column="BASIC_PRICE" property="basicPrice" jdbcType="DECIMAL" />
+    <result column="STORE_PRICE" property="storePrice" jdbcType="DECIMAL" />
+    <result column="NEXT_UNLOCK_QUANTITY" property="nextUnlockQuantity" jdbcType="DECIMAL" />
+    <result column="NEXT_OUTSTOCK_QUANTITY" property="nextOutstockQuantity" jdbcType="DECIMAL" />
+    <result column="CONTRACT_MONEY" property="contractMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="IMPL_STD" property="implStd" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="BORE" property="bore" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+            AND IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    CONTRACT_DETAIL_ID, SELLER_ID, BUYER_ID, CONTRACT_ID AS CONTRACT_ID, STORAGE_DATE, STORAGE_ID, PRODUCT_ID, 
+    MATERIAL_ID, SURFACE_ID, LABEL_THICK, LABEL_WIDTH, GOODS_LENGTH, EDGE, REFER_THICK, 
+    REAL_WIDTH, TRADEMARK, GRADE, GOODS_VOLUME, MNFCT_ID, NET_WEIGHT, AMOUNT, CALC_METHOD, 
+    GOODS_RANK, UNIT_CONTRACT_PRICE, REAL_UNIT_PRICE, FLOAT_PRICE, BASIC_PRICE, STORE_PRICE, 
+    NEXT_UNLOCK_QUANTITY, NEXT_OUTSTOCK_QUANTITY, CONTRACT_MONEY, REAL_MONEY, IMPL_STD, 
+    NOTES, IS_DEL, BORE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.ConContractDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT_DETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+    	WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT_DETAIL
+    where CONTRACT_DETAIL_ID = #{contractDetailId,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectByContractId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT_DETAIL
+    where CONTRACT_ID = #{contractId,jdbcType=VARCHAR}
+  </select>
+</mapper>

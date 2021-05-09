@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.InsInspectionSubMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.InsInspectionSub" >
+    <id column="INSPECTION_SUB_ID" property="inspectionSubId" jdbcType="VARCHAR" />
+    <result column="SUB_CODE" property="subCode" jdbcType="VARCHAR" />
+    <result column="INSPECTION_ID" property="inspectionId" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="INSTOCK_DATE" property="instockDate" jdbcType="TIMESTAMP" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="VOUCHER_NO" property="voucherNo" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INSPECTION_SUB_ID, SUB_CODE, INSPECTION_ID, CREATE_USER, CREATE_DATE, INSTOCK_DATE, 
+    AUDIT_STATUS, VOUCHER_NO, IS_DEL, NOTES
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.InsInspectionSubExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_INS_INSPECTION_SUB
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_INS_INSPECTION_SUB
+    where INSPECTION_SUB_ID = #{inspectionSubId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_INS_INSPECTION_SUB
+    where INSPECTION_SUB_ID = #{inspectionSubId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.InsInspectionSub" >
+    insert into TB_INS_INSPECTION_SUB (INSPECTION_SUB_ID, SUB_CODE, INSPECTION_ID, 
+      CREATE_USER, CREATE_DATE, INSTOCK_DATE, 
+      AUDIT_STATUS, VOUCHER_NO, IS_DEL, 
+      NOTES)
+    values (#{inspectionSubId,jdbcType=VARCHAR}, #{subCode,jdbcType=VARCHAR}, #{inspectionId,jdbcType=VARCHAR}, 
+      #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, #{instockDate,jdbcType=TIMESTAMP}, 
+      #{auditStatus,jdbcType=VARCHAR}, #{voucherNo,jdbcType=VARCHAR}, #{isDel,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.InsInspectionSub" >
+   <selectKey keyProperty="inspectionSubId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_INS_INSPECTION_SUB
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="inspectionSubId != null" >
+        INSPECTION_SUB_ID,
+      </if>
+      <if test="subCode != null" >
+        SUB_CODE,
+      </if>
+      <if test="inspectionId != null" >
+        INSPECTION_ID,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="instockDate != null" >
+        INSTOCK_DATE,
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS,
+      </if>
+      <if test="voucherNo != null" >
+        VOUCHER_NO,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="inspectionSubId != null" >
+        #{inspectionSubId,jdbcType=VARCHAR},
+      </if>
+      <if test="subCode != null" >
+        #{subCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionId != null" >
+        #{inspectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="instockDate != null" >
+        #{instockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherNo != null" >
+        #{voucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_INS_INSPECTION_SUB
+    <set >
+      <if test="record.inspectionSubId != null" >
+        INSPECTION_SUB_ID = #{record.inspectionSubId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.subCode != null" >
+        SUB_CODE = #{record.subCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inspectionId != null" >
+        INSPECTION_ID = #{record.inspectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.instockDate != null" >
+        INSTOCK_DATE = #{record.instockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.auditStatus != null" >
+        AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.voucherNo != null" >
+        VOUCHER_NO = #{record.voucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        NOTES = #{record.notes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_INS_INSPECTION_SUB
+    set INSPECTION_SUB_ID = #{record.inspectionSubId,jdbcType=VARCHAR},
+      SUB_CODE = #{record.subCode,jdbcType=VARCHAR},
+      INSPECTION_ID = #{record.inspectionId,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      INSTOCK_DATE = #{record.instockDate,jdbcType=TIMESTAMP},
+      AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      VOUCHER_NO = #{record.voucherNo,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      NOTES = #{record.notes,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.InsInspectionSub" >
+    update TB_INS_INSPECTION_SUB
+    <set >
+      <if test="subCode != null" >
+        SUB_CODE = #{subCode,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionId != null" >
+        INSPECTION_ID = #{inspectionId,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="instockDate != null" >
+        INSTOCK_DATE = #{instockDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="voucherNo != null" >
+        VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INSPECTION_SUB_ID = #{inspectionSubId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.InsInspectionSub" >
+    update TB_INS_INSPECTION_SUB
+    set SUB_CODE = #{subCode,jdbcType=VARCHAR},
+      INSPECTION_ID = #{inspectionId,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      INSTOCK_DATE = #{instockDate,jdbcType=TIMESTAMP},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      VOUCHER_NO = #{voucherNo,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=VARCHAR},
+      NOTES = #{notes,jdbcType=VARCHAR}
+    where INSPECTION_SUB_ID = #{inspectionSubId,jdbcType=VARCHAR}
+  </update>
+</mapper>

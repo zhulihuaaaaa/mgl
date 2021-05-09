@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.FeeFinalReportExtMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.vo.FeeFinalReportVo" >
+    <id column="FEE_FINAL_REPORT_ID" property="feeFinalReportId" jdbcType="VARCHAR" />
+    <result column="FEE_UNINSTOCK_TOTALWEIGHT" property="feeUninstockTotalweight" jdbcType="DECIMAL" />
+    <result column="FEE_UNINSTOCK_TOTALMONEY" property="feeUninstockTotalmoney" jdbcType="DECIMAL" />
+    <result column="FEE_UNOUTSTOCK_TOTALWEIGHT" property="feeUnoutstockTotalweight" jdbcType="DECIMAL" />
+    <result column="FEE_UNOUTSTOCK_TOTALMONEY" property="feeUnoutstockTotalmoney" jdbcType="DECIMAL" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+  </resultMap>
+  
+<<<<<<< .mine
+  <select id="getInvoiceGoodsInForReport" resultType="map" parameterType="com.maigangle.gyl.facade.entity.dto.FeeFinalReportDto">
+=======
+  <select id="getInvoiceGoodsInForReport" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.dto.FeeFinalReportDto">
+>>>>>>> .r2245
+	SELECT
+		sum(ins_detail.NET_WEIGHT) feeUninstockTotalweight,
+		sum(ins_detail.CONTRACT_UNIT_PRICE)  feeUninstockTotalmoney
+	FROM
+	TB_INS_INSPECTION_DETAIL ins_detail
+	 JOIN TB_INS_INSPECTION_SUB ins_sub ON ( ins_detail.INSPECTION_SUB_ID = ins_sub.INSPECTION_SUB_ID )
+	 JOIN TB_INS_INSPECTION_BILL ins_bill ON ( ins_sub.INSPECTION_ID = ins_bill.INSPECTION_BILL_ID )
+	 JOIN TB_IN_INSTOCK_BILL instock ON ( ins_bill.INSTOCK_ID = instock.INSTOCK_BILL_ID AND instock.INSTOCK_STATUS = 'B' )
+		WHERE
+			NOT EXISTS (
+			SELECT
+				invoice_detail.RELATED_ID
+			FROM
+				TB_FEE_INVOICE_DETAIL invoice_detail
+			JOIN TB_FEE_INVOICE invoice ON invoice_detail.INVOICE_ID = invoice.INVOICE_ID
+			AND invoice.INVOICE_TYPE = 'A'
+			WHERE
+			invoice_detail.RELATED_ID = ins_detail.INSPECTION_DETAIL_ID
+			)
+	</select>
+	
+	  <select id="getInvoiceGoodsOutForReport" resultType="map" parameterType="com.maigangle.gyl.facade.entity.dto.FeeFinalReportDto">
+	SELECT
+		sum(detail.RED_WEIGHT) feeUnoutstockTotalweight,
+		sum(detail.REDEEM_MONEY) feeUnoutstockTotalmoney
+	FROM TB_RED_REDEEM_DETAIL detail
+ 	 JOIN TB_RED_REDEEM_BILL bill on(detail.REDEEM_BILL_ID = bill.REDEEM_BILL_ID AND bill.REDEEM_STATUS = 'E')
+		WHERE
+			NOT EXISTS (
+				SELECT
+					invoice_detail.RELATED_ID
+				FROM
+					TB_FEE_INVOICE_DETAIL invoice_detail
+				JOIN TB_FEE_INVOICE invoice ON invoice_detail.INVOICE_ID = invoice.INVOICE_ID
+				AND invoice.INVOICE_TYPE = 'B'
+				WHERE
+				invoice_detail.RELATED_ID = detail.REDEEM_DETAIL_ID
+			)
+	</select>
+  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+            AND IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    FEE_FINAL_REPORT_ID, FEE_UNINSTOCK_TOTALWEIGHT, FEE_UNINSTOCK_TOTALMONEY, FEE_UNOUTSTOCK_TOTALWEIGHT, 
+    FEE_UNOUTSTOCK_TOTALMONEY, CREATE_DATE, CREATE_USER
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.FeeFinalReportExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_FEE_FINAL_REPORT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_FEE_FINAL_REPORT
+    where FEE_FINAL_REPORT_ID = #{feeFinalReportId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_FEE_FINAL_REPORT
+    where FEE_FINAL_REPORT_ID = #{feeFinalReportId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.FeeFinalReport" >
+  	<selectKey keyProperty="contractId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_FINAL_REPORT (FEE_FINAL_REPORT_ID, FEE_UNINSTOCK_TOTALWEIGHT, 
+      FEE_UNINSTOCK_TOTALMONEY, FEE_UNOUTSTOCK_TOTALWEIGHT, 
+      FEE_UNOUTSTOCK_TOTALMONEY, CREATE_DATE, 
+      CREATE_USER)
+    values (#{feeFinalReportId,jdbcType=VARCHAR}, #{feeUninstockTotalweight,jdbcType=DECIMAL}, 
+      #{feeUninstockTotalmoney,jdbcType=DECIMAL}, #{feeUnoutstockTotalweight,jdbcType=DECIMAL}, 
+      #{feeUnoutstockTotalmoney,jdbcType=DECIMAL}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{createUser,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.FeeFinalReport" >
+   	<selectKey keyProperty="contractId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_FINAL_REPORT
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="feeFinalReportId != null" >
+        FEE_FINAL_REPORT_ID,
+      </if>
+      <if test="feeUninstockTotalweight != null" >
+        FEE_UNINSTOCK_TOTALWEIGHT,
+      </if>
+      <if test="feeUninstockTotalmoney != null" >
+        FEE_UNINSTOCK_TOTALMONEY,
+      </if>
+      <if test="feeUnoutstockTotalweight != null" >
+        FEE_UNOUTSTOCK_TOTALWEIGHT,
+      </if>
+      <if test="feeUnoutstockTotalmoney != null" >
+        FEE_UNOUTSTOCK_TOTALMONEY,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="feeFinalReportId != null" >
+        #{feeFinalReportId,jdbcType=VARCHAR},
+      </if>
+      <if test="feeUninstockTotalweight != null" >
+        #{feeUninstockTotalweight,jdbcType=DECIMAL},
+      </if>
+      <if test="feeUninstockTotalmoney != null" >
+        #{feeUninstockTotalmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="feeUnoutstockTotalweight != null" >
+        #{feeUnoutstockTotalweight,jdbcType=DECIMAL},
+      </if>
+      <if test="feeUnoutstockTotalmoney != null" >
+        #{feeUnoutstockTotalmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_FEE_FINAL_REPORT
+    <set >
+      <if test="record.feeFinalReportId != null" >
+        FEE_FINAL_REPORT_ID = #{record.feeFinalReportId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.feeUninstockTotalweight != null" >
+        FEE_UNINSTOCK_TOTALWEIGHT = #{record.feeUninstockTotalweight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.feeUninstockTotalmoney != null" >
+        FEE_UNINSTOCK_TOTALMONEY = #{record.feeUninstockTotalmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.feeUnoutstockTotalweight != null" >
+        FEE_UNOUTSTOCK_TOTALWEIGHT = #{record.feeUnoutstockTotalweight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.feeUnoutstockTotalmoney != null" >
+        FEE_UNOUTSTOCK_TOTALMONEY = #{record.feeUnoutstockTotalmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_FEE_FINAL_REPORT
+    set FEE_FINAL_REPORT_ID = #{record.feeFinalReportId,jdbcType=VARCHAR},
+      FEE_UNINSTOCK_TOTALWEIGHT = #{record.feeUninstockTotalweight,jdbcType=DECIMAL},
+      FEE_UNINSTOCK_TOTALMONEY = #{record.feeUninstockTotalmoney,jdbcType=DECIMAL},
+      FEE_UNOUTSTOCK_TOTALWEIGHT = #{record.feeUnoutstockTotalweight,jdbcType=DECIMAL},
+      FEE_UNOUTSTOCK_TOTALMONEY = #{record.feeUnoutstockTotalmoney,jdbcType=DECIMAL},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.FeeFinalReport" >
+    update TB_FEE_FINAL_REPORT
+    <set >
+      <if test="feeUninstockTotalweight != null" >
+        FEE_UNINSTOCK_TOTALWEIGHT = #{feeUninstockTotalweight,jdbcType=DECIMAL},
+      </if>
+      <if test="feeUninstockTotalmoney != null" >
+        FEE_UNINSTOCK_TOTALMONEY = #{feeUninstockTotalmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="feeUnoutstockTotalweight != null" >
+        FEE_UNOUTSTOCK_TOTALWEIGHT = #{feeUnoutstockTotalweight,jdbcType=DECIMAL},
+      </if>
+      <if test="feeUnoutstockTotalmoney != null" >
+        FEE_UNOUTSTOCK_TOTALMONEY = #{feeUnoutstockTotalmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where FEE_FINAL_REPORT_ID = #{feeFinalReportId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.FeeFinalReport" >
+    update TB_FEE_FINAL_REPORT
+    set FEE_UNINSTOCK_TOTALWEIGHT = #{feeUninstockTotalweight,jdbcType=DECIMAL},
+      FEE_UNINSTOCK_TOTALMONEY = #{feeUninstockTotalmoney,jdbcType=DECIMAL},
+      FEE_UNOUTSTOCK_TOTALWEIGHT = #{feeUnoutstockTotalweight,jdbcType=DECIMAL},
+      FEE_UNOUTSTOCK_TOTALMONEY = #{feeUnoutstockTotalmoney,jdbcType=DECIMAL},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR}
+    where FEE_FINAL_REPORT_ID = #{feeFinalReportId,jdbcType=VARCHAR}
+  </update>
+</mapper>

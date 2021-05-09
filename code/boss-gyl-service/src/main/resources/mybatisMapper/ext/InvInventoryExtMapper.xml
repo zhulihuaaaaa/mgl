@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.InvInventoryExtMapper" >
+ 	<!-- 手动添加查询 -->
+  <resultMap type="com.maigangle.gyl.facade.entity.dto.InvInventoryDto" id="invInventoryDto" extends="com.maigangle.gyl.service.mapper.InvInventoryMapper.BaseResultMap">
+	<result property="businessType" column="businessType" />
+	<result property="sellerName" column="sellerName" />
+	<result property="buyerName" column="buyerName" />
+	<result property="businessName" column="businessName" />
+	<result property="storageName" column="storageName" />
+	<result property="mnfctName" column="mnfctName" />
+	<result property="stats" column="stats" />
+	<result property="enableNum" column="enableNum" />
+	<result property="instockDate" column="instockDate" />
+<!-- 	<association property="invInventory" javaType="com.maigangle.gyl.facade.entity.InvInventory">
+		 <id column="INVENTORY_ID" property="inventoryId" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="INSTOCK_DATE" property="instockDate" jdbcType="TIMESTAMP" />
+    <result column="PRODUCT_ID" property="productId" jdbcType="VARCHAR" />
+    <result column="MATERIAL_ID" property="materialId" jdbcType="VARCHAR" />
+    <result column="SURFACE_ID" property="surfaceId" jdbcType="VARCHAR" />
+    <result column="LABEL_THICK" property="labelThick" jdbcType="VARCHAR" />
+    <result column="LABEL_WIDTH" property="labelWidth" jdbcType="VARCHAR" />
+    <result column="GOODS_LENGTH" property="goodsLength" jdbcType="DECIMAL" />
+    <result column="EDGE" property="edge" jdbcType="VARCHAR" />
+    <result column="REFER_THICK" property="referThick" jdbcType="DECIMAL" />
+    <result column="REAL_WIDTH" property="realWidth" jdbcType="DECIMAL" />
+    <result column="TRADEMARK" property="trademark" jdbcType="VARCHAR" />
+    <result column="VOLUME" property="volume" jdbcType="VARCHAR" />
+    <result column="MNFCT_ID" property="mnfctId" jdbcType="VARCHAR" />
+    <result column="NET_WEIGHT" property="netWeight" jdbcType="DECIMAL" />
+    <result column="QUANTITY" property="quantity" jdbcType="DECIMAL" />
+    <result column="NEXT_UNLOCK_QUANTITY" property="nextUnlockQuantity" jdbcType="DECIMAL" />
+    <result column="NEXT_OUTSTOCK_QUANTITY" property="nextOutstockQuantity" jdbcType="DECIMAL" />
+    <result column="CALC_METHOD" property="calcMethod" jdbcType="VARCHAR" />
+    <result column="GRADE" property="grade" jdbcType="VARCHAR" />
+    <result column="CONTRACT_UNIT_PRICE" property="contractUnitPrice" jdbcType="DECIMAL" />
+    <result column="REAL_UNIT_PRICE" property="realUnitPrice" jdbcType="DECIMAL" />
+    <result column="FLOAT_PRICE" property="floatPrice" jdbcType="DECIMAL" />
+    <result column="BASIC_PRICE" property="basicPrice" jdbcType="DECIMAL" />
+    <result column="STORE_PRICE" property="storePrice" jdbcType="DECIMAL" />
+    <result column="CONTRACT_MONEY" property="contractMoney" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="IMPL_STD" property="implStd" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="BORE" property="bore" jdbcType="DECIMAL" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="SOURCE_ID" property="sourceId" jdbcType="VARCHAR" />
+	</association> -->
+	<result column="PRODUCT_NAME" property="productName" jdbcType="VARCHAR" />
+	<result property="materialName" column="materialName" />
+	<result property="surfaceName" column="PROCESS_NAME" />
+  </resultMap>
+  
+  <select id="getinvInventoryDtoAll" resultMap="invInventoryDto">
+  SELECT
+	*
+FROM
+	(
+		SELECT
+			A .*, ROWNUM RN
+		FROM
+			(
+				SELECT
+					*
+				FROM
+					TB_INS_INSPECTION_BILL  insp
+				LEFT JOIN TB_IN_INSTOCK_BILL  inst ON insp.INSTOCK_ID = inst.INSTOCK_BILL_ID
+				LEFT JOIN TB_CON_CONTRACT  con ON insp.CONTRACT_ID = con.CONTRACT_ID
+				WHERE
+					insp.IS_DEL = 'N'
+				AND inst.IS_DEL = 'N'
+				<!-- 时间查询-->
+				<if test="page.dto.createDate != null ">
+					AND insp.CREATE_DATE BETWEEN TO_DATE (#{page.dto.createDate,jdbcType=TIMESTAMP}, 'yyyy-MM-dd')
+					AND TO_DATE (#{page.dto.createDate,jdbcType=TIMESTAMP}, 'yyyy-MM-dd')
+				</if>
+				<!-- 类型 -->
+				<if test="page.dto.businessType != null ">
+					AND inst.BUSINESS_TYPE  = #{page.dto.businessType,jdbcType=VARCHAR}
+				</if>
+				<!-- TODO  状态 -->
+				<if test="page.dto.status != null">
+				  AND insp.STATUS  = #{page.dto.status,jdbcType=CHAR}
+				</if>
+				<if test="page.dto.instockNo !=null  ">
+				  AND con.CONTRACT_NO LIKE  '%${page.dto.instockNo}%'
+				</if>
+			) A
+	)
+WHERE
+	RN BETWEEN #{page.pageNum}
+AND #{(page.pageNum-1) * page.pageSize}
+  
+  </select>
+  
+  
+  <select id="getStockByConContractIdAndStorageId" resultMap="invInventoryDto">
+  
+  	SELECT
+		*
+	FROM
+		TB_INV_INVENTORY inv
+	LEFT JOIN TB_CON_CONTRACT con ON inv.CONTRACT_ID = con.CONTRACT_ID
+	LEFT JOIN TB_BASE_PROCESS pro ON inv.SURFACE_ID = pro.PROCESS_ID
+	LEFT JOIN TB_BASE_PRODUCT product ON inv.PRODUCT_ID = product.PRODUCT_ID
+	WHERE
+		inv.IS_DEL = 'N'
+	AND con.IS_DEL = 'N'
+	AND pro.IS_DEL = 'N'
+	AND product. IS_DEL = 'N'
+	AND inv.CONTRACT_ID = '1'
+	AND inv.STORAGE_ID = '1'
+  </select>
+  
+  <select id="getStorage" resultType="String">
+  
+ 	 SELECT DISTINCT(STORAGE_ID) from  TB_INV_INVENTORY WHERE CONTRACT_ID = #{ConContractId}
+  
+  </select>
+  
+</mapper>

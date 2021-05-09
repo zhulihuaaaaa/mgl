@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.FeeInvoiceMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.FeeInvoice" >
+    <id column="INVOICE_ID" property="invoiceId" jdbcType="VARCHAR" />
+    <result column="INVOICE_TYPE" property="invoiceType" jdbcType="VARCHAR" />
+    <result column="INVOICE_NO" property="invoiceNo" jdbcType="VARCHAR" />
+    <result column="INVOICE_MONEY" property="invoiceMoney" jdbcType="DECIMAL" />
+    <result column="CONTRACT_IDS" property="contractIds" jdbcType="VARCHAR" />
+    <result column="BILLING_DATE" property="billingDate" jdbcType="TIMESTAMP" />
+    <result column="CHECKING_DATE" property="checkingDate" jdbcType="TIMESTAMP" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+    <result column="CONTRACT_CODES" property="contractCodes" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+		      and IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+            AND IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INVOICE_ID, INVOICE_TYPE, INVOICE_NO, INVOICE_MONEY, CONTRACT_IDS, BILLING_DATE, 
+    CHECKING_DATE, CREATE_USER, CREATE_DATE, IS_DEL, CONTRACT_CODES
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.FeeInvoiceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_FEE_INVOICE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_FEE_INVOICE
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_FEE_INVOICE
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.FeeInvoice" >
+  	<selectKey keyProperty="invoiceId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_INVOICE (INVOICE_ID, INVOICE_TYPE, INVOICE_NO, 
+      INVOICE_MONEY, CONTRACT_IDS, BILLING_DATE, 
+      CHECKING_DATE, CREATE_USER, CREATE_DATE, 
+      IS_DEL, CONTRACT_CODES)
+    values (#{invoiceId,jdbcType=VARCHAR}, #{invoiceType,jdbcType=VARCHAR}, #{invoiceNo,jdbcType=VARCHAR}, 
+      #{invoiceMoney,jdbcType=DECIMAL}, #{contractIds,jdbcType=VARCHAR}, #{billingDate,jdbcType=TIMESTAMP}, 
+      #{checkingDate,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{isDel,jdbcType=VARCHAR}, #{contractCodes,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.FeeInvoice" >
+  	<selectKey keyProperty="invoiceId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_INVOICE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="invoiceId != null" >
+        INVOICE_ID,
+      </if>
+      <if test="invoiceType != null" >
+        INVOICE_TYPE,
+      </if>
+      <if test="invoiceNo != null" >
+        INVOICE_NO,
+      </if>
+      <if test="invoiceMoney != null" >
+        INVOICE_MONEY,
+      </if>
+      <if test="contractIds != null" >
+        CONTRACT_IDS,
+      </if>
+      <if test="billingDate != null" >
+        BILLING_DATE,
+      </if>
+      <if test="checkingDate != null" >
+        CHECKING_DATE,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="contractCodes != null" >
+        CONTRACT_CODES,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="invoiceId != null" >
+        #{invoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceType != null" >
+        #{invoiceType,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNo != null" >
+        #{invoiceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceMoney != null" >
+        #{invoiceMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="contractIds != null" >
+        #{contractIds,jdbcType=VARCHAR},
+      </if>
+      <if test="billingDate != null" >
+        #{billingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkingDate != null" >
+        #{checkingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCodes != null" >
+        #{contractCodes,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_FEE_INVOICE
+    <set >
+      <if test="record.invoiceId != null" >
+        INVOICE_ID = #{record.invoiceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.invoiceType != null" >
+        INVOICE_TYPE = #{record.invoiceType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.invoiceNo != null" >
+        INVOICE_NO = #{record.invoiceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.invoiceMoney != null" >
+        INVOICE_MONEY = #{record.invoiceMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.contractIds != null" >
+        CONTRACT_IDS = #{record.contractIds,jdbcType=VARCHAR},
+      </if>
+      <if test="record.billingDate != null" >
+        BILLING_DATE = #{record.billingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.checkingDate != null" >
+        CHECKING_DATE = #{record.checkingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractCodes != null" >
+        CONTRACT_CODES = #{record.contractCodes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_FEE_INVOICE
+    set INVOICE_ID = #{record.invoiceId,jdbcType=VARCHAR},
+      INVOICE_TYPE = #{record.invoiceType,jdbcType=VARCHAR},
+      INVOICE_NO = #{record.invoiceNo,jdbcType=VARCHAR},
+      INVOICE_MONEY = #{record.invoiceMoney,jdbcType=DECIMAL},
+      CONTRACT_IDS = #{record.contractIds,jdbcType=VARCHAR},
+      BILLING_DATE = #{record.billingDate,jdbcType=TIMESTAMP},
+      CHECKING_DATE = #{record.checkingDate,jdbcType=TIMESTAMP},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      CONTRACT_CODES = #{record.contractCodes,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.FeeInvoice" >
+    update TB_FEE_INVOICE
+    <set >
+      <if test="invoiceType != null" >
+        INVOICE_TYPE = #{invoiceType,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceNo != null" >
+        INVOICE_NO = #{invoiceNo,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceMoney != null" >
+        INVOICE_MONEY = #{invoiceMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="contractIds != null" >
+        CONTRACT_IDS = #{contractIds,jdbcType=VARCHAR},
+      </if>
+      <if test="billingDate != null" >
+        BILLING_DATE = #{billingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="checkingDate != null" >
+        CHECKING_DATE = #{checkingDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCodes != null" >
+        CONTRACT_CODES = #{contractCodes,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.FeeInvoice" >
+    update TB_FEE_INVOICE
+    set INVOICE_TYPE = #{invoiceType,jdbcType=VARCHAR},
+      INVOICE_NO = #{invoiceNo,jdbcType=VARCHAR},
+      INVOICE_MONEY = #{invoiceMoney,jdbcType=DECIMAL},
+      CONTRACT_IDS = #{contractIds,jdbcType=VARCHAR},
+      BILLING_DATE = #{billingDate,jdbcType=TIMESTAMP},
+      CHECKING_DATE = #{checkingDate,jdbcType=TIMESTAMP},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=VARCHAR},
+      CONTRACT_CODES = #{contractCodes,jdbcType=VARCHAR}
+    where INVOICE_ID = #{invoiceId,jdbcType=VARCHAR}
+  </update>
+</mapper>

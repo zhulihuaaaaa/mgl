@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ConFeeRatesMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.ConFeeRates" >
+    <id column="FEE_RATES_ID" property="feeRatesId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="FEE_DATES" property="feeDates" jdbcType="DECIMAL" />
+    <result column="FEE_VALUE" property="feeValue" jdbcType="DECIMAL" />
+    <result column="IS_OVERDUE" property="isOverdue" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+             AND IS_DEL = 'N'
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    FEE_RATES_ID, CONTRACT_ID, FEE_DATES, FEE_VALUE, IS_OVERDUE, CREATE_USER, CREATE_DATE, 
+    IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.ConFeeRatesExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_CON_FEE_RATES
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+    WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_CON_FEE_RATES
+    where FEE_RATES_ID = #{feeRatesId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_CON_FEE_RATES
+    where FEE_RATES_ID = #{feeRatesId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.ConFeeRates" >
+   	<selectKey keyProperty="feeRatesId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_CON_FEE_RATES (FEE_RATES_ID, CONTRACT_ID, FEE_DATES, 
+      FEE_VALUE, IS_OVERDUE, CREATE_USER, 
+      CREATE_DATE, IS_DEL)
+    values (#{feeRatesId,jdbcType=VARCHAR}, #{contractId,jdbcType=VARCHAR}, #{feeDates,jdbcType=DECIMAL}, 
+      #{feeValue,jdbcType=DECIMAL}, #{isOverdue,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{isDel,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.ConFeeRates" >
+   	<selectKey keyProperty="feeRatesId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_CON_FEE_RATES
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="feeRatesId != null" >
+        FEE_RATES_ID,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="feeDates != null" >
+        FEE_DATES,
+      </if>
+      <if test="feeValue != null" >
+        FEE_VALUE,
+      </if>
+      <if test="isOverdue != null" >
+        IS_OVERDUE,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="feeRatesId != null" >
+        #{feeRatesId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="feeDates != null" >
+        #{feeDates,jdbcType=DECIMAL},
+      </if>
+      <if test="feeValue != null" >
+        #{feeValue,jdbcType=DECIMAL},
+      </if>
+      <if test="isOverdue != null" >
+        #{isOverdue,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_CON_FEE_RATES
+    <set >
+      <if test="record.feeRatesId != null" >
+        FEE_RATES_ID = #{record.feeRatesId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.feeDates != null" >
+        FEE_DATES = #{record.feeDates,jdbcType=DECIMAL},
+      </if>
+      <if test="record.feeValue != null" >
+        FEE_VALUE = #{record.feeValue,jdbcType=DECIMAL},
+      </if>
+      <if test="record.isOverdue != null" >
+        IS_OVERDUE = #{record.isOverdue,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_CON_FEE_RATES
+    set FEE_RATES_ID = #{record.feeRatesId,jdbcType=VARCHAR},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      FEE_DATES = #{record.feeDates,jdbcType=DECIMAL},
+      FEE_VALUE = #{record.feeValue,jdbcType=DECIMAL},
+      IS_OVERDUE = #{record.isOverdue,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.ConFeeRates" >
+    update TB_CON_FEE_RATES
+    <set >
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="feeDates != null" >
+        FEE_DATES = #{feeDates,jdbcType=DECIMAL},
+      </if>
+      <if test="feeValue != null" >
+        FEE_VALUE = #{feeValue,jdbcType=DECIMAL},
+      </if>
+      <if test="isOverdue != null" >
+        IS_OVERDUE = #{isOverdue,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where FEE_RATES_ID = #{feeRatesId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.ConFeeRates" >
+    update TB_CON_FEE_RATES
+    set CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      FEE_DATES = #{feeDates,jdbcType=DECIMAL},
+      FEE_VALUE = #{feeValue,jdbcType=DECIMAL},
+      IS_OVERDUE = #{isOverdue,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=VARCHAR}
+    where FEE_RATES_ID = #{feeRatesId,jdbcType=VARCHAR}
+  </update>
+</mapper>

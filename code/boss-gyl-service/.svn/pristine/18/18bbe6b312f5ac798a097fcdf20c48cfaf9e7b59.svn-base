@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.InInstockBillMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.InInstockBill" >
+    <id column="INSTOCK_BILL_ID" property="instockBillId" jdbcType="VARCHAR" />
+    <result column="INSTOCK_CODE" property="instockCode" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="DEPOSIT_STATUS" property="depositStatus" jdbcType="VARCHAR" />
+    <result column="DEPOSIT_FINANCE_ID" property="depositFinanceId" jdbcType="VARCHAR" />
+    <result column="INSPECTION_STATUS" property="inspectionStatus" jdbcType="VARCHAR" />
+    <result column="FINANCING_LOAN_STATUS" property="financingLoanStatus" jdbcType="VARCHAR" />
+    <result column="PAYMENT_STATUS" property="paymentStatus" jdbcType="VARCHAR" />
+    <result column="INSTOCK_STATUS" property="instockStatus" jdbcType="VARCHAR" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+       AND IS_DEL = 'N'
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INSTOCK_BILL_ID, INSTOCK_CODE, CONTRACT_ID, BUSINESS_TYPE, CREATE_USER, CREATE_DATE, 
+    DEPOSIT_STATUS, DEPOSIT_FINANCE_ID, INSPECTION_STATUS, FINANCING_LOAN_STATUS, PAYMENT_STATUS, 
+    INSTOCK_STATUS, NOTES, IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.InInstockBillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_IN_INSTOCK_BILL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_IN_INSTOCK_BILL
+    where INSTOCK_BILL_ID = #{instockBillId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_IN_INSTOCK_BILL
+    where INSTOCK_BILL_ID = #{instockBillId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.InInstockBill" >
+   <selectKey keyProperty="instockBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_IN_INSTOCK_BILL (INSTOCK_BILL_ID, INSTOCK_CODE, CONTRACT_ID, 
+      BUSINESS_TYPE, CREATE_USER, CREATE_DATE, 
+      DEPOSIT_STATUS, DEPOSIT_FINANCE_ID, INSPECTION_STATUS, 
+      FINANCING_LOAN_STATUS, PAYMENT_STATUS, INSTOCK_STATUS, 
+      NOTES, IS_DEL)
+    values (#{instockBillId,jdbcType=VARCHAR}, #{instockCode,jdbcType=VARCHAR}, #{contractId,jdbcType=VARCHAR}, 
+      #{businessType,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{depositStatus,jdbcType=VARCHAR}, #{depositFinanceId,jdbcType=VARCHAR}, #{inspectionStatus,jdbcType=VARCHAR}, 
+      #{financingLoanStatus,jdbcType=VARCHAR}, #{paymentStatus,jdbcType=VARCHAR}, #{instockStatus,jdbcType=VARCHAR}, 
+      #{notes,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.InInstockBill" >
+   <selectKey keyProperty="instockBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_IN_INSTOCK_BILL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="instockBillId != null" >
+        INSTOCK_BILL_ID,
+      </if>
+      <if test="instockCode != null" >
+        INSTOCK_CODE,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="depositStatus != null" >
+        DEPOSIT_STATUS,
+      </if>
+      <if test="depositFinanceId != null" >
+        DEPOSIT_FINANCE_ID,
+      </if>
+      <if test="inspectionStatus != null" >
+        INSPECTION_STATUS,
+      </if>
+      <if test="financingLoanStatus != null" >
+        FINANCING_LOAN_STATUS,
+      </if>
+      <if test="paymentStatus != null" >
+        PAYMENT_STATUS,
+      </if>
+      <if test="instockStatus != null" >
+        INSTOCK_STATUS,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="instockBillId != null" >
+        #{instockBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="instockCode != null" >
+        #{instockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="depositStatus != null" >
+        #{depositStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="depositFinanceId != null" >
+        #{depositFinanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionStatus != null" >
+        #{inspectionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="financingLoanStatus != null" >
+        #{financingLoanStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentStatus != null" >
+        #{paymentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="instockStatus != null" >
+        #{instockStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_IN_INSTOCK_BILL
+    <set >
+      <if test="record.instockBillId != null" >
+        INSTOCK_BILL_ID = #{record.instockBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.instockCode != null" >
+        INSTOCK_CODE = #{record.instockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null" >
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.depositStatus != null" >
+        DEPOSIT_STATUS = #{record.depositStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.depositFinanceId != null" >
+        DEPOSIT_FINANCE_ID = #{record.depositFinanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.inspectionStatus != null" >
+        INSPECTION_STATUS = #{record.inspectionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.financingLoanStatus != null" >
+        FINANCING_LOAN_STATUS = #{record.financingLoanStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paymentStatus != null" >
+        PAYMENT_STATUS = #{record.paymentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.instockStatus != null" >
+        INSTOCK_STATUS = #{record.instockStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.notes != null" >
+        NOTES = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_IN_INSTOCK_BILL
+    set INSTOCK_BILL_ID = #{record.instockBillId,jdbcType=VARCHAR},
+      INSTOCK_CODE = #{record.instockCode,jdbcType=VARCHAR},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      DEPOSIT_STATUS = #{record.depositStatus,jdbcType=VARCHAR},
+      DEPOSIT_FINANCE_ID = #{record.depositFinanceId,jdbcType=VARCHAR},
+      INSPECTION_STATUS = #{record.inspectionStatus,jdbcType=VARCHAR},
+      FINANCING_LOAN_STATUS = #{record.financingLoanStatus,jdbcType=VARCHAR},
+      PAYMENT_STATUS = #{record.paymentStatus,jdbcType=VARCHAR},
+      INSTOCK_STATUS = #{record.instockStatus,jdbcType=VARCHAR},
+      NOTES = #{record.notes,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.InInstockBill" >
+    update TB_IN_INSTOCK_BILL
+    <set >
+      <if test="instockCode != null" >
+        INSTOCK_CODE = #{instockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="depositStatus != null" >
+        DEPOSIT_STATUS = #{depositStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="depositFinanceId != null" >
+        DEPOSIT_FINANCE_ID = #{depositFinanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionStatus != null" >
+        INSPECTION_STATUS = #{inspectionStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="financingLoanStatus != null" >
+        FINANCING_LOAN_STATUS = #{financingLoanStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentStatus != null" >
+        PAYMENT_STATUS = #{paymentStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="instockStatus != null" >
+        INSTOCK_STATUS = #{instockStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="notes != null" >
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    where INSTOCK_BILL_ID = #{instockBillId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.InInstockBill" >
+    update TB_IN_INSTOCK_BILL
+    set INSTOCK_CODE = #{instockCode,jdbcType=VARCHAR},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      DEPOSIT_STATUS = #{depositStatus,jdbcType=VARCHAR},
+      DEPOSIT_FINANCE_ID = #{depositFinanceId,jdbcType=VARCHAR},
+      INSPECTION_STATUS = #{inspectionStatus,jdbcType=VARCHAR},
+      FINANCING_LOAN_STATUS = #{financingLoanStatus,jdbcType=VARCHAR},
+      PAYMENT_STATUS = #{paymentStatus,jdbcType=VARCHAR},
+      INSTOCK_STATUS = #{instockStatus,jdbcType=VARCHAR},
+      NOTES = #{notes,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR}
+    where INSTOCK_BILL_ID = #{instockBillId,jdbcType=VARCHAR}
+  </update>
+</mapper>

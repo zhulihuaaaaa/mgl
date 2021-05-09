@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.SysApprovalFlowExtMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.dto.SysApprovalInfo" >
+    <id column="approvalFlowId" property="approvalFlowId" jdbcType="VARCHAR" />
+    <result column="approvalItemId" property="approvalItemId" jdbcType="VARCHAR" />
+    <result column="approvalProcessId" property="approvalProcessId" jdbcType="VARCHAR" />
+    <result column="module" property="module" jdbcType="VARCHAR" />
+    <result column="nextRoleId" property="nextRoleId" jdbcType="VARCHAR" />
+    <result column="userId" property="userId" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="processIndex" property="processIndex" jdbcType="DECIMAL" />
+    <association property="approvalModule" javaType="com.maigangle.gyl.facade.entity.SysApprovalModule">
+    	<id column="approvalModuleId" jdbcType="VARCHAR" property="approvalModuleId" />
+	    <result column="moduleName" jdbcType="VARCHAR" property="moduleName" />
+	    <result column="moduleServiceBean" jdbcType="VARCHAR" property="moduleServiceBean" />
+	    <result column="approvalCompleteMethod" jdbcType="VARCHAR" property="approvalCompleteMethod" />
+	    <result column="approvalSuspendMethod" jdbcType="VARCHAR" property="approvalSuspendMethod" />
+	    <result column="approvalCancelMethod" jdbcType="VARCHAR" property="approvalCancelMethod" />
+	    <result column="abandonApprovalMethod" jdbcType="VARCHAR" property="abandonApprovalMethod" />
+	    <result column="abandonRejectMethod" jdbcType="VARCHAR" property="abandonRejectMethod" />
+	    <result column="moduleAlias" jdbcType="VARCHAR" property="moduleAlias" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List" >
+    f.APPROVAL_FLOW_ID as approvalFlowId, 
+    f.APPROVAL_ITEM_ID as approvalItemId, 
+    f.APPROVAL_PROCESS_ID as approvalProcessId, 
+    f.MODULE as module, 
+    f.NEXT_ROLE_ID as nextRoleId, 
+    f.USER_ID as userId, 
+    f.STATE as state, 
+    f.REMARK as remark, 
+    f.CREATE_DATE as createDate, 
+    p.PROCESS_INDEX as processIndex,
+   	m.APPROVAL_MODULE_ID as approvalModuleId, 
+   	m.MODULE_NAME as moduleName,
+   	m.MODULE_ALIAS as moduleAlias,
+   	m.MODULE_SERVICE_BEAN as moduleServiceBean, 
+   	m.APPROVAL_COMPLETE_METHOD as approvalCompleteMethod, 
+   	m.APPROVAL_SUSPEND_METHOD as approvalSuspendMethod, 
+    m.APPROVAL_CANCEL_METHOD as approvalCancelMethod, 
+    m.ABANDON_APPROVAL_METHOD as abandonApprovalMethod, 
+    m.ABANDON_REJECT_METHOD as abandonRejectMethod
+  </sql>
+  <select id="selectLastByApprovalItemId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  	select * from 
+	    (select 
+	    <include refid="Base_Column_List" />
+	    from TB_SYS_APPROVAL_FLOW f 
+	    left join TB_SYS_APPROVAL_PROCESS p on f.APPROVAL_PROCESS_ID = p.APPROVAL_PROCESS_ID and p.IS_DEL = 'N'
+	    left join TB_SYS_APPROVAL_MODULE m on f.MODULE = m.MODULE_ALIAS and m.IS_DEL = 'N'
+	    where f.APPROVAL_ITEM_ID = #{approvalItemId,jdbcType=VARCHAR} AND f.IS_DEL = 'N' 
+	    order by f.CREATE_DATE desc)
+    where rownum = 1
+  </select>
+  <select id="selectByApprovalItemId" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    	select 
+	    <include refid="Base_Column_List" />
+	    from TB_SYS_APPROVAL_FLOW f 
+	    left join TB_SYS_APPROVAL_PROCESS p on f.APPROVAL_PROCESS_ID = p.APPROVAL_PROCESS_ID and p.IS_DEL = 'N'
+	    left join TB_SYS_APPROVAL_MODULE m on f.MODULE = m.MODULE_ALIAS and m.IS_DEL = 'N'
+	    where f.APPROVAL_ITEM_ID = #{approvalItemId,jdbcType=VARCHAR} AND f.IS_DEL = 'N' 
+	    order by f.CREATE_DATE desc
+  </select>
+</mapper>

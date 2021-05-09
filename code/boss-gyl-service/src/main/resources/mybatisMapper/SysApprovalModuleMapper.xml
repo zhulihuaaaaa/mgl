@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.SysApprovalModuleMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.SysApprovalModule" >
+    <id column="APPROVAL_MODULE_ID" property="approvalModuleId" jdbcType="VARCHAR" />
+    <result column="MODULE_NAME" property="moduleName" jdbcType="VARCHAR" />
+    <result column="MODULE_SERVICE_BEAN" property="moduleServiceBean" jdbcType="VARCHAR" />
+    <result column="APPROVAL_COMPLETE_METHOD" property="approvalCompleteMethod" jdbcType="VARCHAR" />
+    <result column="APPROVAL_SUSPEND_METHOD" property="approvalSuspendMethod" jdbcType="VARCHAR" />
+    <result column="APPROVAL_CANCEL_METHOD" property="approvalCancelMethod" jdbcType="VARCHAR" />
+    <result column="ABANDON_APPROVAL_METHOD" property="abandonApprovalMethod" jdbcType="VARCHAR" />
+    <result column="ABANDON_REJECT_METHOD" property="abandonRejectMethod" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+    <result column="MODULE_ALIAS" property="moduleAlias" jdbcType="VARCHAR" />
+    <result column="SUBMIT_METHOD" property="submitMethod" jdbcType="VARCHAR" />
+    <result column="APPROVAL_METHOD" property="approvalMethod" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    APPROVAL_MODULE_ID, MODULE_NAME, MODULE_SERVICE_BEAN, APPROVAL_COMPLETE_METHOD, APPROVAL_SUSPEND_METHOD, 
+    APPROVAL_CANCEL_METHOD, ABANDON_APPROVAL_METHOD, ABANDON_REJECT_METHOD, IS_DEL, MODULE_ALIAS, 
+    SUBMIT_METHOD, APPROVAL_METHOD
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.SysApprovalModuleExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_SYS_APPROVAL_MODULE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_SYS_APPROVAL_MODULE
+    where APPROVAL_MODULE_ID = #{approvalModuleId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_SYS_APPROVAL_MODULE
+    where APPROVAL_MODULE_ID = #{approvalModuleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.SysApprovalModule" >
+  <selectKey keyProperty="approvalModuleId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_SYS_APPROVAL_MODULE (APPROVAL_MODULE_ID, MODULE_NAME, MODULE_SERVICE_BEAN, 
+      APPROVAL_COMPLETE_METHOD, APPROVAL_SUSPEND_METHOD, 
+      APPROVAL_CANCEL_METHOD, ABANDON_APPROVAL_METHOD, 
+      ABANDON_REJECT_METHOD, IS_DEL, MODULE_ALIAS, 
+      SUBMIT_METHOD, APPROVAL_METHOD)
+    values (#{approvalModuleId,jdbcType=VARCHAR}, #{moduleName,jdbcType=VARCHAR}, #{moduleServiceBean,jdbcType=VARCHAR}, 
+      #{approvalCompleteMethod,jdbcType=VARCHAR}, #{approvalSuspendMethod,jdbcType=VARCHAR}, 
+      #{approvalCancelMethod,jdbcType=VARCHAR}, #{abandonApprovalMethod,jdbcType=VARCHAR}, 
+      #{abandonRejectMethod,jdbcType=VARCHAR}, #{isDel,jdbcType=VARCHAR}, #{moduleAlias,jdbcType=VARCHAR}, 
+      #{submitMethod,jdbcType=VARCHAR}, #{approvalMethod,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.SysApprovalModule" >
+    <selectKey keyProperty="approvalModuleId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_SYS_APPROVAL_MODULE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="approvalModuleId != null" >
+        APPROVAL_MODULE_ID,
+      </if>
+      <if test="moduleName != null" >
+        MODULE_NAME,
+      </if>
+      <if test="moduleServiceBean != null" >
+        MODULE_SERVICE_BEAN,
+      </if>
+      <if test="approvalCompleteMethod != null" >
+        APPROVAL_COMPLETE_METHOD,
+      </if>
+      <if test="approvalSuspendMethod != null" >
+        APPROVAL_SUSPEND_METHOD,
+      </if>
+      <if test="approvalCancelMethod != null" >
+        APPROVAL_CANCEL_METHOD,
+      </if>
+      <if test="abandonApprovalMethod != null" >
+        ABANDON_APPROVAL_METHOD,
+      </if>
+      <if test="abandonRejectMethod != null" >
+        ABANDON_REJECT_METHOD,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="moduleAlias != null" >
+        MODULE_ALIAS,
+      </if>
+      <if test="submitMethod != null" >
+        SUBMIT_METHOD,
+      </if>
+      <if test="approvalMethod != null" >
+        APPROVAL_METHOD,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="approvalModuleId != null" >
+        #{approvalModuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleName != null" >
+        #{moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleServiceBean != null" >
+        #{moduleServiceBean,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalCompleteMethod != null" >
+        #{approvalCompleteMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalSuspendMethod != null" >
+        #{approvalSuspendMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalCancelMethod != null" >
+        #{approvalCancelMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="abandonApprovalMethod != null" >
+        #{abandonApprovalMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="abandonRejectMethod != null" >
+        #{abandonRejectMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleAlias != null" >
+        #{moduleAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="submitMethod != null" >
+        #{submitMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalMethod != null" >
+        #{approvalMethod,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_SYS_APPROVAL_MODULE
+    <set >
+      <if test="record.approvalModuleId != null" >
+        APPROVAL_MODULE_ID = #{record.approvalModuleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.moduleName != null" >
+        MODULE_NAME = #{record.moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.moduleServiceBean != null" >
+        MODULE_SERVICE_BEAN = #{record.moduleServiceBean,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approvalCompleteMethod != null" >
+        APPROVAL_COMPLETE_METHOD = #{record.approvalCompleteMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approvalSuspendMethod != null" >
+        APPROVAL_SUSPEND_METHOD = #{record.approvalSuspendMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approvalCancelMethod != null" >
+        APPROVAL_CANCEL_METHOD = #{record.approvalCancelMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.abandonApprovalMethod != null" >
+        ABANDON_APPROVAL_METHOD = #{record.abandonApprovalMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.abandonRejectMethod != null" >
+        ABANDON_REJECT_METHOD = #{record.abandonRejectMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.moduleAlias != null" >
+        MODULE_ALIAS = #{record.moduleAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="record.submitMethod != null" >
+        SUBMIT_METHOD = #{record.submitMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.approvalMethod != null" >
+        APPROVAL_METHOD = #{record.approvalMethod,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_SYS_APPROVAL_MODULE
+    set APPROVAL_MODULE_ID = #{record.approvalModuleId,jdbcType=VARCHAR},
+      MODULE_NAME = #{record.moduleName,jdbcType=VARCHAR},
+      MODULE_SERVICE_BEAN = #{record.moduleServiceBean,jdbcType=VARCHAR},
+      APPROVAL_COMPLETE_METHOD = #{record.approvalCompleteMethod,jdbcType=VARCHAR},
+      APPROVAL_SUSPEND_METHOD = #{record.approvalSuspendMethod,jdbcType=VARCHAR},
+      APPROVAL_CANCEL_METHOD = #{record.approvalCancelMethod,jdbcType=VARCHAR},
+      ABANDON_APPROVAL_METHOD = #{record.abandonApprovalMethod,jdbcType=VARCHAR},
+      ABANDON_REJECT_METHOD = #{record.abandonRejectMethod,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      MODULE_ALIAS = #{record.moduleAlias,jdbcType=VARCHAR},
+      SUBMIT_METHOD = #{record.submitMethod,jdbcType=VARCHAR},
+      APPROVAL_METHOD = #{record.approvalMethod,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.SysApprovalModule" >
+    update TB_SYS_APPROVAL_MODULE
+    <set >
+      <if test="moduleName != null" >
+        MODULE_NAME = #{moduleName,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleServiceBean != null" >
+        MODULE_SERVICE_BEAN = #{moduleServiceBean,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalCompleteMethod != null" >
+        APPROVAL_COMPLETE_METHOD = #{approvalCompleteMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalSuspendMethod != null" >
+        APPROVAL_SUSPEND_METHOD = #{approvalSuspendMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalCancelMethod != null" >
+        APPROVAL_CANCEL_METHOD = #{approvalCancelMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="abandonApprovalMethod != null" >
+        ABANDON_APPROVAL_METHOD = #{abandonApprovalMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="abandonRejectMethod != null" >
+        ABANDON_REJECT_METHOD = #{abandonRejectMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=VARCHAR},
+      </if>
+      <if test="moduleAlias != null" >
+        MODULE_ALIAS = #{moduleAlias,jdbcType=VARCHAR},
+      </if>
+      <if test="submitMethod != null" >
+        SUBMIT_METHOD = #{submitMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalMethod != null" >
+        APPROVAL_METHOD = #{approvalMethod,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where APPROVAL_MODULE_ID = #{approvalModuleId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.SysApprovalModule" >
+    update TB_SYS_APPROVAL_MODULE
+    set MODULE_NAME = #{moduleName,jdbcType=VARCHAR},
+      MODULE_SERVICE_BEAN = #{moduleServiceBean,jdbcType=VARCHAR},
+      APPROVAL_COMPLETE_METHOD = #{approvalCompleteMethod,jdbcType=VARCHAR},
+      APPROVAL_SUSPEND_METHOD = #{approvalSuspendMethod,jdbcType=VARCHAR},
+      APPROVAL_CANCEL_METHOD = #{approvalCancelMethod,jdbcType=VARCHAR},
+      ABANDON_APPROVAL_METHOD = #{abandonApprovalMethod,jdbcType=VARCHAR},
+      ABANDON_REJECT_METHOD = #{abandonRejectMethod,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=VARCHAR},
+      MODULE_ALIAS = #{moduleAlias,jdbcType=VARCHAR},
+      SUBMIT_METHOD = #{submitMethod,jdbcType=VARCHAR},
+      APPROVAL_METHOD = #{approvalMethod,jdbcType=VARCHAR}
+    where APPROVAL_MODULE_ID = #{approvalModuleId,jdbcType=VARCHAR}
+  </update>
+</mapper>

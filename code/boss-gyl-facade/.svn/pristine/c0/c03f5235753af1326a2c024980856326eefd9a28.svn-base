@@ -1,0 +1,221 @@
+package com.maigangle.gyl.facade.entity;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class FeeInvoice implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9061029762177466592L;
+
+	/**
+     * id
+     */
+    private String invoiceId;
+
+    /**
+     * 发票类型
+     */
+    private String invoiceType;
+
+    /**
+     * 发票号
+     */
+    private String invoiceNo;
+
+    /**
+     * 合同信息
+     */
+    private String contractId;
+
+    /**
+     * 开票日期
+     */
+    private Date billingDate;
+
+    /**
+     * 验票日期
+     */
+    private Date checkingDate;
+
+    /**
+     * 创建人
+     */
+    private String createUser;
+
+    /**
+     * 创建日期
+     */
+    private Date createDate;
+
+    /**
+     * 关联表ID
+     */
+    private String relationId;
+
+    /**
+     * N:false, Y:true
+     */
+    private String isDel;
+
+    /**
+     * id
+     * @return INVOICE_ID id
+     */
+    public String getInvoiceId() {
+        return invoiceId;
+    }
+
+    /**
+     * id
+     * @param invoiceId id
+     */
+    public void setInvoiceId(String invoiceId) {
+        this.invoiceId = invoiceId == null ? null : invoiceId.trim();
+    }
+
+    /**
+     * 发票类型
+     * @return INVOICE_TYPE 发票类型
+     */
+    public String getInvoiceType() {
+        return invoiceType;
+    }
+
+    /**
+     * 发票类型
+     * @param invoiceType 发票类型
+     */
+    public void setInvoiceType(String invoiceType) {
+        this.invoiceType = invoiceType == null ? null : invoiceType.trim();
+    }
+
+    /**
+     * 发票号
+     * @return INVOICE_NO 发票号
+     */
+    public String getInvoiceNo() {
+        return invoiceNo;
+    }
+
+    /**
+     * 发票号
+     * @param invoiceNo 发票号
+     */
+    public void setInvoiceNo(String invoiceNo) {
+        this.invoiceNo = invoiceNo == null ? null : invoiceNo.trim();
+    }
+
+    /**
+     * 合同信息
+     * @return CONTRACT_ID 合同信息
+     */
+    public String getContractId() {
+        return contractId;
+    }
+
+    /**
+     * 合同信息
+     * @param contractId 合同信息
+     */
+    public void setContractId(String contractId) {
+        this.contractId = contractId == null ? null : contractId.trim();
+    }
+
+    /**
+     * 开票日期
+     * @return BILLING_DATE 开票日期
+     */
+    public Date getBillingDate() {
+        return billingDate;
+    }
+
+    /**
+     * 开票日期
+     * @param billingDate 开票日期
+     */
+    public void setBillingDate(Date billingDate) {
+        this.billingDate = billingDate;
+    }
+
+    /**
+     * 验票日期
+     * @return CHECKING_DATE 验票日期
+     */
+    public Date getCheckingDate() {
+        return checkingDate;
+    }
+
+    /**
+     * 验票日期
+     * @param checkingDate 验票日期
+     */
+    public void setCheckingDate(Date checkingDate) {
+        this.checkingDate = checkingDate;
+    }
+
+    /**
+     * 创建人
+     * @return CREATE_USER 创建人
+     */
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    /**
+     * 创建人
+     * @param createUser 创建人
+     */
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    /**
+     * 创建日期
+     * @return CREATE_DATE 创建日期
+     */
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    /**
+     * 创建日期
+     * @param createDate 创建日期
+     */
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    /**
+     * 关联表ID
+     * @return RELATION_ID 关联表ID
+     */
+    public String getRelationId() {
+        return relationId;
+    }
+
+    /**
+     * 关联表ID
+     * @param relationId 关联表ID
+     */
+    public void setRelationId(String relationId) {
+        this.relationId = relationId == null ? null : relationId.trim();
+    }
+
+    /**
+     * N:false, Y:true
+     * @return IS_DEL N:false, Y:true
+     */
+    public String getIsDel() {
+        return isDel;
+    }
+
+    /**
+     * N:false, Y:true
+     * @param isDel N:false, Y:true
+     */
+    public void setIsDel(String isDel) {
+        this.isDel = isDel == null ? null : isDel.trim();
+    }
+}

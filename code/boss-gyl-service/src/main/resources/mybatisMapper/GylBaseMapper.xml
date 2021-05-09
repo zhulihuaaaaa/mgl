@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maigangle.gyl.service.mapper.GylBaseMapper">
+
+  <select id="countAll" resultType="int" >
+  SELECT COUNT(1) FROM  ${tableName} t WHERE 1=1 AND t.CREATE_DATE
+ 	&gt; to_date((select to_char(trunc(add_months(last_day(sysdate), -1) + 1), 'yyyy-MM-dd HH24:MI:SS') from dual),'yyyy-MM-dd HH24:MI:SS')
+  </select>
+  
+    <select id="countAllForContart" resultType="int" >
+  SELECT COUNT(1) FROM  ${tableName} t WHERE 1=1 AND t.CREATE_DATE
+ 	&gt; to_date((select to_char(trunc(add_months(last_day(sysdate), -1) + 1), 'yyyy-MM-dd HH24:MI:SS') from dual),'yyyy-MM-dd HH24:MI:SS')
+ 	AND t.CONTRACT_TYPE = '${businessType}'
+  </select>
+</mapper>

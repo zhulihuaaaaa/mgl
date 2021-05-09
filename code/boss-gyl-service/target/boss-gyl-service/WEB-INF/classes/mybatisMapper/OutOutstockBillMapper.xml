@@ -1,0 +1,443 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.OutOutstockBillMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.OutOutstockBill" >
+    <id column="OUTSTOCK_BILL_ID" property="outstockBillId" jdbcType="VARCHAR" />
+    <result column="OUTSTOCK_CODE" property="outstockCode" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_ID" property="customerId" jdbcType="VARCHAR" />
+    <result column="SUPPLIER_ID" property="supplierId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="STORAGE_ID" property="storageId" jdbcType="VARCHAR" />
+    <result column="TOTAL_WEIGHT" property="totalWeight" jdbcType="DECIMAL" />
+    <result column="GOODS_PAYMENT" property="goodsPayment" jdbcType="DECIMAL" />
+    <result column="SERVICE_FEE" property="serviceFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="OTHER_FEE" property="otherFee" jdbcType="DECIMAL" />
+    <result column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="CONSIGNEE" property="consignee" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_TEL" property="consigneeTel" jdbcType="VARCHAR" />
+    <result column="CONSIGNEE_ID_NO" property="consigneeIdNo" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="CHARGING_DAYS" property="chargingDays" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    OUTSTOCK_BILL_ID, OUTSTOCK_CODE, BUSINESS_TYPE, CUSTOMER_ID, SUPPLIER_ID, CONTRACT_ID, 
+    STORAGE_ID, TOTAL_WEIGHT, GOODS_PAYMENT, SERVICE_FEE, INVOICE_FEE, OTHER_FEE, TOTAL_MONEY, 
+    CONSIGNEE, CONSIGNEE_TEL, CONSIGNEE_ID_NO, CREATE_USER, CREATE_DATE, IS_DEL, CHARGING_DAYS
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.OutOutstockBillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_OUT_OUTSTOCK_BILL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_OUT_OUTSTOCK_BILL
+    where OUTSTOCK_BILL_ID = #{outstockBillId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_OUT_OUTSTOCK_BILL
+    where OUTSTOCK_BILL_ID = #{outstockBillId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.OutOutstockBill" >
+    <selectKey keyProperty="outstockBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_OUT_OUTSTOCK_BILL (OUTSTOCK_BILL_ID, OUTSTOCK_CODE, BUSINESS_TYPE, 
+      CUSTOMER_ID, SUPPLIER_ID, CONTRACT_ID, 
+      STORAGE_ID, TOTAL_WEIGHT, GOODS_PAYMENT, 
+      SERVICE_FEE, INVOICE_FEE, OTHER_FEE, 
+      TOTAL_MONEY, CONSIGNEE, CONSIGNEE_TEL, 
+      CONSIGNEE_ID_NO, CREATE_USER, CREATE_DATE, 
+      IS_DEL, CHARGING_DAYS)
+    values (#{outstockBillId,jdbcType=VARCHAR}, #{outstockCode,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR}, 
+      #{customerId,jdbcType=VARCHAR}, #{supplierId,jdbcType=VARCHAR}, #{contractId,jdbcType=VARCHAR}, 
+      #{storageId,jdbcType=VARCHAR}, #{totalWeight,jdbcType=DECIMAL}, #{goodsPayment,jdbcType=DECIMAL}, 
+      #{serviceFee,jdbcType=DECIMAL}, #{invoiceFee,jdbcType=DECIMAL}, #{otherFee,jdbcType=DECIMAL}, 
+      #{totalMoney,jdbcType=DECIMAL}, #{consignee,jdbcType=VARCHAR}, #{consigneeTel,jdbcType=VARCHAR}, 
+      #{consigneeIdNo,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{isDel,jdbcType=CHAR}, #{chargingDays,jdbcType=DECIMAL})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.OutOutstockBill" >
+    <selectKey keyProperty="outstockBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_OUT_OUTSTOCK_BILL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="outstockBillId != null" >
+        OUTSTOCK_BILL_ID,
+      </if>
+      <if test="outstockCode != null" >
+        OUTSTOCK_CODE,
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE,
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID,
+      </if>
+      <if test="supplierId != null" >
+        SUPPLIER_ID,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID,
+      </if>
+      <if test="totalWeight != null" >
+        TOTAL_WEIGHT,
+      </if>
+      <if test="goodsPayment != null" >
+        GOODS_PAYMENT,
+      </if>
+      <if test="serviceFee != null" >
+        SERVICE_FEE,
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE,
+      </if>
+      <if test="otherFee != null" >
+        OTHER_FEE,
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY,
+      </if>
+      <if test="consignee != null" >
+        CONSIGNEE,
+      </if>
+      <if test="consigneeTel != null" >
+        CONSIGNEE_TEL,
+      </if>
+      <if test="consigneeIdNo != null" >
+        CONSIGNEE_ID_NO,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="chargingDays != null" >
+        CHARGING_DAYS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="outstockBillId != null" >
+        #{outstockBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="outstockCode != null" >
+        #{outstockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null" >
+        #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="storageId != null" >
+        #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWeight != null" >
+        #{totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsPayment != null" >
+        #{goodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="serviceFee != null" >
+        #{serviceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="otherFee != null" >
+        #{otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMoney != null" >
+        #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="consignee != null" >
+        #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeTel != null" >
+        #{consigneeTel,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeIdNo != null" >
+        #{consigneeIdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="chargingDays != null" >
+        #{chargingDays,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_OUT_OUTSTOCK_BILL
+    <set >
+      <if test="record.outstockBillId != null" >
+        OUTSTOCK_BILL_ID = #{record.outstockBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.outstockCode != null" >
+        OUTSTOCK_CODE = #{record.outstockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null" >
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.customerId != null" >
+        CUSTOMER_ID = #{record.customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.supplierId != null" >
+        SUPPLIER_ID = #{record.supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.storageId != null" >
+        STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalWeight != null" >
+        TOTAL_WEIGHT = #{record.totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="record.goodsPayment != null" >
+        GOODS_PAYMENT = #{record.goodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="record.serviceFee != null" >
+        SERVICE_FEE = #{record.serviceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.invoiceFee != null" >
+        INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.otherFee != null" >
+        OTHER_FEE = #{record.otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalMoney != null" >
+        TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.consignee != null" >
+        CONSIGNEE = #{record.consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="record.consigneeTel != null" >
+        CONSIGNEE_TEL = #{record.consigneeTel,jdbcType=VARCHAR},
+      </if>
+      <if test="record.consigneeIdNo != null" >
+        CONSIGNEE_ID_NO = #{record.consigneeIdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.chargingDays != null" >
+        CHARGING_DAYS = #{record.chargingDays,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_OUT_OUTSTOCK_BILL
+    set OUTSTOCK_BILL_ID = #{record.outstockBillId,jdbcType=VARCHAR},
+      OUTSTOCK_CODE = #{record.outstockCode,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      CUSTOMER_ID = #{record.customerId,jdbcType=VARCHAR},
+      SUPPLIER_ID = #{record.supplierId,jdbcType=VARCHAR},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      STORAGE_ID = #{record.storageId,jdbcType=VARCHAR},
+      TOTAL_WEIGHT = #{record.totalWeight,jdbcType=DECIMAL},
+      GOODS_PAYMENT = #{record.goodsPayment,jdbcType=DECIMAL},
+      SERVICE_FEE = #{record.serviceFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      OTHER_FEE = #{record.otherFee,jdbcType=DECIMAL},
+      TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      CONSIGNEE = #{record.consignee,jdbcType=VARCHAR},
+      CONSIGNEE_TEL = #{record.consigneeTel,jdbcType=VARCHAR},
+      CONSIGNEE_ID_NO = #{record.consigneeIdNo,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      CHARGING_DAYS = #{record.chargingDays,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.OutOutstockBill" >
+    update TB_OUT_OUTSTOCK_BILL
+    <set >
+      <if test="outstockCode != null" >
+        OUTSTOCK_CODE = #{outstockCode,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierId != null" >
+        SUPPLIER_ID = #{supplierId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="storageId != null" >
+        STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      </if>
+      <if test="totalWeight != null" >
+        TOTAL_WEIGHT = #{totalWeight,jdbcType=DECIMAL},
+      </if>
+      <if test="goodsPayment != null" >
+        GOODS_PAYMENT = #{goodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="serviceFee != null" >
+        SERVICE_FEE = #{serviceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="otherFee != null" >
+        OTHER_FEE = #{otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="consignee != null" >
+        CONSIGNEE = #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeTel != null" >
+        CONSIGNEE_TEL = #{consigneeTel,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneeIdNo != null" >
+        CONSIGNEE_ID_NO = #{consigneeIdNo,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="chargingDays != null" >
+        CHARGING_DAYS = #{chargingDays,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where OUTSTOCK_BILL_ID = #{outstockBillId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.OutOutstockBill" >
+    update TB_OUT_OUTSTOCK_BILL
+    set OUTSTOCK_CODE = #{outstockCode,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      CUSTOMER_ID = #{customerId,jdbcType=VARCHAR},
+      SUPPLIER_ID = #{supplierId,jdbcType=VARCHAR},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      STORAGE_ID = #{storageId,jdbcType=VARCHAR},
+      TOTAL_WEIGHT = #{totalWeight,jdbcType=DECIMAL},
+      GOODS_PAYMENT = #{goodsPayment,jdbcType=DECIMAL},
+      SERVICE_FEE = #{serviceFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      OTHER_FEE = #{otherFee,jdbcType=DECIMAL},
+      TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      CONSIGNEE = #{consignee,jdbcType=VARCHAR},
+      CONSIGNEE_TEL = #{consigneeTel,jdbcType=VARCHAR},
+      CONSIGNEE_ID_NO = #{consigneeIdNo,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      CHARGING_DAYS = #{chargingDays,jdbcType=DECIMAL}
+    where OUTSTOCK_BILL_ID = #{outstockBillId,jdbcType=VARCHAR}
+  </update>
+</mapper>

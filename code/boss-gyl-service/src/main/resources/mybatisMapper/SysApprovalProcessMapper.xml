@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.SysApprovalProcessMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.SysApprovalProcess" >
+    <id column="APPROVAL_PROCESS_ID" property="approvalProcessId" jdbcType="VARCHAR" />
+    <result column="MODULE" property="module" jdbcType="VARCHAR" />
+    <result column="ROLE_ID" property="roleId" jdbcType="VARCHAR" />
+    <result column="PROCESS_INDEX" property="processIndex" jdbcType="DECIMAL" />
+    <result column="UPDATE_TIME" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    APPROVAL_PROCESS_ID, MODULE, ROLE_ID, PROCESS_INDEX, UPDATE_TIME, IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.SysApprovalProcessExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_SYS_APPROVAL_PROCESS
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_SYS_APPROVAL_PROCESS
+    where APPROVAL_PROCESS_ID = #{approvalProcessId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_SYS_APPROVAL_PROCESS
+    where APPROVAL_PROCESS_ID = #{approvalProcessId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.SysApprovalProcess" >
+  	<selectKey keyProperty="approvalProcessId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_SYS_APPROVAL_PROCESS (APPROVAL_PROCESS_ID, MODULE, ROLE_ID, 
+      PROCESS_INDEX, UPDATE_TIME, IS_DEL
+      )
+    values (#{approvalProcessId,jdbcType=VARCHAR}, #{module,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}, 
+      #{processIndex,jdbcType=DECIMAL}, #{updateTime,jdbcType=TIMESTAMP}, #{isDel,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.SysApprovalProcess" >
+  	<selectKey keyProperty="approvalProcessId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_SYS_APPROVAL_PROCESS
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="approvalProcessId != null" >
+        APPROVAL_PROCESS_ID,
+      </if>
+      <if test="module != null" >
+        MODULE,
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID,
+      </if>
+      <if test="processIndex != null" >
+        PROCESS_INDEX,
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="approvalProcessId != null" >
+        #{approvalProcessId,jdbcType=VARCHAR},
+      </if>
+      <if test="module != null" >
+        #{module,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="processIndex != null" >
+        #{processIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_SYS_APPROVAL_PROCESS
+    <set >
+      <if test="record.approvalProcessId != null" >
+        APPROVAL_PROCESS_ID = #{record.approvalProcessId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.module != null" >
+        MODULE = #{record.module,jdbcType=VARCHAR},
+      </if>
+      <if test="record.roleId != null" >
+        ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.processIndex != null" >
+        PROCESS_INDEX = #{record.processIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="record.updateTime != null" >
+        UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_SYS_APPROVAL_PROCESS
+    set APPROVAL_PROCESS_ID = #{record.approvalProcessId,jdbcType=VARCHAR},
+      MODULE = #{record.module,jdbcType=VARCHAR},
+      ROLE_ID = #{record.roleId,jdbcType=VARCHAR},
+      PROCESS_INDEX = #{record.processIndex,jdbcType=DECIMAL},
+      UPDATE_TIME = #{record.updateTime,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=VARCHAR} and IS_DEL = 'N'
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.SysApprovalProcess" >
+    update TB_SYS_APPROVAL_PROCESS
+    <set >
+      <if test="module != null" >
+        MODULE = #{module,jdbcType=VARCHAR},
+      </if>
+      <if test="roleId != null" >
+        ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      </if>
+      <if test="processIndex != null" >
+        PROCESS_INDEX = #{processIndex,jdbcType=DECIMAL},
+      </if>
+      <if test="updateTime != null" >
+        UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where APPROVAL_PROCESS_ID = #{approvalProcessId,jdbcType=VARCHAR} and IS_DEL = 'N'
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.SysApprovalProcess" >
+    update TB_SYS_APPROVAL_PROCESS
+    set MODULE = #{module,jdbcType=VARCHAR},
+      ROLE_ID = #{roleId,jdbcType=VARCHAR},
+      PROCESS_INDEX = #{processIndex,jdbcType=DECIMAL},
+      UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=VARCHAR}
+    where APPROVAL_PROCESS_ID = #{approvalProcessId,jdbcType=VARCHAR} and IS_DEL = 'N'
+  </update>
+</mapper>

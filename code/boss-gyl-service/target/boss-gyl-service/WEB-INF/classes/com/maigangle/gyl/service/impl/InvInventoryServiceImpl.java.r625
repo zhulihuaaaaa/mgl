@@ -1,0 +1,636 @@
+package com.maigangle.gyl.service.impl;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import com.github.pagehelper.PageInfo;
+import com.maigangle.gyl.facade.entity.BaseProcess;
+import com.maigangle.gyl.facade.entity.BaseProduct;
+import com.maigangle.gyl.facade.entity.ConContract;
+import com.maigangle.gyl.facade.entity.InvInventory;
+import com.maigangle.gyl.facade.entity.InvInventoryExample;
+import com.maigangle.gyl.facade.entity.api.CrmClient;
+import com.maigangle.gyl.facade.entity.api.DictMallDepot;
+import com.maigangle.gyl.facade.entity.api.DictMallMnfct;
+import com.maigangle.gyl.facade.entity.api.DictMallSpec;
+import com.maigangle.gyl.facade.entity.dto.InvInventoryDto;
+import com.maigangle.gyl.facade.enums.InOrNotStockEnum;
+import com.maigangle.gyl.facade.enums.YesOrNoEnum;
+import com.maigangle.gyl.facade.service.BaseService;
+import com.maigangle.gyl.facade.service.ContractService;
+import com.maigangle.gyl.facade.service.GylApiService;
+import com.maigangle.gyl.facade.service.InvInventoryService;
+import com.maigangle.gyl.facade.utils.DateUtils;
+import com.maigangle.gyl.facade.utils.PageUtils;
+import com.maigangle.gyl.service.mapper.InvInventoryMapper;
+import com.maigangle.gyl.service.mapper.ext.InvInventoryExtMapper;
+
+/**
+ * 库存管理的实现类
+ * @author 杨思静
+ * @since  2017年11月28日 - 下午2:34:58
+ * @version 1.0
+ */
+@SuppressWarnings("rawtypes")
+@Service
+@Transactional
+public class InvInventoryServiceImpl extends GylServiceImpl  implements InvInventoryService{
+	@Autowired
+	InvInventoryMapper invInventoryMapper;
+	@Autowired
+	InvInventoryExtMapper invInventoryExtMapper;
+	@Autowired
+	BaseService baseService;
+	@Autowired
+	GylApiService gylApiService;
+	@Autowired
+	ContractService contractService;
+	/*********************************外部**************************/
+	@Override
+	public List<InvInventoryDto> getStockByConContractIdAndStorageId(String ConContractId, String StorageId) {
+		InvInventoryExample example = new InvInventoryExample();
+		InvInventoryExample.Criteria c = example.createCriteria();
+		if(StringUtils.isEmpty(StorageId)|| StringUtils.isEmpty(ConContractId)) {
+			return null;
+		}
+		c.andContractIdEqualTo(ConContractId);
+		c.andStorageIdEqualTo(StorageId);
+		List<InvInventory> list= invInventoryMapper.selectByExample(example);
+		
+//       测试		
+//		List<InvInventoryDto> list =   invInventoryExtMapper.getStockByConContractIdAndStorageId(ConContractId, StorageId);
+//		System.out.println(list);
+		
+		return format(list);
+	}
+	
+	
+	
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: getStorage 
+	 * @Description: TODO( 根据合同id 来查询仓库ID数组 ) 
+	 * @param ConContractId
+	 * @return List<String>
+	 * @throws
+	 */
+	@Override
+	public List<String> getStorage(String ConContractId) {	
+		return invInventoryExtMapper.getStorage(ConContractId);
+	}
+	
+	
+	/*********************************end***************************/
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public PageInfo<InvInventoryDto> getStockAll(PageUtils<InvInventoryDto> page,Boolean isAccuracy) {
+		if(page == null) {
+			return null;
+		}
+		InvInventoryDto dto = page.getDto();
+		setPageAndOrderBy(page);
+		InvInventoryExample example = getExample(dto);
+		// 查询出必须不被逻辑删除
+		List<InvInventory> list= invInventoryMapper.selectByExample(example);
+		return new PageInfo<InvInventoryDto>(format(list));
+	}
+	/**
+	 * 生成条件查询
+	 * @param dto
+	 * @return
+	 */
+	private InvInventoryExample getExample(InvInventoryDto inv) {
+		InvInventoryExample example = new InvInventoryExample();
+		InvInventoryExample.Criteria c = example.createCriteria();
+		if (inv == null) {
+			return example;
+		}
+		
+		// 页面查询
+		// 业务类型
+		if (!StringUtils.isEmpty(inv.getBusinessType())) {
+			c.andBusinessTypeEqualTo(inv.getBusinessType());
+		}
+		// 是否在库状态
+		if (!StringUtils.isEmpty(inv.getStats())) {
+			if (InOrNotStockEnum.RUKUHUOWU.toString().equals(inv.getStats())) {
+				// 在库货物
+				c.andQuantityNotEqualTo(BigDecimal.ZERO);
+			}
+			if(InOrNotStockEnum.CHUKUHUOWU.toString().equals(inv.getStats())) {
+				c.andQuantityEqualTo(BigDecimal.ZERO);
+				InvInventoryExample.Criteria c1 =  example.or();
+				c1.andQuantityIsNull();
+			}	
+		}
+		// 仓库
+		if(!StringUtils.isEmpty(inv.getStorageId())) {
+			c.andStorageIdEqualTo(inv.getStorageId());
+		}
+		// 买方
+		if(!StringUtils.isEmpty(inv.getBuyerId())) {
+			c.andBuyerIdEqualTo(inv.getBuyerId());
+		}
+		// 卖方
+		if (!StringUtils.isEmpty(inv.getSellerId())) {
+			c.andSellerIdEqualTo(inv.getSellerId());
+		}
+//			// 入库时间  开始时间
+		if (inv.getInstockStartDate() != null) {
+			c.andInstockDateGreaterThanOrEqualTo(DateUtils.getStartDate(inv.getInstockStartDate()));
+		}
+		// 入库时间 开始时间
+		if (inv.getInstockEndDate()  != null) {
+			c.andInstockDateLessThanOrEqualTo(DateUtils.getEndDate(inv.getInstockStartDate()));
+		}
+		// 表面
+		if (!StringUtils.isEmpty(inv.getSurfaceId())) {
+			c.andSurfaceIdEqualTo(inv.getSurfaceId());
+		}
+		// 品名
+		if (!StringUtils.isEmpty(inv.getProductId())) {
+			c.andProductIdEqualTo(inv.getProductId());
+		}
+		// 材质
+		if (!StringUtils.isEmpty(inv.getMaterialId())) {
+			c.andMaterialIdEqualTo(inv.getMaterialId());
+		}
+		// 厂商
+		if (!StringUtils.isEmpty(inv.getMnfctId())) {
+			c.andMnfctIdEqualTo(inv.getMnfctId());
+		}
+//			//业务类型 根据合同
+//			businessType: '',
+		if (!StringUtils.isEmpty(inv.getBusinessType())) {
+			c.andBusinessTypeEqualTo(inv.getBusinessType());
+		}
+		
+//			//卖方客户  名称
+//			sellerName:'',
+		if (!StringUtils.isEmpty(inv.getSellerName())) {
+			List<CrmClient> list =gylApiService.getALLCrmClient(inv.getSellerName());
+			if (list!=null) {
+				List<String> idList = new ArrayList<String>();
+				for (CrmClient crmClient : list) {
+					idList.add(crmClient.getClientId());
+				}
+				if (!idList.isEmpty()) {
+					c.andSellerIdIn(idList);
+				}
+			}
+			
+		}
+//			// 买方客户  名称
+//			buyerName:'',
+		if (!StringUtils.isEmpty(inv.getBuyerName())) {
+			List<CrmClient> list =gylApiService.getALLCrmClient(inv.getBuyerName());
+			if (list!=null) {
+				List<String> idList = new ArrayList<String>();
+				for (CrmClient crmClient : list) {
+					idList.add(crmClient.getClientId());
+				}
+				if (!idList.isEmpty()) {
+					c.andBuyerIdIn(idList);
+				}
+			}
+		}
+
+//			//入库仓库  名字
+//			storageName:''
+		if (!StringUtils.isEmpty(inv.getStorageName())) {
+			// TODO 仓库名称
+			List<DictMallDepot> list = new ArrayList<DictMallDepot>();
+			if (!list.isEmpty()) {
+				List<String> idList = new ArrayList<String>();
+				for (DictMallDepot dictMallDepot : list) {
+					idList.add(dictMallDepot.getDptId());
+				}
+				c.andStorageIdIn(idList);
+			}
+		}
+		
+		c.andIsDelEqualTo(YesOrNoEnum.NO.toString());
+		return example;
+	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: format
+	 * @Description: TODO( 整理返回页面的内容 ) 
+	 * @param list
+	 * @return PageInfo<StockDto>
+	 * @throws
+	 */
+	private List<InvInventoryDto> format(List<InvInventory> list){
+		List<InvInventoryDto> dtoList = new ArrayList<InvInventoryDto>();
+		for (InvInventory ins : list) {
+			InvInventoryDto dto = new InvInventoryDto();
+			dto.setInvInventory(ins);
+			// 查询出买家信息
+			CrmClient crmClient  = gylApiService.getCrmClient(ins.getBuyerId());
+			if (crmClient != null) {
+				String buyName =crmClient.getClientName();
+				dto.setBuyerName(buyName);
+			}
+			
+			//查询出卖家信息
+			CrmClient crmClient1  =  gylApiService.getCrmClient(ins.getSellerId());
+			if (crmClient1 !=null) {
+				String sellerName = crmClient1.getClientName();
+				dto.setSellerName(sellerName);
+			}
+			// 仓库名
+			DictMallDepot dictMallDepot = gylApiService.getDictMallDepot(ins.getStorageId());
+			if (dictMallDepot != null) {
+				String StorageName = dictMallDepot.getDptName();
+				dto.setStorageName(StorageName);
+			}
+			// 材质
+			DictMallSpec dictMallSpec = gylApiService.getDictMallSpec(ins.getMaterialId());
+			if (dictMallSpec != null) {
+				String materialName =  dictMallSpec.getQuality();
+				dto.setMaterialName(materialName);
+			}
+			// TODO 表面
+			BaseProcess baseProcess = baseService.getBaseProcess(ins.getSurfaceId());
+			if (baseProcess !=null) {
+				dto.setSurfaceName(baseProcess.getProcessName());
+			}
+			// 品名
+			BaseProduct baseProduct = baseService.getBaseProductById(ins.getProductId());
+			if (baseProduct != null) {
+				String productName = baseProduct.getProductName();
+				dto.setProductName(productName);
+			}
+			// 合同
+			ConContract  conContract = contractService.getConContractById(ins.getContractId());
+			if (conContract !=null) {
+				dto.setConContract(conContract);
+			} 
+			// 厂家
+			String mnfctName = gylApiService.getDictMallMnfct(ins.getMnfctId()).getMnfctName();
+			if (mnfctName !=null) {
+				dto.setMnfctName(mnfctName);
+			} 
+			dtoList.add(dto);
+		}
+		return dtoList;
+	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: getStockAll
+	 * @Description: TODO( 查询所有没有分页 ) 
+	 * @param stockDto
+	 * @param isAccuracy
+	 * @return 
+	 * @throws
+	 */
+	@SuppressWarnings("unused")
+	@Override
+	public List<InvInventoryDto>  getStockAll(InvInventoryDto stockDto, Boolean isAccuracy) {
+		
+		InvInventoryExample example = new InvInventoryExample();
+		InvInventoryExample.Criteria c = example.createCriteria();
+		if(stockDto !=null){
+			// 查询客户id 
+			List<CrmClient> crmAll = gylApiService.getALLCrmClient(stockDto.getBuyerName());
+			List<String> listAll = new ArrayList<String>();
+			for (CrmClient crmClient : crmAll) {
+				listAll.add(crmClient.getClientId());
+			}
+			CrmClient crm = gylApiService.getCrmClient(stockDto.getBuyerName());
+			if (listAll.size() != 0) {
+				c.andBuyerIdIn(listAll);
+			}
+			if (!StringUtils.isEmpty(stockDto.getBusinessType())){
+				c.andBusinessTypeEqualTo(stockDto.getBusinessType());
+			}
+			// 查询销售客户
+			if (!StringUtils.isEmpty(stockDto.getSellerName())) {
+				List<CrmClient> sellercrmAll = gylApiService.getALLCrmClient(stockDto.getSellerName());
+				List<String> listsellercrmAll = new ArrayList<String>();
+				for (CrmClient crmClient : sellercrmAll) {
+					listsellercrmAll.add(crmClient.getClientId());
+				}
+				if (listsellercrmAll.isEmpty()){
+					c.andSellerIdIn(listsellercrmAll);
+				}
+//				if (isAccuracy){
+//					c.andSellerIdEqualTo(stockDto.getSellerId());
+//				} else {
+//					c.andSellerIdLike(stockDto.getSellerId());
+//				}
+			}
+			//仓库 id 
+			List<DictMallMnfct> dic =gylApiService.getAllDictMallMnfct(stockDto.getStorageName());
+			List<String> listId = new ArrayList<String>();
+			for (DictMallMnfct dictMallMnfct : dic) {
+				listId.add(dictMallMnfct.getMnfctId());
+			}
+			if (listId.size() != 0){
+				// 放入 list id 
+				c.andStorageIdIn(listId);
+//				c.andStorageIdEqualTo(stockDto.getStorageId());
+			}
+			if (!StringUtils.isEmpty(stockDto.getInstockDate())){
+				Calendar ca = Calendar.getInstance();
+		        ca.setTime(stockDto.getInstockDate());
+		        ca.add(Calendar.DAY_OF_MONTH, 1);
+		        c.andInstockDateBetween(stockDto.getInstockDate(), ca.getTime());
+			}
+			if (StringUtils.isEmpty(stockDto.getStats())){
+				if (YesOrNoEnum.NO.toString().equals(stockDto.getStats())){
+					c.andQuantityEqualTo(BigDecimal.ZERO);
+				}else if (YesOrNoEnum.YES.toString().equals(stockDto.getStats())){
+					c.andQuantityNotEqualTo(BigDecimal.ZERO);
+				}
+				
+			}
+		}
+		// 查询出必须不被逻辑删除
+		c.andIsDelEqualTo(YesOrNoEnum.NO.toString());
+		List<InvInventory> list = invInventoryMapper.selectByExample(example);
+		return format(list);
+	}
+	@Override
+	public InvInventoryDto getStockOne(String invInventoryId) {
+		if (StringUtils.isEmpty(invInventoryId)){
+			return null;
+		}
+		InvInventory ins = invInventoryMapper.selectByPrimaryKey(invInventoryId);
+//		System.out.println(testMapper.countAll()+"aaaaaaaaaaa");
+		return format(ins);
+	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: format 
+	 * @Description: TODO( 整理返回页面的数据格式 ) 
+	 * @param ins
+	 * @return StockDto
+	 * @throws
+	 */
+	private InvInventoryDto format(InvInventory ins){
+		InvInventoryDto dto = new InvInventoryDto();
+		dto.setInvInventory(ins);
+		String buyName = gylApiService.getCrmClient(ins.getBuyerId()).getClientName();
+		String sellerName = gylApiService.getCrmClient(ins.getSellerId()).getClientName();
+		dto.setBuyerName(buyName);
+		dto.setSellerName(sellerName);
+		DictMallDepot Mnfct = gylApiService.getDictMallDepot(ins.getMnfctId());
+		dto.setDictMallDepot(Mnfct);
+		return dto ;
+	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: addStock 
+	 * @Description: TODO( 添加库存  ) 
+	 * @param inv
+	 * @return 
+	 * @throws
+	 */
+	@SuppressWarnings("unused")
+	@Override
+	public InvInventoryDto addStock(InvInventoryDto invInventoryDto) {
+		if (invInventoryDto == null){
+			return null;
+		}
+		InvInventory inv =invInventoryDto.getInvInventory();
+		if (inv == null){
+			return null;
+		}
+		// 根据dto 来转换InvInventory 类信息
+		//SELLER_ID
+		inv.setSellerId("1");
+		inv.setBuyerId("1");
+		inv.setBusinessType("1");
+		inv.setInstockDate(new Date());
+		
+		
+		
+		//  添加end
+		// 依据表必须存在的数据
+		Boolean flag = StringUtils.isEmpty(inv.getBuyerId())&& StringUtils.isEmpty(inv.getSellerId())&&StringUtils.isEmpty(inv.getBusinessType())&& inv.getInstockDate() ==null;
+		if (flag){
+			return null;
+		}
+		int a =invInventoryMapper.insertSelective(inv);
+		invInventoryDto.setInvInventory(inv);
+		return invInventoryDto;
+	}
+	
+	
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: updateStock 
+	 * @Description: TODO( 修改库存 ) 
+	 * @param invInventory
+	 * @return InvInventory
+	 * @throws
+	 */
+	@SuppressWarnings("unused")
+	@Override
+	public InvInventory updateStock(InvInventory invInventory) {
+		Integer  num = invInventoryMapper.updateByPrimaryKeySelective(invInventory);
+		return invInventory;
+	}
+	
+	@SuppressWarnings("unused")
+	@Override
+	public InvInventoryDto updateStock(InvInventoryDto invInventoryDto) {
+		if (invInventoryDto == null){
+			return null;
+		}
+		InvInventory invInventory = invInventoryDto.getInvInventory();
+		if(invInventory == null){
+			return null;
+		}
+		if(StringUtils.isEmpty(invInventory.getInventoryId())){
+			return null;
+		}
+		
+		// --- //
+		Integer  num = invInventoryMapper.updateByPrimaryKeySelective(invInventory);
+		invInventoryDto.setInvInventory(invInventory);
+		return invInventoryDto;
+	}
+	
+	
+	
+	
+	
+	@Override
+	public Integer deleteStock(String invInventoryId) {
+		InvInventory inv = new InvInventory();
+		inv.setInventoryId(invInventoryId);
+		inv.setIsDel(YesOrNoEnum.YES.toString());
+		return invInventoryMapper.updateByPrimaryKeySelective(inv);
+	}
+	
+//	/**
+//	 * 判断异常 如 InvInventory对象不存在;
+//	 */
+//	private Boolean judge(InvInventory inv,BigDecimal number,Integer type){
+//		Boolean flag = true;
+//		if (inv == null ) {
+//			return false;
+//		}
+//		BigDecimal quantity =inv.getQuantity();
+//		if (quantity==null){
+//			return false;
+//		}
+//		//  库存转待解锁  
+//		if (type == 1){
+//			// 库存少于赎货数量
+//			if (quantity.compareTo(number) == -1){
+//				return false;
+//			}
+//		}
+//		 //待解锁转待出库
+//		if (type == 2){
+//			
+//		}
+//		
+//		
+//		
+//		
+//		return flag;
+//	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: nextUnlockQuantity 
+	 * @Description: TODO(库存转待解锁      // 参数请在控制层判断 必须不空为传入) 
+	 * @param invInventoryId 库存id
+	 * @param number 
+	 * @return 
+	 * @throws
+	 */
+	@Override
+	public Integer nextUnlockQuantity(String invInventoryId, BigDecimal number) {
+		
+		InvInventoryDto dto = getStockOne(invInventoryId);
+		if (dto == null){
+			return -1;
+		}
+		InvInventory inv = dto.getInvInventory();
+//		可以通过BigDecimal的compareTo方法来进行比较。
+//		返回的结果是int类型，-1表示小于，0是等于，1是大于。
+		//库存
+		if (inv == null ) {
+			return -1;
+		}
+		BigDecimal quantity =inv.getQuantity();
+		if (quantity==null){
+			return -1;
+		}
+		// 库存少于赎货数量
+		if (quantity.compareTo(number) == -1){
+			return -1;
+		}
+		// 库存数量大于或等于赎货数量
+		if (quantity.compareTo(number) == 1 ||quantity.compareTo(number) == 0){
+			// inv.setQuantity(quantity.subtract(number));
+			inv.setNextUnlockQuantity(number);
+		}
+		updateStock(inv);
+		return 1;
+	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: nextOutstockQuantity
+	 * @Description: TODO(待解锁转待出库)
+	 * @param invInventoryId
+	 * @param number
+	 * @return
+	 * @throws
+	 */
+	@Override
+	public Integer nextOutstockQuantity(String invInventoryId, BigDecimal number) {
+		
+		InvInventoryDto dto = getStockOne(invInventoryId);
+		if (dto == null){
+			return -1;
+		}
+		InvInventory inv = dto.getInvInventory();
+		
+		if (inv == null ) {
+			return -1;
+		}
+		BigDecimal nextUnlockQuantity =inv.getNextUnlockQuantity();
+		if (nextUnlockQuantity==null){
+			return -1;
+		}
+		// 待解锁数量少于准备待出库数量
+		if (nextUnlockQuantity.compareTo(number) == -1){
+			return -1;
+		}
+		// 待解锁数量大于等于准备待出库数量
+		if (nextUnlockQuantity.compareTo(number) == 1 ||nextUnlockQuantity.compareTo(number) == 0){
+			//inv.setQuantity(nextUnlockQuantity.subtract(number));
+			inv.setNextUnlockQuantity(nextUnlockQuantity.subtract(number));
+			inv.setNextOutstockQuantity(number);
+		}
+		updateStock(inv);
+		return 1;
+	}
+	/**
+	 * 
+	 * @author shmily
+	 * @Title: outstockQuantity 
+	 * @Description: TODO(待出库转出库) 
+	 * @param invInventoryId
+	 * @param number
+	 * @return 
+	 * @throws
+	 */
+	@Override
+	public Integer outstockQuantity(String invInventoryId, BigDecimal number) {
+		
+		InvInventoryDto dto = getStockOne(invInventoryId);
+		if (dto == null){
+			return -1;
+		}
+		InvInventory inv = dto.getInvInventory();
+		if (inv == null ) {
+			return -1;
+		}
+		BigDecimal nextOutstockQuantity =inv.getNextOutstockQuantity();
+		BigDecimal quantity =inv.getQuantity();
+		if ( nextOutstockQuantity == null || quantity == null){
+			return -1;
+		}
+		// 待出库数量大于出库数量
+		if (nextOutstockQuantity.compareTo(number) == 1){
+			return -1;
+		}
+		// 待出库出来小于或者等于出库数量
+		if (nextOutstockQuantity.compareTo(number) == -1|| nextOutstockQuantity.compareTo(number) == 0){
+			inv.setNextOutstockQuantity(nextOutstockQuantity.subtract(number));
+			inv.setQuantity(quantity.subtract(number));
+		}
+		updateStock(inv);
+		return 1;
+	}
+
+
+
+
+	
+	
+}

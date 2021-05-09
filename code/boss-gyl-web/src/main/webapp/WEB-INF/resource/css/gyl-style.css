@@ -1,0 +1,134 @@
+/* 供应链系统通用样式 */
+/* 隐藏未编译完成的Vue组件内容 */
+[v-cloak] {
+	display: none
+}
+/* 查询区域样式修改 */
+.tip-label {
+	width: 60px;
+}
+.col-240 {
+	padding: 0 5px;
+}
+/* element-ui 样式 */
+.el-input__inner {
+	height: 32px !important;
+	border-radius: 2px !important;
+}
+.el-pagination .el-select .el-input .el-input__inner {
+    padding-right: 25px !important;
+    border-radius: 3px !important;
+    height: 28px !important;
+}
+.el-pagination .el-pagination__sizes,
+.el-pagination .el-pagination__total {
+	float: left;
+}
+.el-popover.el-popper {
+	max-height: 450px;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.el-select {
+	width: 100%;
+}
+.el-input__icon {
+	line-height: 35px;
+}
+/* component-table 自定义列组件样式 */
+.custom-table-column-ul {
+	list-style-type: none;
+	border-top: 1px solid #e6ebf5;
+}
+
+.custom-table-column-ul li {
+	list-style-type: none;
+	padding: 8px 5px;
+	display: flex;
+	display: -webkit-flex;
+	justify-content: space-between;
+	border-bottom: 1px solid #e6ebf5;
+}
+
+.custom-table-column-ul .drag-handle {
+	font: bold 14px Sans-Serif;
+	color: #5F9EDF;
+	display: inline-block;
+	cursor: move;
+	cursor: -webkit-grabbing;
+}
+/* 表格组件 */
+
+/* 表格第一列样式 */
+.el-table__body-wrapper .first-col--text .cell {
+	color: #409eff;
+}
+
+/* 弹窗 */
+.ui-dialog .crm-form {
+	font-family: "Microsoft Yahei","WenQuanYi Micro Hei",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","Source Han Sans CN",Roboto,"新宋体","Heiti SC",sans-serif;
+}
+.ui-dialog-content .ui-row {
+	padding-left: 15px;
+}
+/* 弹框内表格上方按钮 */
+.ui-dialog-content .btn_new_line {
+	background-color: #5CB85C;
+	color: #FFFFFF;
+	margin-top: -5px;
+}
+.slide-overflow .btn_new_line {
+	background-color: #5CB85C;
+	color: #FFFFFF;
+	margin-bottom: 10px;
+}
+.detail-comfirm-btn {
+	margin-right: 50px;
+}
+/* 弹框内按钮样式 */
+.ui-dialog-buttons {
+	background-color: #fff;
+	border: 1px solid #4ea3ff;
+}
+
+/* 侧边栏样式 */
+#slideEidt, .slideEidt {
+	position: fixed;
+	/* 	min-width: 900px; */
+	width: 900px;
+	height: 100%;
+	background-color: #4d525e;
+	z-index: 500;
+	overflow-y: auto;
+	overflow-x: hidden;
+	top: 0;
+	right: -960px
+}
+
+#slideEidt .tab-container, .slideEidt .tab-container {
+	min-height: 150px;
+}
+
+#slideEidt .el-loading-mask, .slideEidt .el-loading-mask {
+	border-radius: 4px;
+	right: 15px;
+	bottom: 35px;
+}
+
+.slide-cnt .ui-row {
+	margin: auto;
+}
+
+/* 时间选择 */
+.datepicker.datepicker-dropdown.dropdown-menu.datepicker-top {
+	z-index: 900 !important;
+}
+
+/* element upload样式*/
+.el-upload__input {
+	display: none !important;
+}
+
+.form-upload .el-upload-list__item-status-label {
+	display: none;
+}

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.InApplyRemitDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.InApplyRemitDetail" >
+    <id column="APPLY_REMIT_DETAIL_ID" property="applyRemitDetailId" jdbcType="VARCHAR" />
+    <result column="MONEY" property="money" jdbcType="DECIMAL" />
+    <result column="REMIT_STATUS" property="remitStatus" jdbcType="VARCHAR" />
+    <result column="AUDIT_STATUS" property="auditStatus" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="INSTOCK_ID" property="instockId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    APPLY_REMIT_DETAIL_ID, MONEY, REMIT_STATUS, AUDIT_STATUS, CREATE_USER, CREATE_DATE, 
+    IS_DEL, INSTOCK_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.InApplyRemitDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_IN_APPLY_REMIT_DETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_IN_APPLY_REMIT_DETAIL
+    where APPLY_REMIT_DETAIL_ID = #{applyRemitDetailId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_IN_APPLY_REMIT_DETAIL
+    where APPLY_REMIT_DETAIL_ID = #{applyRemitDetailId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.InApplyRemitDetail" >
+  <selectKey keyProperty="applyRemitDetailId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_IN_APPLY_REMIT_DETAIL (APPLY_REMIT_DETAIL_ID, MONEY, REMIT_STATUS, 
+      AUDIT_STATUS, CREATE_USER, CREATE_DATE, 
+      IS_DEL, INSTOCK_ID)
+    values (#{applyRemitDetailId,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, #{remitStatus,jdbcType=VARCHAR}, 
+      #{auditStatus,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, #{createDate,jdbcType=TIMESTAMP}, 
+      #{isDel,jdbcType=CHAR}, #{instockId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.InApplyRemitDetail" >
+  <selectKey keyProperty="applyRemitDetailId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_IN_APPLY_REMIT_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="applyRemitDetailId != null" >
+        APPLY_REMIT_DETAIL_ID,
+      </if>
+      <if test="money != null" >
+        MONEY,
+      </if>
+      <if test="remitStatus != null" >
+        REMIT_STATUS,
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="instockId != null" >
+        INSTOCK_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="applyRemitDetailId != null" >
+        #{applyRemitDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="remitStatus != null" >
+        #{remitStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="instockId != null" >
+        #{instockId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_IN_APPLY_REMIT_DETAIL
+    <set >
+      <if test="record.applyRemitDetailId != null" >
+        APPLY_REMIT_DETAIL_ID = #{record.applyRemitDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.money != null" >
+        MONEY = #{record.money,jdbcType=DECIMAL},
+      </if>
+      <if test="record.remitStatus != null" >
+        REMIT_STATUS = #{record.remitStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.auditStatus != null" >
+        AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.instockId != null" >
+        INSTOCK_ID = #{record.instockId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_IN_APPLY_REMIT_DETAIL
+    set APPLY_REMIT_DETAIL_ID = #{record.applyRemitDetailId,jdbcType=VARCHAR},
+      MONEY = #{record.money,jdbcType=DECIMAL},
+      REMIT_STATUS = #{record.remitStatus,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{record.auditStatus,jdbcType=VARCHAR},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      INSTOCK_ID = #{record.instockId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.InApplyRemitDetail" >
+    update TB_IN_APPLY_REMIT_DETAIL
+    <set >
+      <if test="money != null" >
+        MONEY = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="remitStatus != null" >
+        REMIT_STATUS = #{remitStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="auditStatus != null" >
+        AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="instockId != null" >
+        INSTOCK_ID = #{instockId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where APPLY_REMIT_DETAIL_ID = #{applyRemitDetailId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.InApplyRemitDetail" >
+    update TB_IN_APPLY_REMIT_DETAIL
+    set MONEY = #{money,jdbcType=DECIMAL},
+      REMIT_STATUS = #{remitStatus,jdbcType=VARCHAR},
+      AUDIT_STATUS = #{auditStatus,jdbcType=VARCHAR},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      INSTOCK_ID = #{instockId,jdbcType=VARCHAR}
+    where APPLY_REMIT_DETAIL_ID = #{applyRemitDetailId,jdbcType=VARCHAR}
+  </update>
+</mapper>

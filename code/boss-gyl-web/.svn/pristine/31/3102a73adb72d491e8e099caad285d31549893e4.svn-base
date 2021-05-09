@@ -1,0 +1,93 @@
+package com.maigangle.gyl.web.controller.finance;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.github.pagehelper.PageInfo;
+import com.maigangle.erp.common.annotation.Privilege;
+import com.maigangle.erp.common.log.EnumMonitorLog;
+import com.maigangle.erp.common.log.LogBatchUtil;
+import com.maigangle.gyl.facade.entity.BaseProduct;
+import com.maigangle.gyl.facade.entity.InInstockBill;
+import com.maigangle.gyl.facade.entity.api.DictMallDepot;
+import com.maigangle.gyl.facade.entity.api.DictMallMnfct;
+import com.maigangle.gyl.facade.entity.dto.InvoiceGoodsConditionDto;
+import com.maigangle.gyl.facade.entity.vo.InvoiceGoodsConditionVo;
+import com.maigangle.gyl.facade.service.BaseService;
+import com.maigangle.gyl.facade.service.InstockBillService;
+import com.maigangle.gyl.facade.utils.PageUtils;
+import com.maigangle.gyl.web.controller.GylBaseWeb;
+import com.maigangle.gyl.web.util.AjaxResult;
+import com.maigangle.gyl.web.util.MessageCode;
+
+@Controller
+@RequestMapping("/invoice")
+public class InvoiceController extends GylBaseWeb{
+	@Autowired
+	private BaseService baseService;
+	
+	@Autowired
+	private InstockBillService instockBillService;
+
+	@Privilege(key = "GYL_INVOICE_VIEW")
+	@RequestMapping("/main")
+	public ModelAndView main() {
+		ModelAndView modelAndView = new ModelAndView("/finance/invoiceIndex");
+		return modelAndView;
+	}
+	
+	@RequestMapping("/findInInvoices")
+	@ResponseBody
+	public AjaxResult findInInvoices(HttpServletRequest request,@RequestBody PageUtils<InvoiceGoodsConditionDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		ModelAndView mav = new ModelAndView();
+		try {
+			super.logInfo(request, logBatch, "查询状态为已完成的入库单中没有开过发票的货物", "操作人ID为：" + getLoginName(request) + "查询所有入库单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			//  进行相关逻辑编写
+			if(page == null) {
+				page = new PageUtils<InvoiceGoodsConditionDto>();
+			}
+			List<InvoiceGoodsConditionVo> list = instockBillService.getInvoiceGoodsIn(page).getList();
+			for(int i=0;i<list.size();i++) {
+				InvoiceGoodsConditionVo vo = list.get(0);
+					if(!StringUtils.isEmpty(vo.getMnfctId())) {
+						Map<String, Object> resultMallMnfct = getDictMallMnfct(request, vo.getMnfctId());
+						if (!(boolean)resultMallMnfct.get("isSuccess")) {
+							return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "根据生产厂家ID检索生产厂家数据," + resultMallMnfct.get("msg"));
+						}
+						DictMallMnfct dictMallMnfct = (DictMallMnfct) resultMallMnfct.get("data");
+						vo.setMnfct(dictMallMnfct);
+					}
+					if(!StringUtils.isEmpty(vo.getStorageId())) {
+						Map<String, Object> result1 = getDictMallDepot(request, vo.getStorageId());
+						if (!(boolean)result1.get("isSuccess")) {
+							return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "获取当前用户数据异常," + result1.get("msg"));
+						}
+						DictMallDepot dictMallDepot = (DictMallDepot) result1.get("data");
+						vo.setStorage(dictMallDepot);
+					}
+					BaseProduct product = baseService.getBaseProductById(vo.getProductId());
+					vo.setProduct(product);
+			}
+			return AjaxResult.createSuccessResult(list);
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "查询状态为已完成的入库单中没有开过发票的货物",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+}	

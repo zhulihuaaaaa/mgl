@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.FlowExtMapper" >
+	<select id="getSumMoney" resultType="java.math.BigDecimal">
+		SELECT SUM(MONEY) FROM TB_IN_CONTRACT_REMIT_DETAIL WHERE INSTOCK_ID=#{instockBillId}
+	</select>
+</mapper>

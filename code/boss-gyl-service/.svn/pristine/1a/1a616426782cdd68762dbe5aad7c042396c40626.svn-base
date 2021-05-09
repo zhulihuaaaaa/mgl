@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.InsInspectionDetailExtMapper" >
+	<sql id="Base_Column_List">
+		INSPECTION_DETAIL_ID, SELLER_ID, BUYER_ID, BUSINESS_TYPE, STORAGE_ID, INSTOCK_DATE,
+		PRODUCT_ID, MATERIAL_ID, SURFACE_ID, LABEL_THICK, LABEL_WIDTH,
+		GOODS_LENGTH, EDGE,
+		REFER_THICK, REAL_WIDTH, TRADEMARK, GOODS_VOLUME, MNFCT_ID, NET_WEIGHT, AMOUNT,
+		CALC_METHOD,
+		GRADE, CONTRACT_UNIT_PRICE, REAL_UNIT_PRICE, FLOAT_PRICE, BASIC_PRICE,
+		STORE_PRICE,
+		CONTRACT_MONEY, REAL_MONEY, NEXT_UNLOCK_QUANTITY, NEXT_OUTSTOCK_QUANTITY, IMPL_STD,
+		NOTES, IS_DEL, BORE, INSPECTION_SUB_ID
+	</sql>
+ 	<!-- 批量添加 -->
+	<insert id="BathList" parameterType="java.util.List"
+		keyProperty="inspectionDetailId">
+		insert into
+		TB_INS_INSPECTION_DETAIL
+		(
+		<include refid="Base_Column_List"></include>
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			((select sys_guid() from dual), 
+			#{item.sellerId,jdbcType=VARCHAR},
+			#{item.buyerId,jdbcType=VARCHAR},
+			#{item.businessType,jdbcType=VARCHAR},
+			#{item.storageId,jdbcType=VARCHAR},
+			#{item.instockDate,jdbcType=TIMESTAMP},
+			#{item.productId,jdbcType=VARCHAR},
+			#{item.materialId,jdbcType=VARCHAR},
+			#{item.surfaceId,jdbcType=VARCHAR},
+			#{item.labelThick,jdbcType=VARCHAR},
+			#{item.labelWidth,jdbcType=VARCHAR},
+			#{item.goodsLength,jdbcType=DECIMAL},
+			#{item.edge,jdbcType=VARCHAR}, 
+			#{item.referThick,jdbcType=DECIMAL},
+			#{item.realWidth,jdbcType=DECIMAL},
+			#{item.trademark,jdbcType=VARCHAR},
+			#{item.goodsVolume,jdbcType=VARCHAR},
+			#{item.mnfctId,jdbcType=VARCHAR},
+			#{item.netWeight,jdbcType=DECIMAL},
+			 #{item.amount,jdbcType=DECIMAL},
+			#{item.calcMethod,jdbcType=VARCHAR},
+			#{item.grade,jdbcType=VARCHAR}, 
+			#{item.contractUnitPrice,jdbcType=DECIMAL},
+			#{item.realUnitPrice,jdbcType=DECIMAL},
+			#{item.floatPrice,jdbcType=DECIMAL},
+			#{item.basicPrice,jdbcType=DECIMAL},
+			#{item.storePrice,jdbcType=DECIMAL},
+			#{item.contractMoney,jdbcType=DECIMAL},
+			#{item.realMoney,jdbcType=DECIMAL},
+			#{item.nextUnlockQuantity,jdbcType=DECIMAL},
+			#{item.nextOutstockQuantity,jdbcType=DECIMAL},
+			#{item.implStd,jdbcType=VARCHAR}, 
+			#{item.notes,jdbcType=VARCHAR},
+			#{item.isDel,jdbcType=CHAR},
+			#{item.bore,jdbcType=DECIMAL},
+			#{item.inspectionSubId,jdbcType=VARCHAR})
+		</foreach>
+	</insert>
+	
+	<update id="BathUpdate" parameterType="java.util.List">
+	 <foreach collection="list" item="i" index="index" open="" close="" >
+			UPDATE TB_INS_INSPECTION_DETAIL detail
+			<set>
+			 	<if test="i.realMoney !=null">
+                   detail.REAL_MONEY = #{i.realMoney,jdbcType=DECIMAL},
+              	</if>
+				<if test="i.realUnitPrice !=null">
+                  detail.REAL_UNIT_PRICE = #{i.realUnitPrice,jdbcType=DECIMAL}
+                </if>
+			</set>
+			WHERE
+			detail.INSPECTION_DETAIL_ID = #{i.inspectionDetailId,jdbcType=VARCHAR}
+		</foreach>	
+	</update>
+</mapper>

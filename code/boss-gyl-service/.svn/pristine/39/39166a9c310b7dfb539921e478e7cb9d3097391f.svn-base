@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.BaseCostMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.BaseCost" >
+    <id column="COST_ID" property="costId" jdbcType="VARCHAR" />
+    <result column="COST_TYPE" property="costType" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_ID" property="customerId" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    COST_ID, COST_TYPE, CUSTOMER_ID, AMOUNT, IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.BaseCostExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_BASE_COST
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+      AND IS_DEL = 'N'
+    </if>
+    <if test="_parameter == null">
+    	WHERE IS_DEL = 'N'
+    </if> 
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_BASE_COST
+    where COST_ID = #{costId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_BASE_COST
+    where COST_ID = #{costId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.BaseCost" >
+  <selectKey keyProperty="costId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_BASE_COST (COST_ID, COST_TYPE, CUSTOMER_ID, 
+      AMOUNT, IS_DEL)
+    values (#{costId,jdbcType=VARCHAR}, #{costType,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=DECIMAL}, #{isDel,jdbcType=CHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.BaseCost" >
+  <selectKey keyProperty="costId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_BASE_COST
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="costId != null" >
+        COST_ID,
+      </if>
+      <if test="costType != null" >
+        COST_TYPE,
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="costId != null" >
+        #{costId,jdbcType=VARCHAR},
+      </if>
+      <if test="costType != null" >
+        #{costType,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_BASE_COST
+    <set >
+      <if test="record.costId != null" >
+        COST_ID = #{record.costId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.costType != null" >
+        COST_TYPE = #{record.costType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.customerId != null" >
+        CUSTOMER_ID = #{record.customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount != null" >
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_BASE_COST
+    set COST_ID = #{record.costId,jdbcType=VARCHAR},
+      COST_TYPE = #{record.costType,jdbcType=VARCHAR},
+      CUSTOMER_ID = #{record.customerId,jdbcType=VARCHAR},
+      AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      IS_DEL = #{record.isDel,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.BaseCost" >
+    update TB_BASE_COST
+    <set >
+      <if test="costType != null" >
+        COST_TYPE = #{costType,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        AMOUNT = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    where COST_ID = #{costId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.BaseCost" >
+    update TB_BASE_COST
+    set COST_TYPE = #{costType,jdbcType=VARCHAR},
+      CUSTOMER_ID = #{customerId,jdbcType=VARCHAR},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      IS_DEL = #{isDel,jdbcType=CHAR}
+    where COST_ID = #{costId,jdbcType=VARCHAR}
+  </update>
+</mapper>

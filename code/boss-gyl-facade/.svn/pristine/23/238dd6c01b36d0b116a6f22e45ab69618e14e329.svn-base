@@ -1,0 +1,131 @@
+package com.maigangle.gyl.facade.entity;
+
+import java.io.Serializable;
+/**
+ * 审批模块
+ * @author 张渊
+ * @since 2017年12月21日 上午11:54:35
+ * @version 1.0
+ */
+public class SysApprovalModule implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2432321850298742841L;
+
+	private String approvalModuleId;
+	/**
+	 * 模块名称
+	 */
+    private String moduleName;
+    /**
+     * 别名
+     */
+    private String moduleAlias;
+    /**
+     * 对应ServiceBean名
+     */
+    private String moduleServiceBean;
+    /**
+     * 审批通过回调方法名称
+     */
+    private String approvalCompleteMethod;
+    /**
+     * 审批拒绝回调方法名称
+     */
+    private String approvalSuspendMethod;
+    /**
+     * 作废回调方法名称
+     */
+    private String approvalCancelMethod;
+    /**
+     * 撤销审批调用回调方法
+     */
+    private String abandonApprovalMethod;
+    /**
+     * 撤销拒绝回调方法名称
+     */
+    private String abandonRejectMethod;
+
+    private String isDel;
+
+    public String getApprovalModuleId() {
+        return approvalModuleId;
+    }
+
+    public void setApprovalModuleId(String approvalModuleId) {
+        this.approvalModuleId = approvalModuleId == null ? null : approvalModuleId.trim();
+    }
+
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    public void setModuleName(String moduleName) {
+        this.moduleName = moduleName == null ? null : moduleName.trim();
+    }
+
+    public String getModuleServiceBean() {
+        return moduleServiceBean;
+    }
+
+    public void setModuleServiceBean(String moduleServiceBean) {
+        this.moduleServiceBean = moduleServiceBean == null ? null : moduleServiceBean.trim();
+    }
+
+    public String getApprovalCompleteMethod() {
+        return approvalCompleteMethod;
+    }
+
+    public void setApprovalCompleteMethod(String approvalCompleteMethod) {
+        this.approvalCompleteMethod = approvalCompleteMethod == null ? null : approvalCompleteMethod.trim();
+    }
+
+    public String getApprovalSuspendMethod() {
+        return approvalSuspendMethod;
+    }
+
+    public void setApprovalSuspendMethod(String approvalSuspendMethod) {
+        this.approvalSuspendMethod = approvalSuspendMethod == null ? null : approvalSuspendMethod.trim();
+    }
+
+    public String getApprovalCancelMethod() {
+        return approvalCancelMethod;
+    }
+
+    public void setApprovalCancelMethod(String approvalCancelMethod) {
+        this.approvalCancelMethod = approvalCancelMethod == null ? null : approvalCancelMethod.trim();
+    }
+
+    public String getAbandonApprovalMethod() {
+        return abandonApprovalMethod;
+    }
+
+    public void setAbandonApprovalMethod(String abandonApprovalMethod) {
+        this.abandonApprovalMethod = abandonApprovalMethod == null ? null : abandonApprovalMethod.trim();
+    }
+
+    public String getAbandonRejectMethod() {
+        return abandonRejectMethod;
+    }
+
+    public void setAbandonRejectMethod(String abandonRejectMethod) {
+        this.abandonRejectMethod = abandonRejectMethod == null ? null : abandonRejectMethod.trim();
+    }
+
+    public String getIsDel() {
+        return isDel;
+    }
+
+    public void setIsDel(String isDel) {
+        this.isDel = isDel == null ? null : isDel.trim();
+    }
+
+    public String getModuleAlias() {
+        return moduleAlias;
+    }
+
+    public void setModuleAlias(String moduleAlias) {
+        this.moduleAlias = moduleAlias == null ? null : moduleAlias.trim();
+    }
+}

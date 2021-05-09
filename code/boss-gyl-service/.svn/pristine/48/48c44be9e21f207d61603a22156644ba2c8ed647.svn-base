@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.maigangle.gyl.service.mapper.GridConfigMapper">
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.GridConfig">
+    <id column="GRID_ID" jdbcType="VARCHAR" property="gridId" />
+    <result column="GRID_CODE" jdbcType="VARCHAR" property="gridCode" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="GRID_CONFIG" jdbcType="VARCHAR" property="gridConfig" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    GRID_ID, GRID_CODE, USER_ID, GRID_CONFIG
+  </sql>
+  <select id="selectByExample" parameterType="com.maigangle.gyl.facade.entity.GridConfigExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_GRID_CONFIG
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_GRID_CONFIG
+    where GRID_ID = #{gridId,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from TB_GRID_CONFIG
+    where GRID_CODE = #{code,jdbcType=VARCHAR} and USER_ID = #{userId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from TB_GRID_CONFIG
+    where GRID_ID = #{gridId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.GridConfig">
+  	<selectKey keyProperty="gridId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_GRID_CONFIG (GRID_ID, GRID_CODE, USER_ID, 
+      GRID_CONFIG)
+    values (#{gridId,jdbcType=VARCHAR}, #{gridCode,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, 
+      #{gridConfig,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.GridConfig">
+  	<selectKey keyProperty="gridId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_GRID_CONFIG
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="gridId != null">
+        GRID_ID,
+      </if>
+      <if test="gridCode != null">
+        GRID_CODE,
+      </if>
+      <if test="userId != null">
+        USER_ID,
+      </if>
+      <if test="gridConfig != null">
+        GRID_CONFIG,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="gridId != null">
+        #{gridId,jdbcType=VARCHAR},
+      </if>
+      <if test="gridCode != null">
+        #{gridCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="gridConfig != null">
+        #{gridConfig,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map">
+    update TB_GRID_CONFIG
+    <set>
+      <if test="record.gridId != null">
+        GRID_ID = #{record.gridId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gridCode != null">
+        GRID_CODE = #{record.gridCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userId != null">
+        USER_ID = #{record.userId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gridConfig != null">
+        GRID_CONFIG = #{record.gridConfig,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update TB_GRID_CONFIG
+    set GRID_ID = #{record.gridId,jdbcType=VARCHAR},
+      GRID_CODE = #{record.gridCode,jdbcType=VARCHAR},
+      USER_ID = #{record.userId,jdbcType=VARCHAR},
+      GRID_CONFIG = #{record.gridConfig,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.GridConfig">
+    update TB_GRID_CONFIG
+    <set>
+      <if test="gridCode != null">
+        GRID_CODE = #{gridCode,jdbcType=VARCHAR},
+      </if>
+      <if test="userId != null">
+        USER_ID = #{userId,jdbcType=VARCHAR},
+      </if>
+      <if test="gridConfig != null">
+        GRID_CONFIG = #{gridConfig,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where GRID_ID = #{gridId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.GridConfig">
+    update TB_GRID_CONFIG
+    set GRID_CODE = #{gridCode,jdbcType=VARCHAR},
+      USER_ID = #{userId,jdbcType=VARCHAR},
+      GRID_CONFIG = #{gridConfig,jdbcType=VARCHAR}
+    where GRID_ID = #{gridId,jdbcType=VARCHAR}
+  </update>
+</mapper>

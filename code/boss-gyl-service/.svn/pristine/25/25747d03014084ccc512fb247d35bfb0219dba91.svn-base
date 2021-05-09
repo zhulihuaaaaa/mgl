@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.FeeBalanceMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.FeeBalance" >
+    <id column="BALANCE_ID" property="balanceId" jdbcType="VARCHAR" />
+    <result column="MAKER_ID" property="makerId" jdbcType="VARCHAR" />
+    <result column="CUSTOMER_ID" property="customerId" jdbcType="VARCHAR" />
+    <result column="AMOUNT" property="amount" jdbcType="DECIMAL" />
+    <result column="RESIDUAL_AMOUNT" property="residualAmount" jdbcType="DECIMAL" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="RELATION_ID" property="relationId" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    BALANCE_ID, MAKER_ID, CUSTOMER_ID, AMOUNT, RESIDUAL_AMOUNT, CREATE_USER, CREATE_DATE, 
+    RELATION_ID, IS_DEL
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.FeeBalanceExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_FEE_BALANCE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_FEE_BALANCE
+    where BALANCE_ID = #{balanceId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_FEE_BALANCE
+    where BALANCE_ID = #{balanceId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.FeeBalance" >
+  <selectKey keyProperty="balanceId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_BALANCE (BALANCE_ID, MAKER_ID, CUSTOMER_ID, 
+      AMOUNT, RESIDUAL_AMOUNT, CREATE_USER, 
+      CREATE_DATE, RELATION_ID, IS_DEL
+      )
+    values (#{balanceId,jdbcType=VARCHAR}, #{makerId,jdbcType=VARCHAR}, #{customerId,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=DECIMAL}, #{residualAmount,jdbcType=DECIMAL}, #{createUser,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{relationId,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.FeeBalance" >
+  <selectKey keyProperty="balanceId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_BALANCE
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="balanceId != null" >
+        BALANCE_ID,
+      </if>
+      <if test="makerId != null" >
+        MAKER_ID,
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID,
+      </if>
+      <if test="amount != null" >
+        AMOUNT,
+      </if>
+      <if test="residualAmount != null" >
+        RESIDUAL_AMOUNT,
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="relationId != null" >
+        RELATION_ID,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="balanceId != null" >
+        #{balanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="makerId != null" >
+        #{makerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="residualAmount != null" >
+        #{residualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationId != null" >
+        #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.maigangle.gyl.facade.entity.FeeBalanceExample" resultType="java.lang.Integer" >
+    select count(*) from TB_FEE_BALANCE
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_FEE_BALANCE
+    <set >
+      <if test="record.balanceId != null" >
+        BALANCE_ID = #{record.balanceId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.makerId != null" >
+        MAKER_ID = #{record.makerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.customerId != null" >
+        CUSTOMER_ID = #{record.customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.amount != null" >
+        AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.residualAmount != null" >
+        RESIDUAL_AMOUNT = #{record.residualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.createUser != null" >
+        CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.relationId != null" >
+        RELATION_ID = #{record.relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_FEE_BALANCE
+    set BALANCE_ID = #{record.balanceId,jdbcType=VARCHAR},
+      MAKER_ID = #{record.makerId,jdbcType=VARCHAR},
+      CUSTOMER_ID = #{record.customerId,jdbcType=VARCHAR},
+      AMOUNT = #{record.amount,jdbcType=DECIMAL},
+      RESIDUAL_AMOUNT = #{record.residualAmount,jdbcType=DECIMAL},
+      CREATE_USER = #{record.createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      RELATION_ID = #{record.relationId,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.FeeBalance" >
+    update TB_FEE_BALANCE
+    <set >
+      <if test="makerId != null" >
+        MAKER_ID = #{makerId,jdbcType=VARCHAR},
+      </if>
+      <if test="customerId != null" >
+        CUSTOMER_ID = #{customerId,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null" >
+        AMOUNT = #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="residualAmount != null" >
+        RESIDUAL_AMOUNT = #{residualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="createUser != null" >
+        CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="relationId != null" >
+        RELATION_ID = #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+    </set>
+    where BALANCE_ID = #{balanceId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.FeeBalance" >
+    update TB_FEE_BALANCE
+    set MAKER_ID = #{makerId,jdbcType=VARCHAR},
+      CUSTOMER_ID = #{customerId,jdbcType=VARCHAR},
+      AMOUNT = #{amount,jdbcType=DECIMAL},
+      RESIDUAL_AMOUNT = #{residualAmount,jdbcType=DECIMAL},
+      CREATE_USER = #{createUser,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      RELATION_ID = #{relationId,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR}
+    where BALANCE_ID = #{balanceId,jdbcType=VARCHAR}
+  </update>
+</mapper>

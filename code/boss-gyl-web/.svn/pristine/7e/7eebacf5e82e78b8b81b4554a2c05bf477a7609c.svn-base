@@ -1,0 +1,323 @@
+package com.maigangle.gyl.web.controller.finance;
+
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.exception.ExceptionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.github.pagehelper.PageInfo;
+import com.maigangle.erp.common.annotation.Privilege;
+import com.maigangle.erp.common.log.EnumMonitorLog;
+import com.maigangle.erp.common.log.LogBatchUtil;
+import com.maigangle.gyl.facade.entity.ConContract;
+import com.maigangle.gyl.facade.entity.FeeDepositAccount;
+import com.maigangle.gyl.facade.entity.FeeDepositDetail;
+import com.maigangle.gyl.facade.entity.FeeFinanceBill;
+import com.maigangle.gyl.facade.entity.api.PrivUser;
+import com.maigangle.gyl.facade.entity.dto.FeeFinanceBillDto;
+import com.maigangle.gyl.facade.entity.vo.FeeFinanceBillVo;
+import com.maigangle.gyl.facade.enums.ApprovalStateEnum;
+import com.maigangle.gyl.facade.enums.FinanceFlwoTypeEnum;
+import com.maigangle.gyl.facade.enums.FinanceStateEnum;
+import com.maigangle.gyl.facade.enums.FinanceTypeEnum;
+import com.maigangle.gyl.facade.service.ContractService;
+import com.maigangle.gyl.facade.service.FinanceService;
+import com.maigangle.gyl.facade.service.FlowService;
+import com.maigangle.gyl.facade.service.InstockBillService;
+import com.maigangle.gyl.facade.service.RedRedeemBillService;
+import com.maigangle.gyl.facade.utils.PageUtils;
+import com.maigangle.gyl.web.controller.GylBaseWeb;
+import com.maigangle.gyl.web.util.AjaxResult;
+import com.maigangle.gyl.web.util.MessageCode;
+
+/**
+ * 财务Controller
+ * @author 汪玮琦
+ * @since 2017年12月5日 下午1:34:01
+ * @varsion 1.0
+ */
+@Controller
+@RequestMapping("/finance")
+public class FinanceController extends GylBaseWeb {
+	@Autowired
+	private FinanceService financeService;
+	@Autowired
+	private ContractService contractService;
+	@Autowired
+	private RedRedeemBillService redeemBillService;
+	@Autowired
+	private FlowService flowService;
+	@Autowired
+	private RedRedeemBillService redRedeemBillService;
+	@Autowired
+	private InstockBillService instockBillService;
+	
+	@RequestMapping("/main")
+	public ModelAndView main() {
+		ModelAndView modelAndView = new ModelAndView("/finance/financeIndex");
+		return modelAndView;
+	}
+	
+	@RequestMapping("/detail")
+	public ModelAndView detail() {
+		ModelAndView modelAndView = new ModelAndView("/finance/financeDetail");
+		return modelAndView;
+	}
+	
+	@RequestMapping("/save")
+	@ResponseBody
+	public AjaxResult saveFinaceBill(HttpServletRequest request, @RequestBody FeeFinanceBill bill) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "新增财务单", "操作人ID为：" + getLoginName(request) + "新增财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			String checkMsg = this.checkFinaceBill(bill, false);
+			if (StringUtils.isEmpty(checkMsg)) {
+				return AjaxResult.createSuccessResult(financeService.addFinanceBill(bill));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.SAVE_FAILED, checkMsg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "新增财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.SAVE_FAILED);
+	}
+	
+	@Privilege(key = "GYL_FINANCE_COMFIRM")
+	@RequestMapping("/update")
+	@ResponseBody
+	public AjaxResult updateFinaceBill(HttpServletRequest request, @RequestBody FeeFinanceBill bill) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "更新财务单", "操作人ID为：" + getLoginName(request) + "更新财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			String checkMsg = this.checkFinaceBill(bill, true);
+			if (StringUtils.isEmpty(checkMsg)) {
+				Map<String, Object> result = getCurrentPrivUser(request);
+				if (!(boolean)result.get("isSuccess")) {
+					return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "获取当前用户数据异常," + result.get("msg"));
+				}
+				PrivUser privUser = (PrivUser) result.get("data");
+				bill.setStatus(FinanceStateEnum.YI_WAN_CHENG.toString());
+				bill.setOperator(privUser.getUserName());
+				bill.setOperatorDate(new Date());
+				bill = financeService.updateFinaceBill(bill);
+				if (bill != null) {
+					if (!StringUtils.isEmpty(bill.getBusinessType())) {
+						// 更新 履约保证金 与 购货款
+						if (bill.getBusinessType().equals(FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString()) 
+								|| bill.getBusinessType().equals(FinanceTypeEnum.GOU_HUO_KUAN.toString())) {
+							flowService.updateFlow(bill.getContractId(), bill.getFinanceBillId());
+							if (bill.getBusinessType().equals(FinanceTypeEnum.GOU_HUO_KUAN.toString())) {
+								instockBillService.updateApplyRemitByfID(bill.getFinanceBillId());
+							}
+							if (bill.getBusinessType().equals(FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString())) {
+								saveOrUpdateDeposit(privUser, bill, FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString());
+							}
+							
+						}
+						// 更新追加保证金
+						if (bill.getBusinessType().equals(FinanceTypeEnum.ZHUI_JIA_BAO_ZHENG_JIN.toString())) {
+							contractService.updateConDepositDetailState(bill.getContractId(), bill.getFinanceBillId());
+							saveOrUpdateDeposit(privUser, bill, FinanceTypeEnum.ZHUI_JIA_BAO_ZHENG_JIN.toString());
+						}
+						// 更新追加货款
+						if (bill.getBusinessType().equals(FinanceTypeEnum.ZHUI_JIA_HUO_KUAN.toString())) {
+							contractService.updateConPaymentDetailState(bill.getContractId(),bill.getFinanceBillId(), bill.getRelationId());
+						}
+						// 更新赎货款
+						if (bill.getBusinessType().equals(FinanceTypeEnum.SHU_HUO_KUAN.toString())) {
+							redRedeemBillService.billWasAudited(bill.getRelationId(), ApprovalStateEnum.APPROVAL_COMPLETE.toString());
+						}
+					}
+					return AjaxResult.createSuccessResultWithCode(MessageCode.UPDATE_SUCCESS, bill,
+							bill.getFlwoType().equals(FinanceFlwoTypeEnum.CHU_ZHANG.toString()) ? "打款完成" : "已确认到账");
+				} else {
+					return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED);
+				}
+				
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED, checkMsg);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "更新财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.UPDATE_FAILED);
+	}
+	
+	
+	private void saveOrUpdateDeposit(PrivUser privUser, FeeFinanceBill bill, String type) {
+		
+		// 当前用户名
+		String createUser = privUser.getUserName();
+		// 查询保证金账户
+		FeeDepositAccount account = financeService.getDepositAccountByContractId(bill.getContractId());
+		ConContract contract = contractService.getConContractById(bill.getContractId());
+		// 如果没有保证金账户则新增一条
+		if (account == null) {
+			account = new FeeDepositAccount();
+			account.setBusinessType(bill.getBusinessType());
+			account.setContractId(bill.getContractId());
+			account.setCreateDate(new Date());
+			account.setCreateUser(createUser);
+			account.setBalance(new BigDecimal(0));
+			account.setDepositFee(new BigDecimal(0));
+			account.setFinanceId(bill.getFinanceBillId());
+			account.setBuyerId(contract != null ? contract.getBuyerId() : "");
+			account = financeService.addDepositAccount(account);
+		} 
+		
+		// 创建保证金消费明细
+		FeeDepositDetail feeDepositDetail = new FeeDepositDetail();
+		feeDepositDetail.setDepositAccountId(account.getDepositAccountId());
+		feeDepositDetail.setContractId(bill.getContractId());
+		feeDepositDetail.setCreateDate(new Date());
+		feeDepositDetail.setCreateUser(createUser);
+		feeDepositDetail.setUsedFee(bill.getActualAmount());
+		feeDepositDetail.setUsedFee(new BigDecimal(0).subtract(bill.getActualAmount()));
+		feeDepositDetail.setBalance(account.getBalance());
+		feeDepositDetail = financeService.addDepositDetail(feeDepositDetail);
+		
+		if (type.equals(FinanceTypeEnum.ZHUI_JIA_BAO_ZHENG_JIN.toString())) {
+			account.setBalance(account.getBalance().add(bill.getActualAmount()));
+			account.setDepositFee(account.getDepositFee().add(bill.getActualAmount()));
+			financeService.updateDepositAccount(account);
+		}
+		if (type.equals(FinanceTypeEnum.LV_YUE_BAO_ZHENG_JIN.toString())) {
+			account.setBalance(bill.getActualAmount());
+			account.setDepositFee(bill.getActualAmount());
+			financeService.updateDepositAccount(account);
+		}
+		
+	}
+	
+	@RequestMapping("/delete")
+	@ResponseBody
+	public AjaxResult deleteFinaceBill(HttpServletRequest request, String billId) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "删除财务单", "操作人ID为：" + getLoginName(request) + "删除财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			if (!StringUtils.isEmpty(billId)) {
+				return AjaxResult.createSuccessResult(financeService.deleteFinaceBill(billId));
+			} else {
+				return AjaxResult.createErrorResult(MessageCode.DELETE_FAILED, "财务单id不能为空");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "删除财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.DELETE_FAILED);	
+	}
+	
+	@RequestMapping("/findPage")
+	@ResponseBody
+	public AjaxResult findPageFinaceBills(HttpServletRequest request, @RequestBody PageUtils<FeeFinanceBillDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据条件获取财务单并分页", "操作人ID为：" + getLoginName(request) + "根据条件获取财务单并分页",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			PageInfo<FeeFinanceBillVo> info = financeService.getFinaceBills(page, false);
+			if (info != null && info.getList() != null && !info.getList().isEmpty()) {
+				for (FeeFinanceBillVo vo : info.getList()) {
+					if (!StringUtils.isEmpty(vo.getContractId())) {
+						vo.setContract(contractService.getConContractById(vo.getContractId()));
+					}
+					if (!StringUtils.isEmpty(vo.getBusinessType())) {
+						if(vo.getBusinessType().equals(FinanceTypeEnum.SHU_HUO_KUAN.toString())) {
+							//vo.setRedeem(redeemBillService.getRedRedeemBillByCode(vo.getRelationCode()));
+						}
+					}
+					if (!StringUtils.isEmpty(vo.getBusinessType())) {
+						vo.setBusinessTypeName(FinanceTypeEnum.getValueByKey(vo.getBusinessType()));
+					}
+				}
+			}
+			return AjaxResult.createSuccessResult(info);
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据条件获取财务单并分页",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+	
+	@RequestMapping("/findAll")
+	@ResponseBody
+	public AjaxResult findAllFinaceBills(HttpServletRequest request, @RequestBody PageUtils<FeeFinanceBillDto> page) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据条件获取财务单", "操作人ID为：" + getLoginName(request) + "根据条件获取财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			return AjaxResult.createSuccessResult(financeService.getFinaceBills(page.getDto(), page.getOrderByClause(), false));
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据条件获取财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+
+	@RequestMapping("/findOne")
+	@ResponseBody
+	public AjaxResult findOneFinaceBill(HttpServletRequest request, String id) {
+		String logBatch = LogBatchUtil.getLogUUID(EnumMonitorLog.LOGSYSTEM_GYL.getKey());
+		try {
+			super.logInfo(request, logBatch, "根据条件获取财务单", "操作人ID为：" + getLoginName(request) + "根据条件获取财务单",
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+			if (StringUtils.isEmpty(id)) {
+				return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED, "财务单id不能为空");
+			} else {
+				return AjaxResult.createSuccessResult(financeService.getFinaceBill(id));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			super.logError(request, logBatch, "根据条件获取财务单",
+					"操作人ID为：" + getLoginName(request) + "错误信息为：" + ExceptionUtils.getStackTrace(e), false,
+					EnumMonitorLog.LOGSYSTEM_SETTLEMENT.getKey());
+		}
+		return AjaxResult.createErrorResult(MessageCode.OPERATE_FAILED);
+	}
+	
+	/**
+	 * 检查必填
+	 * @param bill
+	 * @return
+	 */
+	private String checkFinaceBill(FeeFinanceBill bill, boolean isIgnoreId) {
+		if (bill == null) {
+			return "财务单实体不能为空";
+		}
+		String baseStr = "不能为空";
+		if (!isIgnoreId) {
+			if (StringUtils.isEmpty(bill.getFinanceBillId())) {
+				return "财务单id" + baseStr;
+			}
+		}
+		if (bill.getRealMoney() == null) {
+			return "待付总金额" + baseStr;
+		}
+		return "";
+	}
+	
+}

@@ -1,0 +1,154 @@
+package com.maigangle.gyl.service.impl;
+
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
+
+import com.maigangle.gyl.facade.entity.SysApprovalFlow;
+import com.maigangle.gyl.facade.entity.SysApprovalModule;
+import com.maigangle.gyl.facade.entity.SysApprovalProcess;
+import com.maigangle.gyl.facade.entity.api.PrivUser;
+import com.maigangle.gyl.facade.entity.dto.SysApprovalInfo;
+import com.maigangle.gyl.facade.enums.ApprovalStateEnum;
+import com.maigangle.gyl.facade.service.SysApprovalService;
+import com.maigangle.gyl.facade.service.SysService;
+import com.maigangle.gyl.service.util.ApplicationContextUtils;
+/**
+ * 审批流程处理Service
+ * @author 张渊
+ * @since 2017年12月21日 上午8:53:17
+ * @version 1.0
+ */
+@Service
+public class SysApprovalServiceImpl implements SysApprovalService {
+	@Autowired
+	SysService sysService;
+	
+	@Override
+	public boolean submit(String approvalItemId, String module, PrivUser user) {
+		SysApprovalFlow flow = new SysApprovalFlow();
+		flow.setUserId(user.getUserId());
+		flow.setApprovalItemId(approvalItemId);
+		flow.setModule(module);
+		
+		// 检索该模块对应审批流程
+		SysApprovalProcess processSearch = new SysApprovalProcess();
+		processSearch.setModule(module);
+		List<SysApprovalProcess> processList = sysService.getApprovalProcesss(processSearch);
+		// 如果检索到审批流程，则开始审批流程，否则直接审批完成
+		if (processList != null && processList.size() > 0) {
+			flow.setState(ApprovalStateEnum.APPROVAL_NOT.toString());
+			SysApprovalProcess nextProcess = processList.get(0);
+			flow.setNextRoleId(nextProcess.getRoleId());
+		} else {
+			flow.setState(ApprovalStateEnum.APPROVAL_COMPLETE.toString());
+		}
+		flow = sysService.addApprovalFlow(flow);
+		if (flow != null && !StringUtils.isEmpty(flow.getApprovalFlowId())) {
+			if (ApprovalStateEnum.APPROVAL_COMPLETE.getState().equals(flow.getState())) {
+				//  回调审批成功事件
+				invokeHook(approvalItemId, module, ApprovalStateEnum.APPROVAL_COMPLETE, user);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public boolean abandonSubmit(String approvalItemId, PrivUser user) {
+		if (!StringUtils.isEmpty(approvalItemId)) {
+			SysApprovalInfo flow = sysService.getLastApprovalInfoByApprovalItemId(approvalItemId, user);
+			if (flow != null && flow.isCanRevoke()
+					&& ApprovalStateEnum.APPROVAL_NOT.getState().equals(flow.getState())) {
+				boolean canAbandon = true;
+				if (ApprovalStateEnum.APPROVAL_COMPLETE.getState().equals(flow.getState())) {
+					//  调用回调函数，根据执行结果判定是否能撤销
+				}
+				if (canAbandon) {
+					int row = sysService.deleteApprovalFlow(flow.getApprovalFlowId());
+					if (row > 0) {
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+	public boolean approval(SysApprovalInfo flow, String remark, PrivUser user) {
+		/*
+		 *  1.判断当前用户是否可以审批
+		 *  2.获取下一个审批流程
+		 *  3.获取下下个审批流程，如果有的话，保存审批进程，及下一个审批角色
+		 *  4.如果没有的话，审批全部完成，保存审批进程，回调审批完成方法
+		 */
+		
+		//  Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean reject(SysApprovalInfo flow, String remark, PrivUser user) {
+		//  Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean abandon(String approvalItemId, PrivUser user) {
+		//  Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean cancel(String approvalItemId, PrivUser user) {
+		//  Auto-generated method stub
+		return false;
+	}
+	/**
+	 * 调用钩子函数
+	 * @param approvalItemId 审批项ID
+	 * @param module
+	 * @param approvalState
+	 * @return
+	 */
+	private boolean invokeHook(String approvalItemId, String moduleAlias, ApprovalStateEnum state, PrivUser user) {
+		SysApprovalModule module = new SysApprovalModule();
+		module.setModuleAlias(moduleAlias);
+		List<SysApprovalModule> list = sysService.getApprovalModules(module);
+		if (list != null && list.size() > 0) {
+			module = list.get(0);
+			// 如果没有对应Bean，则返回成功
+			if (StringUtils.isEmpty(module.getModuleServiceBean())) {
+				return true;
+			}
+			Object bean = ApplicationContextUtils.getBean(module.getModuleServiceBean());
+			if (bean == null) {
+				return true;
+			}
+			String methodName = null;
+			switch (state) {
+				case APPROVAL_COMPLETE:
+					// 审批通过回调
+					methodName = module.getApprovalCompleteMethod();
+					break;
+				case APPROVAL_SUSPEND:
+					// 审批拒绝回调
+					methodName = module.getApprovalSuspendMethod();
+				default:
+					break;
+			}
+			if (methodName != null) {
+				Method method = ReflectionUtils.findMethod(bean.getClass(), methodName, String.class, PrivUser.class);
+				if (method != null) {
+					return (boolean) ReflectionUtils.invokeMethod(method, bean, approvalItemId, user);
+				}
+			}
+		}
+		return true;
+	}
+}

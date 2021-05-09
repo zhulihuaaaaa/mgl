@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.ext.ConContractExtMapper" >
+  <select id="selectByNo" parameterType="java.lang.String" resultType="java.lang.Integer">
+	  select 
+	  count(1)
+	  from TB_CON_CONTRACT
+	  where CONTRACT_NO = #{contractNo,jdbcType=VARCHAR}
+  </select>
+
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.vo.ConContractVo" >
+    <id column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_TYPE" property="contractType" jdbcType="VARCHAR" />
+    <result column="RELATIVE_CONTRACT_ID" property="relativeContractId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_NO" property="contractNo" jdbcType="VARCHAR" />
+    <result column="REPURCHASE_AGREEMENT_NO" property="repurchaseAgreementNo" jdbcType="VARCHAR" />
+    <result column="SIGN_DATE" property="signDate" jdbcType="TIMESTAMP" />
+    <result column="SIGING_PLACE" property="sigingPlace" jdbcType="VARCHAR" />
+    <result column="SELLER_ID" property="sellerId" jdbcType="VARCHAR" />
+    <result column="BUYER_ID" property="buyerId" jdbcType="VARCHAR" />
+    <result column="SUPPLIER_INVOICE_STATUS" property="supplierInvoiceStatus" jdbcType="VARCHAR" />
+    <result column="DELIVERY_ADDRESS" property="deliveryAddress" jdbcType="VARCHAR" />
+    <result column="DELIVERY_DATE" property="deliveryDate" jdbcType="TIMESTAMP" />
+    <result column="DELIVERY_TYPE" property="deliveryType" jdbcType="VARCHAR" />
+    <result column="TOTAL_WEIGHT" property="totalWeight" jdbcType="DECIMAL" />
+    <result column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_RATE" property="depositRate" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_FEE" property="depositFee" jdbcType="DECIMAL" />
+    <result column="COMMISSION_RATE" property="commissionRate" jdbcType="DECIMAL" />
+    <result column="INVOICE_BASE_FEE" property="invoiceBaseFee" jdbcType="DECIMAL" />
+    <result column="CONTRACT_PERIOD" property="contractPeriod" jdbcType="DECIMAL" />
+    <result column="CONTRACT_STATE" property="contractState" jdbcType="VARCHAR" />
+    <result column="ARCHIVED" property="archived" jdbcType="VARCHAR" />
+    <result column="CREATE_USER" property="createUser" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="CONTRACT_CODE" property="contractCode" jdbcType="VARCHAR" />
+    <result column="MALL_MNFCT" property="mallMnfct" jdbcType="VARCHAR" />
+  </resultMap>  
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+      and IS_DEL = 'N'
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    CONTRACT_ID, CONTRACT_TYPE, RELATIVE_CONTRACT_ID, CONTRACT_NO, REPURCHASE_AGREEMENT_NO, 
+    SIGN_DATE, SIGING_PLACE, SELLER_ID, BUYER_ID, SUPPLIER_INVOICE_STATUS, DELIVERY_ADDRESS, 
+    DELIVERY_DATE, DELIVERY_TYPE, TOTAL_WEIGHT, TOTAL_MONEY, DEPOSIT_RATE, DEPOSIT_FEE, 
+    COMMISSION_RATE, INVOICE_BASE_FEE, CONTRACT_PERIOD, CONTRACT_STATE, ARCHIVED, CREATE_USER, 
+    CREATE_DATE, NOTES, IS_DEL, CONTRACT_CODE, MALL_MNFCT
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.ConContractExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_CON_CONTRACT
+    where CONTRACT_ID = #{contractId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
+    select CONTRACT_ID ,CONTRACT_NO,CONTRACT_CODE,SIGN_DATE,CONTRACT_PERIOD,(to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')-
+	to_date(to_char(SIGN_DATE+CONTRACT_PERIOD,'yyyy-mm-dd'),'yyyy-mm-dd'))+1 as OVERDUE from TB_CON_CONTRACT where IS_DEL = 'N' AND (to_date(to_char(sysdate,'yyyy-mm-dd'),'yyyy-mm-dd')-
+	to_date(to_char(SIGN_DATE+CONTRACT_PERIOD,'yyyy-mm-dd'),'yyyy-mm-dd'))+1 > 0
+  </select>
+ 
+  
+</mapper>

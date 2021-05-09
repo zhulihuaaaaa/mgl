@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.1//EN" "http://java.sun.com/j2ee/dtds/web-jsptaglibrary_1_1.dtd">
+<taglib>
+	<tlibversion>1.0</tlibversion>
+	<jspversion>1.1</jspversion>
+	<shortname>web</shortname>
+	<uri></uri><!--远程服务器存放tag地址 -->
+    <tag>
+        <name>privilege</name>
+        <tagclass>com.maigangle.erp.common.tag.PrivilegeTag</tagclass>
+        <bodycontent>JSP</bodycontent>
+        <attribute>
+            <name>key</name>
+            <required>true</required>
+        </attribute>
+    </tag>
+</taglib>

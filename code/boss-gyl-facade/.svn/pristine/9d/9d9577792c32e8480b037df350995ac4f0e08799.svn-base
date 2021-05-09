@@ -1,0 +1,222 @@
+package com.maigangle.gyl.facade.entity;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class FeeContractBalance implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3925658151736977323L;
+
+	/**
+     * id
+     */
+    private String contractBalanceId;
+
+    /**
+     * 合同总价
+     */
+    private BigDecimal contractAmount;
+
+    /**
+     * 实际总价
+     */
+    private BigDecimal actualAmount;
+
+    /**
+     * 手续费
+     */
+    private BigDecimal serviceCharge;
+
+    /**
+     * 开票费
+     */
+    private BigDecimal invoiceFee;
+
+    /**
+     * 赎货总价
+     */
+    private BigDecimal ransomFee;
+
+    /**
+     * 差额
+     */
+    private BigDecimal balance;
+
+    /**
+     * 创建人
+     */
+    private String createUser;
+
+    /**
+     * 创建日期
+     */
+    private Date createDate;
+
+    /**
+     * N:false, Y:true
+     */
+    private String isDel;
+
+    /**
+     * id
+     * @return CONTRACT_BALANCE_ID id
+     */
+    public String getContractBalanceId() {
+        return contractBalanceId;
+    }
+
+    /**
+     * id
+     * @param contractBalanceId id
+     */
+    public void setContractBalanceId(String contractBalanceId) {
+        this.contractBalanceId = contractBalanceId == null ? null : contractBalanceId.trim();
+    }
+
+    /**
+     * 合同总价
+     * @return CONTRACT_AMOUNT 合同总价
+     */
+    public BigDecimal getContractAmount() {
+        return contractAmount;
+    }
+
+    /**
+     * 合同总价
+     * @param contractAmount 合同总价
+     */
+    public void setContractAmount(BigDecimal contractAmount) {
+        this.contractAmount = contractAmount;
+    }
+
+    /**
+     * 实际总价
+     * @return ACTUAL_AMOUNT 实际总价
+     */
+    public BigDecimal getActualAmount() {
+        return actualAmount;
+    }
+
+    /**
+     * 实际总价
+     * @param actualAmount 实际总价
+     */
+    public void setActualAmount(BigDecimal actualAmount) {
+        this.actualAmount = actualAmount;
+    }
+
+    /**
+     * 手续费
+     * @return SERVICE_CHARGE 手续费
+     */
+    public BigDecimal getServiceCharge() {
+        return serviceCharge;
+    }
+
+    /**
+     * 手续费
+     * @param serviceCharge 手续费
+     */
+    public void setServiceCharge(BigDecimal serviceCharge) {
+        this.serviceCharge = serviceCharge;
+    }
+
+    /**
+     * 开票费
+     * @return INVOICE_FEE 开票费
+     */
+    public BigDecimal getInvoiceFee() {
+        return invoiceFee;
+    }
+
+    /**
+     * 开票费
+     * @param invoiceFee 开票费
+     */
+    public void setInvoiceFee(BigDecimal invoiceFee) {
+        this.invoiceFee = invoiceFee;
+    }
+
+    /**
+     * 赎货总价
+     * @return RANSOM_FEE 赎货总价
+     */
+    public BigDecimal getRansomFee() {
+        return ransomFee;
+    }
+
+    /**
+     * 赎货总价
+     * @param ransomFee 赎货总价
+     */
+    public void setRansomFee(BigDecimal ransomFee) {
+        this.ransomFee = ransomFee;
+    }
+
+    /**
+     * 差额
+     * @return BALANCE 差额
+     */
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    /**
+     * 差额
+     * @param balance 差额
+     */
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    /**
+     * 创建人
+     * @return CREATE_USER 创建人
+     */
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    /**
+     * 创建人
+     * @param createUser 创建人
+     */
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    /**
+     * 创建日期
+     * @return CREATE_DATE 创建日期
+     */
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    /**
+     * 创建日期
+     * @param createDate 创建日期
+     */
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
+    /**
+     * N:false, Y:true
+     * @return IS_DEL N:false, Y:true
+     */
+    public String getIsDel() {
+        return isDel;
+    }
+
+    /**
+     * N:false, Y:true
+     * @param isDel N:false, Y:true
+     */
+    public void setIsDel(String isDel) {
+        this.isDel = isDel == null ? null : isDel.trim();
+    }
+}

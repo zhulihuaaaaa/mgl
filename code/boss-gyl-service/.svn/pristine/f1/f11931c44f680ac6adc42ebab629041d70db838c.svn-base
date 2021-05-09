@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.InContractRemitDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.InContractRemitDetail" >
+    <id column="CONTRACT_REMIT_DETIAIL_ID" property="contractRemitDetiailId" jdbcType="VARCHAR" />
+    <result column="MONEY" property="money" jdbcType="DECIMAL" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="REMIT_DATE" property="remitDate" jdbcType="TIMESTAMP" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="BALANCE" property="balance" jdbcType="DECIMAL" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+      AND IS_DEL = 'N'
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    CONTRACT_REMIT_DETIAIL_ID, MONEY, CONTRACT_ID, REMIT_DATE, IS_DEL, BALANCE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.InContractRemitDetailExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_IN_CONTRACT_REMIT_DETAIL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="_parameter == null" >
+      WHERE IS_DEL = 'N'
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_IN_CONTRACT_REMIT_DETAIL
+    where CONTRACT_REMIT_DETIAIL_ID = #{contractRemitDetiailId,jdbcType=VARCHAR} AND IS_DEL = 'N'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_IN_CONTRACT_REMIT_DETAIL
+    where CONTRACT_REMIT_DETIAIL_ID = #{contractRemitDetiailId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.InContractRemitDetail" >
+     <selectKey keyProperty="contractRemitDetiailId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_IN_CONTRACT_REMIT_DETAIL (CONTRACT_REMIT_DETIAIL_ID, MONEY, CONTRACT_ID, 
+      REMIT_DATE, IS_DEL, BALANCE
+      )
+    values (#{contractRemitDetiailId,jdbcType=VARCHAR}, #{money,jdbcType=DECIMAL}, #{contractId,jdbcType=VARCHAR}, 
+      #{remitDate,jdbcType=TIMESTAMP}, #{isDel,jdbcType=CHAR}, #{balance,jdbcType=DECIMAL}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.InContractRemitDetail" >
+    <selectKey keyProperty="contractRemitDetiailId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_IN_CONTRACT_REMIT_DETAIL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="contractRemitDetiailId != null" >
+        CONTRACT_REMIT_DETIAIL_ID,
+      </if>
+      <if test="money != null" >
+        MONEY,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="remitDate != null" >
+        REMIT_DATE,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="balance != null" >
+        BALANCE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="contractRemitDetiailId != null" >
+        #{contractRemitDetiailId,jdbcType=VARCHAR},
+      </if>
+      <if test="money != null" >
+        #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="remitDate != null" >
+        #{remitDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="balance != null" >
+        #{balance,jdbcType=DECIMAL},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_IN_CONTRACT_REMIT_DETAIL
+    <set >
+      <if test="record.contractRemitDetiailId != null" >
+        CONTRACT_REMIT_DETIAIL_ID = #{record.contractRemitDetiailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.money != null" >
+        MONEY = #{record.money,jdbcType=DECIMAL},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.remitDate != null" >
+        REMIT_DATE = #{record.remitDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.balance != null" >
+        BALANCE = #{record.balance,jdbcType=DECIMAL},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_IN_CONTRACT_REMIT_DETAIL
+    set CONTRACT_REMIT_DETIAIL_ID = #{record.contractRemitDetiailId,jdbcType=VARCHAR},
+      MONEY = #{record.money,jdbcType=DECIMAL},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      REMIT_DATE = #{record.remitDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      BALANCE = #{record.balance,jdbcType=DECIMAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.InContractRemitDetail" >
+    update TB_IN_CONTRACT_REMIT_DETAIL
+    <set >
+      <if test="money != null" >
+        MONEY = #{money,jdbcType=DECIMAL},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="remitDate != null" >
+        REMIT_DATE = #{remitDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="balance != null" >
+        BALANCE = #{balance,jdbcType=DECIMAL},
+      </if>
+    </set>
+    where CONTRACT_REMIT_DETIAIL_ID = #{contractRemitDetiailId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.InContractRemitDetail" >
+    update TB_IN_CONTRACT_REMIT_DETAIL
+    set MONEY = #{money,jdbcType=DECIMAL},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      REMIT_DATE = #{remitDate,jdbcType=TIMESTAMP},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      BALANCE = #{balance,jdbcType=DECIMAL}
+    where CONTRACT_REMIT_DETIAIL_ID = #{contractRemitDetiailId,jdbcType=VARCHAR}
+  </update>
+</mapper>

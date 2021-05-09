@@ -1,0 +1,523 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.FeeFinanceBillMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.FeeFinanceBill" >
+    <id column="FINANCE_BILL_ID" property="financeBillId" jdbcType="VARCHAR" />
+    <result column="FINANCE_CODE" property="financeCode" jdbcType="VARCHAR" />
+    <result column="RELATION_CODE" property="relationCode" jdbcType="VARCHAR" />
+    <result column="FLWO_TYPE" property="flwoType" jdbcType="VARCHAR" />
+    <result column="CONTRACT_ID" property="contractId" jdbcType="VARCHAR" />
+    <result column="BUSINESS_TYPE" property="businessType" jdbcType="VARCHAR" />
+    <result column="CREATE_DATE" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="DESCRIPTION" property="description" jdbcType="VARCHAR" />
+    <result column="TOTAL_GOODS_PAYMENT" property="totalGoodsPayment" jdbcType="DECIMAL" />
+    <result column="COMMISSION_FEE" property="commissionFee" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="CHARGING_DAYS" property="chargingDays" jdbcType="DECIMAL" />
+    <result column="OTHER_FEE" property="otherFee" jdbcType="DECIMAL" />
+    <result column="TOTAL_MONEY" property="totalMoney" jdbcType="DECIMAL" />
+    <result column="ACTUAL_AMOUNT" property="actualAmount" jdbcType="DECIMAL" />
+    <result column="REAL_MONEY" property="realMoney" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_FEE" property="depositFee" jdbcType="DECIMAL" />
+    <result column="DEPOSIT_DETAIL_ID" property="depositDetailId" jdbcType="VARCHAR" />
+    <result column="OPERATOR" property="operator" jdbcType="VARCHAR" />
+    <result column="OPERATOR_DATE" property="operatorDate" jdbcType="TIMESTAMP" />
+    <result column="NOTES" property="notes" jdbcType="VARCHAR" />
+    <result column="STATUS" property="status" jdbcType="CHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="RELATION_ID" property="relationId" jdbcType="VARCHAR" />
+    <result column="CONTRACT_CODE" property="contractCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    FINANCE_BILL_ID, FINANCE_CODE, RELATION_CODE, FLWO_TYPE, CONTRACT_ID, BUSINESS_TYPE, 
+    CREATE_DATE, DESCRIPTION, TOTAL_GOODS_PAYMENT, COMMISSION_FEE, INVOICE_FEE, CHARGING_DAYS, 
+    OTHER_FEE, TOTAL_MONEY, ACTUAL_AMOUNT, REAL_MONEY, DEPOSIT_FEE, DEPOSIT_DETAIL_ID, 
+    OPERATOR, OPERATOR_DATE, NOTES, STATUS, IS_DEL, RELATION_ID, CONTRACT_CODE
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.FeeFinanceBillExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_FEE_FINANCE_BILL
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_FEE_FINANCE_BILL
+    where FINANCE_BILL_ID = #{financeBillId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_FEE_FINANCE_BILL
+    where FINANCE_BILL_ID = #{financeBillId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.FeeFinanceBill" >
+     <selectKey keyProperty="financeBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_FINANCE_BILL (FINANCE_BILL_ID, FINANCE_CODE, RELATION_CODE, 
+      FLWO_TYPE, CONTRACT_ID, BUSINESS_TYPE, 
+      CREATE_DATE, DESCRIPTION, TOTAL_GOODS_PAYMENT, 
+      COMMISSION_FEE, INVOICE_FEE, CHARGING_DAYS, 
+      OTHER_FEE, TOTAL_MONEY, ACTUAL_AMOUNT, 
+      REAL_MONEY, DEPOSIT_FEE, DEPOSIT_DETAIL_ID, 
+      OPERATOR, OPERATOR_DATE, NOTES, 
+      STATUS, IS_DEL, RELATION_ID, 
+      CONTRACT_CODE)
+    values (#{financeBillId,jdbcType=VARCHAR}, #{financeCode,jdbcType=VARCHAR}, #{relationCode,jdbcType=VARCHAR}, 
+      #{flwoType,jdbcType=VARCHAR}, #{contractId,jdbcType=VARCHAR}, #{businessType,jdbcType=VARCHAR}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{description,jdbcType=VARCHAR}, #{totalGoodsPayment,jdbcType=DECIMAL}, 
+      #{commissionFee,jdbcType=DECIMAL}, #{invoiceFee,jdbcType=DECIMAL}, #{chargingDays,jdbcType=DECIMAL}, 
+      #{otherFee,jdbcType=DECIMAL}, #{totalMoney,jdbcType=DECIMAL}, #{actualAmount,jdbcType=DECIMAL}, 
+      #{realMoney,jdbcType=DECIMAL}, #{depositFee,jdbcType=DECIMAL}, #{depositDetailId,jdbcType=VARCHAR}, 
+      #{operator,jdbcType=VARCHAR}, #{operatorDate,jdbcType=TIMESTAMP}, #{notes,jdbcType=VARCHAR}, 
+      #{status,jdbcType=CHAR}, #{isDel,jdbcType=CHAR}, #{relationId,jdbcType=VARCHAR}, 
+      #{contractCode,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.FeeFinanceBill" >
+    <selectKey keyProperty="financeBillId" resultType="String" order="BEFORE">
+ 		select sys_guid() from dual
+	</selectKey>
+    insert into TB_FEE_FINANCE_BILL
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="financeBillId != null" >
+        FINANCE_BILL_ID,
+      </if>
+      <if test="financeCode != null" >
+        FINANCE_CODE,
+      </if>
+      <if test="relationCode != null" >
+        RELATION_CODE,
+      </if>
+      <if test="flwoType != null" >
+        FLWO_TYPE,
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID,
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE,
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE,
+      </if>
+      <if test="description != null" >
+        DESCRIPTION,
+      </if>
+      <if test="totalGoodsPayment != null" >
+        TOTAL_GOODS_PAYMENT,
+      </if>
+      <if test="commissionFee != null" >
+        COMMISSION_FEE,
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE,
+      </if>
+      <if test="chargingDays != null" >
+        CHARGING_DAYS,
+      </if>
+      <if test="otherFee != null" >
+        OTHER_FEE,
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY,
+      </if>
+      <if test="actualAmount != null" >
+        ACTUAL_AMOUNT,
+      </if>
+      <if test="realMoney != null" >
+        REAL_MONEY,
+      </if>
+      <if test="depositFee != null" >
+        DEPOSIT_FEE,
+      </if>
+      <if test="depositDetailId != null" >
+        DEPOSIT_DETAIL_ID,
+      </if>
+      <if test="operator != null" >
+        OPERATOR,
+      </if>
+      <if test="operatorDate != null" >
+        OPERATOR_DATE,
+      </if>
+      <if test="notes != null" >
+        NOTES,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="relationId != null" >
+        RELATION_ID,
+      </if>
+      <if test="contractCode != null" >
+        CONTRACT_CODE,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="financeBillId != null" >
+        #{financeBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="financeCode != null" >
+        #{financeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relationCode != null" >
+        #{relationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="flwoType != null" >
+        #{flwoType,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="totalGoodsPayment != null" >
+        #{totalGoodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionFee != null" >
+        #{commissionFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="chargingDays != null" >
+        #{chargingDays,jdbcType=DECIMAL},
+      </if>
+      <if test="otherFee != null" >
+        #{otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMoney != null" >
+        #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAmount != null" >
+        #{actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realMoney != null" >
+        #{realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="depositFee != null" >
+        #{depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="depositDetailId != null" >
+        #{depositDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorDate != null" >
+        #{operatorDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null" >
+        #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=CHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="relationId != null" >
+        #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null" >
+        #{contractCode,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_FEE_FINANCE_BILL
+    <set >
+      <if test="record.financeBillId != null" >
+        FINANCE_BILL_ID = #{record.financeBillId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.financeCode != null" >
+        FINANCE_CODE = #{record.financeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.relationCode != null" >
+        RELATION_CODE = #{record.relationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.flwoType != null" >
+        FLWO_TYPE = #{record.flwoType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractId != null" >
+        CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.businessType != null" >
+        BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createDate != null" >
+        CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.description != null" >
+        DESCRIPTION = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.totalGoodsPayment != null" >
+        TOTAL_GOODS_PAYMENT = #{record.totalGoodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="record.commissionFee != null" >
+        COMMISSION_FEE = #{record.commissionFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.invoiceFee != null" >
+        INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.chargingDays != null" >
+        CHARGING_DAYS = #{record.chargingDays,jdbcType=DECIMAL},
+      </if>
+      <if test="record.otherFee != null" >
+        OTHER_FEE = #{record.otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.totalMoney != null" >
+        TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.actualAmount != null" >
+        ACTUAL_AMOUNT = #{record.actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="record.realMoney != null" >
+        REAL_MONEY = #{record.realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositFee != null" >
+        DEPOSIT_FEE = #{record.depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.depositDetailId != null" >
+        DEPOSIT_DETAIL_ID = #{record.depositDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operator != null" >
+        OPERATOR = #{record.operator,jdbcType=VARCHAR},
+      </if>
+      <if test="record.operatorDate != null" >
+        OPERATOR_DATE = #{record.operatorDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.notes != null" >
+        NOTES = #{record.notes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=CHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.relationId != null" >
+        RELATION_ID = #{record.relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contractCode != null" >
+        CONTRACT_CODE = #{record.contractCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_FEE_FINANCE_BILL
+    set FINANCE_BILL_ID = #{record.financeBillId,jdbcType=VARCHAR},
+      FINANCE_CODE = #{record.financeCode,jdbcType=VARCHAR},
+      RELATION_CODE = #{record.relationCode,jdbcType=VARCHAR},
+      FLWO_TYPE = #{record.flwoType,jdbcType=VARCHAR},
+      CONTRACT_ID = #{record.contractId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{record.businessType,jdbcType=VARCHAR},
+      CREATE_DATE = #{record.createDate,jdbcType=TIMESTAMP},
+      DESCRIPTION = #{record.description,jdbcType=VARCHAR},
+      TOTAL_GOODS_PAYMENT = #{record.totalGoodsPayment,jdbcType=DECIMAL},
+      COMMISSION_FEE = #{record.commissionFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      CHARGING_DAYS = #{record.chargingDays,jdbcType=DECIMAL},
+      OTHER_FEE = #{record.otherFee,jdbcType=DECIMAL},
+      TOTAL_MONEY = #{record.totalMoney,jdbcType=DECIMAL},
+      ACTUAL_AMOUNT = #{record.actualAmount,jdbcType=DECIMAL},
+      REAL_MONEY = #{record.realMoney,jdbcType=DECIMAL},
+      DEPOSIT_FEE = #{record.depositFee,jdbcType=DECIMAL},
+      DEPOSIT_DETAIL_ID = #{record.depositDetailId,jdbcType=VARCHAR},
+      OPERATOR = #{record.operator,jdbcType=VARCHAR},
+      OPERATOR_DATE = #{record.operatorDate,jdbcType=TIMESTAMP},
+      NOTES = #{record.notes,jdbcType=VARCHAR},
+      STATUS = #{record.status,jdbcType=CHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      RELATION_ID = #{record.relationId,jdbcType=VARCHAR},
+      CONTRACT_CODE = #{record.contractCode,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.FeeFinanceBill" >
+    update TB_FEE_FINANCE_BILL
+    <set >
+      <if test="financeCode != null" >
+        FINANCE_CODE = #{financeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="relationCode != null" >
+        RELATION_CODE = #{relationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="flwoType != null" >
+        FLWO_TYPE = #{flwoType,jdbcType=VARCHAR},
+      </if>
+      <if test="contractId != null" >
+        CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      </if>
+      <if test="businessType != null" >
+        BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null" >
+        CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="description != null" >
+        DESCRIPTION = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="totalGoodsPayment != null" >
+        TOTAL_GOODS_PAYMENT = #{totalGoodsPayment,jdbcType=DECIMAL},
+      </if>
+      <if test="commissionFee != null" >
+        COMMISSION_FEE = #{commissionFee,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="chargingDays != null" >
+        CHARGING_DAYS = #{chargingDays,jdbcType=DECIMAL},
+      </if>
+      <if test="otherFee != null" >
+        OTHER_FEE = #{otherFee,jdbcType=DECIMAL},
+      </if>
+      <if test="totalMoney != null" >
+        TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="actualAmount != null" >
+        ACTUAL_AMOUNT = #{actualAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="realMoney != null" >
+        REAL_MONEY = #{realMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="depositFee != null" >
+        DEPOSIT_FEE = #{depositFee,jdbcType=DECIMAL},
+      </if>
+      <if test="depositDetailId != null" >
+        DEPOSIT_DETAIL_ID = #{depositDetailId,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null" >
+        OPERATOR = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorDate != null" >
+        OPERATOR_DATE = #{operatorDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="notes != null" >
+        NOTES = #{notes,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=CHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="relationId != null" >
+        RELATION_ID = #{relationId,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null" >
+        CONTRACT_CODE = #{contractCode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where FINANCE_BILL_ID = #{financeBillId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.FeeFinanceBill" >
+    update TB_FEE_FINANCE_BILL
+    set FINANCE_CODE = #{financeCode,jdbcType=VARCHAR},
+      RELATION_CODE = #{relationCode,jdbcType=VARCHAR},
+      FLWO_TYPE = #{flwoType,jdbcType=VARCHAR},
+      CONTRACT_ID = #{contractId,jdbcType=VARCHAR},
+      BUSINESS_TYPE = #{businessType,jdbcType=VARCHAR},
+      CREATE_DATE = #{createDate,jdbcType=TIMESTAMP},
+      DESCRIPTION = #{description,jdbcType=VARCHAR},
+      TOTAL_GOODS_PAYMENT = #{totalGoodsPayment,jdbcType=DECIMAL},
+      COMMISSION_FEE = #{commissionFee,jdbcType=DECIMAL},
+      INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      CHARGING_DAYS = #{chargingDays,jdbcType=DECIMAL},
+      OTHER_FEE = #{otherFee,jdbcType=DECIMAL},
+      TOTAL_MONEY = #{totalMoney,jdbcType=DECIMAL},
+      ACTUAL_AMOUNT = #{actualAmount,jdbcType=DECIMAL},
+      REAL_MONEY = #{realMoney,jdbcType=DECIMAL},
+      DEPOSIT_FEE = #{depositFee,jdbcType=DECIMAL},
+      DEPOSIT_DETAIL_ID = #{depositDetailId,jdbcType=VARCHAR},
+      OPERATOR = #{operator,jdbcType=VARCHAR},
+      OPERATOR_DATE = #{operatorDate,jdbcType=TIMESTAMP},
+      NOTES = #{notes,jdbcType=VARCHAR},
+      STATUS = #{status,jdbcType=CHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      RELATION_ID = #{relationId,jdbcType=VARCHAR},
+      CONTRACT_CODE = #{contractCode,jdbcType=VARCHAR}
+    where FINANCE_BILL_ID = #{financeBillId,jdbcType=VARCHAR}
+  </update>
+</mapper>

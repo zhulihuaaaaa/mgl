@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.maigangle.gyl.service.mapper.BaseInfoMapper" >
+  <resultMap id="BaseResultMap" type="com.maigangle.gyl.facade.entity.BaseInfo" >
+    <id column="INFO_ID" property="infoId" jdbcType="VARCHAR" />
+    <result column="FEE_RATE" property="feeRate" jdbcType="DECIMAL" />
+    <result column="INVOICE_FEE" property="invoiceFee" jdbcType="DECIMAL" />
+    <result column="OVERDUE_REMINDER" property="overdueReminder" jdbcType="VARCHAR" />
+    <result column="IS_DEL" property="isDel" jdbcType="CHAR" />
+    <result column="VIRTUAL_MALL_DEPOT" property="virtualMallDepot" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    INFO_ID, FEE_RATE, INVOICE_FEE, OVERDUE_REMINDER, IS_DEL, VIRTUAL_MALL_DEPOT
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.maigangle.gyl.facade.entity.BaseInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'false' as QUERYID,
+    <include refid="Base_Column_List" />
+    from TB_BASE_INFO
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from TB_BASE_INFO
+    where INFO_ID = #{infoId,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from TB_BASE_INFO
+    where INFO_ID = #{infoId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.maigangle.gyl.facade.entity.BaseInfo" >
+    insert into TB_BASE_INFO (INFO_ID, FEE_RATE, INVOICE_FEE, 
+      OVERDUE_REMINDER, IS_DEL, VIRTUAL_MALL_DEPOT
+      )
+    values (#{infoId,jdbcType=VARCHAR}, #{feeRate,jdbcType=DECIMAL}, #{invoiceFee,jdbcType=DECIMAL}, 
+      #{overdueReminder,jdbcType=VARCHAR}, #{isDel,jdbcType=CHAR}, #{virtualMallDepot,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.maigangle.gyl.facade.entity.BaseInfo" >
+    insert into TB_BASE_INFO
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        INFO_ID,
+      </if>
+      <if test="feeRate != null" >
+        FEE_RATE,
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE,
+      </if>
+      <if test="overdueReminder != null" >
+        OVERDUE_REMINDER,
+      </if>
+      <if test="isDel != null" >
+        IS_DEL,
+      </if>
+      <if test="virtualMallDepot != null" >
+        VIRTUAL_MALL_DEPOT,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="infoId != null" >
+        #{infoId,jdbcType=VARCHAR},
+      </if>
+      <if test="feeRate != null" >
+        #{feeRate,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="overdueReminder != null" >
+        #{overdueReminder,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="virtualMallDepot != null" >
+        #{virtualMallDepot,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update TB_BASE_INFO
+    <set >
+      <if test="record.infoId != null" >
+        INFO_ID = #{record.infoId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.feeRate != null" >
+        FEE_RATE = #{record.feeRate,jdbcType=DECIMAL},
+      </if>
+      <if test="record.invoiceFee != null" >
+        INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="record.overdueReminder != null" >
+        OVERDUE_REMINDER = #{record.overdueReminder,jdbcType=VARCHAR},
+      </if>
+      <if test="record.isDel != null" >
+        IS_DEL = #{record.isDel,jdbcType=CHAR},
+      </if>
+      <if test="record.virtualMallDepot != null" >
+        VIRTUAL_MALL_DEPOT = #{record.virtualMallDepot,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update TB_BASE_INFO
+    set INFO_ID = #{record.infoId,jdbcType=VARCHAR},
+      FEE_RATE = #{record.feeRate,jdbcType=DECIMAL},
+      INVOICE_FEE = #{record.invoiceFee,jdbcType=DECIMAL},
+      OVERDUE_REMINDER = #{record.overdueReminder,jdbcType=VARCHAR},
+      IS_DEL = #{record.isDel,jdbcType=CHAR},
+      VIRTUAL_MALL_DEPOT = #{record.virtualMallDepot,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.maigangle.gyl.facade.entity.BaseInfo" >
+    update TB_BASE_INFO
+    <set >
+      <if test="feeRate != null" >
+        FEE_RATE = #{feeRate,jdbcType=DECIMAL},
+      </if>
+      <if test="invoiceFee != null" >
+        INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      </if>
+      <if test="overdueReminder != null" >
+        OVERDUE_REMINDER = #{overdueReminder,jdbcType=VARCHAR},
+      </if>
+      <if test="isDel != null" >
+        IS_DEL = #{isDel,jdbcType=CHAR},
+      </if>
+      <if test="virtualMallDepot != null" >
+        VIRTUAL_MALL_DEPOT = #{virtualMallDepot,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where INFO_ID = #{infoId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.maigangle.gyl.facade.entity.BaseInfo" >
+    update TB_BASE_INFO
+    set FEE_RATE = #{feeRate,jdbcType=DECIMAL},
+      INVOICE_FEE = #{invoiceFee,jdbcType=DECIMAL},
+      OVERDUE_REMINDER = #{overdueReminder,jdbcType=VARCHAR},
+      IS_DEL = #{isDel,jdbcType=CHAR},
+      VIRTUAL_MALL_DEPOT = #{virtualMallDepot,jdbcType=VARCHAR}
+    where INFO_ID = #{infoId,jdbcType=VARCHAR}
+  </update>
+</mapper>
